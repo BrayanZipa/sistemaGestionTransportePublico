@@ -2,9 +2,11 @@ package co.edu.poligran.paradigmas.backend.negocio;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import co.edu.poligran.paradigmas.backend.vo.VehiculoVO;
 
+/**
+ * Clase encargada de gestionar el CRUD de vehículos
+ */
 public class GestionVehiculosManager {
 	
     List<VehiculoVO> listaVehiculos = new ArrayList<>();
@@ -88,6 +90,7 @@ public class GestionVehiculosManager {
     /**
      * Método que permite eliminar un vehículo por índice
      * @param indice posición
+     * @return true si se eliminó, false si no existe
      */
     public boolean eliminarVehiculo(int indice){
         if(indice >= 0 && indice < listaVehiculos.size()) {
@@ -100,6 +103,7 @@ public class GestionVehiculosManager {
     /**
      * Método que permite eliminar un vehículo por placa
      * @param placa identificador
+     * @return true si se eliminó, false si no existe
      */
     public boolean eliminarVehiculoPorPlaca(String placa){
         int indice = obtenerIndicePorPlaca(placa);

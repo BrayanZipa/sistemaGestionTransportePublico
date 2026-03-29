@@ -8,6 +8,14 @@ public class BoletoVO {
     private String numeroAsiento;
     private PasajeroVO pasajero;
     
+    @Override
+    public String toString() {
+        return "Código: " + codigo +
+               ", Fecha Compra: " + fechaCompra +
+               ", Asiento: " + numeroAsiento +
+               ", Pasajero: " + (pasajero != null ? pasajero.toString() : "N/A");
+    }
+    
 	/**
 	 * @return the codigo
 	 */

@@ -5,6 +5,13 @@ public class ParadaVO {
     private String nombre;
     private String ubicacion;
     
+    @Override
+    public String toString() {
+        return "Código: " + codigo +
+               ", Nombre: " + nombre +
+               ", Ubicación: " + ubicacion;
+    }
+    
 	/**
 	 * @return the codigo
 	 */

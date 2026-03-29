@@ -9,6 +9,15 @@ public class RutaVO {
     private float distancia;
     private LocalDateTime fecha;
     
+    @Override
+    public String toString() {
+        return "Código: " + codigo +
+               ", Origen: " + (origen != null ? origen.getNombre() : "N/A") +
+               ", Destino: " + (destino != null ? destino.getNombre() : "N/A") +
+               ", Distancia: " + distancia +
+               ", Fecha: " + fecha;
+    }
+    
 	/**
 	 * @return the codigo
 	 */
