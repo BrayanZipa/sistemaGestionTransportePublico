@@ -9,7 +9,16 @@ public class RutaVO {
     private float distancia;
     private LocalDateTime fecha;
     
-    @Override
+    public RutaVO(int codigo, ParadaVO origen, ParadaVO destino, float distancia, LocalDateTime fecha) {
+		super();
+		this.codigo = codigo;
+		this.origen = origen;
+		this.destino = destino;
+		this.distancia = distancia;
+		this.fecha = fecha;
+	}
+
+	@Override
     public String toString() {
         return "Código: " + codigo +
                ", Origen: " + (origen != null ? origen.getNombre() : "N/A") +

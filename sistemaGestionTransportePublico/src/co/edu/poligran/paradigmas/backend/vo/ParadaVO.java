@@ -5,7 +5,14 @@ public class ParadaVO {
     private String nombre;
     private String ubicacion;
     
-    @Override
+    public ParadaVO(String codigo, String nombre, String ubicacion) {
+		super();
+		this.codigo = codigo;
+		this.nombre = nombre;
+		this.ubicacion = ubicacion;
+	}
+
+	@Override
     public String toString() {
         return "Código: " + codigo +
                ", Nombre: " + nombre +

@@ -6,7 +6,15 @@ public class VehiculoVO {
     private int capacidadPasajeros;
     private boolean estadoDisponibilidad;
     
-    @Override
+    public VehiculoVO(String placa, String modelo, int capacidadPasajeros, boolean estadoDisponibilidad) {
+		super();
+		this.placa = placa;
+		this.modelo = modelo;
+		this.capacidadPasajeros = capacidadPasajeros;
+		this.estadoDisponibilidad = estadoDisponibilidad;
+	}
+
+	@Override
     public String toString() {
         return "Placa: " + placa +
                ", Modelo: " + modelo +

@@ -6,6 +6,14 @@ public abstract class TrabajadorVO {
     protected String rol;
     protected String identificacion;
     
+	public TrabajadorVO(String nombre, String email, String rol, String identificacion) {
+		super();
+		this.nombre = nombre;
+		this.email = email;
+		this.rol = rol;
+		this.identificacion = identificacion;
+	}
+
 	/**
 	 * @return the nombre
 	 */

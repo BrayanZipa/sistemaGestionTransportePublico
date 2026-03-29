@@ -3,10 +3,18 @@ package co.edu.poligran.paradigmas.backend.vo;
 import java.time.LocalDateTime;
 
 public class BoletoVO {
-    private int codigo;
+	private int codigo;
     private LocalDateTime fechaCompra;
     private String numeroAsiento;
     private PasajeroVO pasajero;
+    
+    public BoletoVO(int codigo, LocalDateTime fechaCompra, String numeroAsiento, PasajeroVO pasajero) {
+		super();
+		this.codigo = codigo;
+		this.fechaCompra = fechaCompra;
+		this.numeroAsiento = numeroAsiento;
+		this.pasajero = pasajero;
+	}
     
     @Override
     public String toString() {

@@ -4,6 +4,12 @@ public class PasajeroVO {
     private String identificacion;
     private String nombre;
     
+	public PasajeroVO(String identificacion, String nombre) {
+		super();
+		this.identificacion = identificacion;
+		this.nombre = nombre;
+	}
+
 	/**
 	 * @return the identificacion
 	 */
