@@ -5,7 +5,7 @@ import java.util.List;
 
 import co.edu.poligran.paradigmas.backend.vo.ConductorVO;
 
-public class GestionConductorManager {
+public class GestionConductoresManager {
 
     List<ConductorVO> listaConductores = new ArrayList<>();
 

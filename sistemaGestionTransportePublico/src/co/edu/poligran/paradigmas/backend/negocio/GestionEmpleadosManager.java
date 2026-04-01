@@ -5,7 +5,7 @@ import java.util.List;
 
 import co.edu.poligran.paradigmas.backend.vo.EmpleadoVO;
 
-public class GestionEmpleadoManager {
+public class GestionEmpleadosManager {
 
     List<EmpleadoVO> listaEmpleados = new ArrayList<>();
 

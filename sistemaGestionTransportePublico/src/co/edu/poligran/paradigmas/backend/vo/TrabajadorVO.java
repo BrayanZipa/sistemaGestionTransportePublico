@@ -13,12 +13,12 @@ public abstract class TrabajadorVO {
 		this.rol = rol;
 		this.identificacion = identificacion;
 	}
+	
 	@Override
-    public String toString() {
-        return "Nombre: " + nombre +
-               " | Email: " + email +
-               " | Rol: " + rol +
-               " | ID: " + identificacion;
+	public String toString() {
+	    return "Nombre: " + nombre +
+	           ", Email: " + email +
+	           ", Identificación: " + identificacion;
 	}
 
 	/**

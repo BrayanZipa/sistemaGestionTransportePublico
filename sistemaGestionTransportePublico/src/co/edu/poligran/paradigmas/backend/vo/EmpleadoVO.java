@@ -7,11 +7,11 @@ public class EmpleadoVO extends TrabajadorVO {
 		super(nombre, email, rol, identificacion);
 		this.password = password;
 	}
+	
 	@Override
-    public String toString() {
-        return super.toString() +
-               " | Password: " + password;
-    }
+	public String toString() {
+	    return super.toString();
+	}
 
 	/**
 	 * @return the password

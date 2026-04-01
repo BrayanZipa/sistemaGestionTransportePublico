@@ -7,11 +7,12 @@ public class ConductorVO extends TrabajadorVO {
 		super(nombre, email, rol, identificacion);
 		this.licencia = licencia;
 	}
+
 	@Override
-    public String toString() {
-        return super.toString() +
-               " | Licencia: " + licencia;
-    }
+	public String toString() {
+	    return super.toString() +
+	           ", Licencia: " + licencia;
+	}
 
 	/**
 	 * @return the licencia

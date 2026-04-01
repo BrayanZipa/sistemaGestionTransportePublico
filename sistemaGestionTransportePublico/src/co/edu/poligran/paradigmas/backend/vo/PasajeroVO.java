@@ -9,6 +9,12 @@ public class PasajeroVO {
 		this.identificacion = identificacion;
 		this.nombre = nombre;
 	}
+	
+	@Override
+	public String toString() {
+	    return "Nombre: " + nombre +
+	           ", Identificación: " + identificacion;
+	}
 
 	/**
 	 * @return the identificacion
