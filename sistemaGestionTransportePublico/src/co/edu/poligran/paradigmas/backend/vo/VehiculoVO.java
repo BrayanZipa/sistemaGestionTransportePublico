@@ -1,10 +1,14 @@
 package co.edu.poligran.paradigmas.backend.vo;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class VehiculoVO {
     private String placa;
     private String modelo;
     private int capacidadPasajeros;
     private boolean estadoDisponibilidad;
+    private List<RutaVO> rutas;
     
     public VehiculoVO(String placa, String modelo, int capacidadPasajeros, boolean estadoDisponibilidad) {
 		super();
@@ -12,6 +16,7 @@ public class VehiculoVO {
 		this.modelo = modelo;
 		this.capacidadPasajeros = capacidadPasajeros;
 		this.estadoDisponibilidad = estadoDisponibilidad;
+		this.rutas = new ArrayList<>();
 	}
 
 	@Override
@@ -76,5 +81,27 @@ public class VehiculoVO {
 	 */
 	public void setEstadoDisponibilidad(boolean estadoDisponibilidad) {
 		this.estadoDisponibilidad = estadoDisponibilidad;
+	}
+
+	/**
+	 * @return the rutas
+	 */
+	public List<RutaVO> getRutas() {
+		return rutas;
+	}
+
+	/**
+	 * @param rutas the rutas to set
+	 */
+	public void setRutas(List<RutaVO> rutas) {
+		this.rutas = rutas;
+	}
+	
+	/**
+	 * Método que agrega una ruta a el vehículo
+	 * @param ruta ruta que se desea agregar a la lista de rutas
+	 */
+	public void agregarRuta(RutaVO ruta) {
+	    rutas.add(ruta);
 	}
 }

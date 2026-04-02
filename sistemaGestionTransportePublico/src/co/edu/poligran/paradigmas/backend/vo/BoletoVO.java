@@ -7,6 +7,7 @@ public class BoletoVO {
     private LocalDateTime fechaCompra;
     private String numeroAsiento;
     private PasajeroVO pasajero;
+    private RutaVO ruta;
     
     public BoletoVO(int codigo, LocalDateTime fechaCompra, String numeroAsiento, PasajeroVO pasajero) {
 		super();
@@ -21,7 +22,8 @@ public class BoletoVO {
         return "Código: " + codigo +
                ", Fecha Compra: " + fechaCompra +
                ", Asiento: " + numeroAsiento +
-               ", Pasajero: " + (pasajero != null ? pasajero.toString() : "N/A");
+               ", Pasajero: " + (pasajero != null ? pasajero.toString() : "N/A") +
+               ", Ruta: " + (ruta != null ? ruta.toString() : "N/A");
     }
     
 	/**
@@ -78,5 +80,19 @@ public class BoletoVO {
 	 */
 	public void setPasajero(PasajeroVO pasajero) {
 		this.pasajero = pasajero;
+	}
+
+	/**
+	 * @return the ruta
+	 */
+	public RutaVO getRuta() {
+		return ruta;
+	}
+
+	/**
+	 * @param ruta the ruta to set
+	 */
+	public void setRuta(RutaVO ruta) {
+		this.ruta = ruta;
 	}
 }
