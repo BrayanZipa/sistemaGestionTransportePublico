@@ -33,7 +33,6 @@ public class EmpleadoVO extends TrabajadorVO {
 
     /**
      * Método que indica el tipo de trabajador
-     * 
      * @return tipo de trabajador (Empleado)
      */
     @Override

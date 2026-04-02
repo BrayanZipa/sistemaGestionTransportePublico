@@ -34,7 +34,6 @@ public class ConductorVO extends TrabajadorVO {
 
     /**
      * Método que indica el tipo de trabajador
-     * 
      * @return tipo de trabajador (Conductor)
      */
     @Override
