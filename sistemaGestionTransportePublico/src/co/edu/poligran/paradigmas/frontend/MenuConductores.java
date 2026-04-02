@@ -5,6 +5,7 @@ import co.edu.poligran.paradigmas.backend.negocio.GestionConductoresManager;
 import co.edu.poligran.paradigmas.backend.vo.ConductorVO;
 
 public class MenuConductores {
+	
 	static Scanner sc = new Scanner(System.in);
     static GestionConductoresManager conductorManager = new GestionConductoresManager();
 	
@@ -16,7 +17,7 @@ public class MenuConductores {
         int opcion;
 
         do {
-            System.out.println("\n--- CONDUCTORES ---");
+            System.out.println("\n=== GESTIÓN DE CONDUCTORES ===");
             System.out.println("1. Crear conductor");
             System.out.println("2. Listar conductores");
             System.out.println("3. Volver");

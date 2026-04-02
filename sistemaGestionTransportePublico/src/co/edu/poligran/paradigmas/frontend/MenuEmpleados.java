@@ -5,6 +5,7 @@ import co.edu.poligran.paradigmas.backend.negocio.GestionEmpleadosManager;
 import co.edu.poligran.paradigmas.backend.vo.EmpleadoVO;
 
 public class MenuEmpleados {
+	
 	static Scanner sc = new Scanner(System.in);
     static GestionEmpleadosManager empleadoManager = new GestionEmpleadosManager();
 	
@@ -16,7 +17,7 @@ public class MenuEmpleados {
         int opcion;
 
         do {
-            System.out.println("\n--- EMPLEADOS ---");
+            System.out.println("\n=== GESTIÓN DE EMPLEADOS ===");
             System.out.println("1. Crear empleado");
             System.out.println("2. Listar empleados");
             System.out.println("3. Volver");

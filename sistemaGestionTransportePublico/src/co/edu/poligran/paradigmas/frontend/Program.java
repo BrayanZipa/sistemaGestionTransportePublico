@@ -13,7 +13,7 @@ public class Program {
             System.out.println("\n=== SISTEMA DE GESTION ===");
             System.out.println("1. Gestionar Empleados");
             System.out.println("2. Gestionar Conductores");
-            System.out.println("3. Gestionar Vehiculos");
+            System.out.println("3. Gestionar Vehículos");
             System.out.println("4. Gestionar Paradas");
             System.out.println("5. Gestionar Rutas");
             System.out.println("6. Gestionar Pasajeros");
@@ -38,7 +38,7 @@ public class Program {
                     break;
 
                 case 4:
-                	System.out.println("Modulo de paradas");
+                	new MenuParadas().mostrarMenu();
                     break;
                     
                 case 5:

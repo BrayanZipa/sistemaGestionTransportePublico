@@ -5,6 +5,7 @@ import co.edu.poligran.paradigmas.backend.negocio.GestionVehiculosManager;
 import co.edu.poligran.paradigmas.backend.vo.VehiculoVO;
 
 public class MenuVehiculos {
+	
     static Scanner sc = new Scanner(System.in);
     static GestionVehiculosManager vehiculoManager = new GestionVehiculosManager();
 
@@ -15,7 +16,7 @@ public class MenuVehiculos {
         int opcion = 0;
 
         do {
-            System.out.println("\n=== MODULO VEHICULOS ===");
+            System.out.println("\n=== GESTIÓN DE VEHICULOS ===");
             System.out.println("1. Crear vehículo");
             System.out.println("2. Listar vehículos");
             System.out.println("3. Obtener vehículo por placa");
@@ -153,29 +154,53 @@ public class MenuVehiculos {
             System.out.println("Vehiculo no encontrado.");
         }
     }
-
-    /**
-     * Actualiza los datos de un vehículo existente identificado por su placa.
-     */
+    
     private void actualizarVehiculo() {
-        System.out.print("Ingrese la placa del vehiculo a actualizar: ");
+        System.out.print("Ingrese la placa del vehículo a actualizar: ");
         String placa = sc.nextLine();
+
         VehiculoVO v = vehiculoManager.buscarVehiculoPorPlaca(placa);
 
         if (v != null) {
-            System.out.print("Nuevo modelo: ");
-            v.setModelo(sc.nextLine());
-            System.out.print("Nueva capacidad de pasajeros: ");
-            v.setCapacidadPasajeros(sc.nextInt());
-            sc.nextLine();
-            System.out.print("Nuevo estado (true/false): ");
-            v.setEstadoDisponibilidad(sc.nextBoolean());
-            sc.nextLine();
+            System.out.print("Nuevo modelo (" + v.getModelo() + "): ");
+            String nuevoModelo = sc.nextLine().trim();
+
+            if (!nuevoModelo.isEmpty()) {
+                v.setModelo(nuevoModelo);
+            }
+
+            System.out.print("Nueva capacidad de pasajeros (" + v.getCapacidadPasajeros() + "): ");
+            String nuevaCapacidad = sc.nextLine().trim();
+
+            if (!nuevaCapacidad.isEmpty()) {
+                try {
+                    int capacidad = Integer.parseInt(nuevaCapacidad);
+
+                    if (capacidad > 5) {
+                        v.setCapacidadPasajeros(capacidad);
+                    } else {
+                        System.out.println("La capacidad debe ser mayor a 5. Se conserva el valor anterior.");
+                    }
+                } catch (NumberFormatException e) {
+                    System.out.println("Valor inválido. Se conserva la capacidad anterior.");
+                }
+            }
+
+            System.out.print("Nuevo estado (" + v.isEstadoDisponibilidad() + ") [true/false]: ");
+            String nuevoEstado = sc.nextLine().trim().toLowerCase();
+
+            if (!nuevoEstado.isEmpty()) {
+                if (nuevoEstado.equals("true") || nuevoEstado.equals("false")) {
+                    v.setEstadoDisponibilidad(Boolean.parseBoolean(nuevoEstado));
+                } else {
+                    System.out.println("Estado inválido. Se conserva el valor anterior.");
+                }
+            }
 
             vehiculoManager.actualizarVehiculoPorPlaca(placa, v);
-            System.out.println("Vehiculo actualizado correctamente.");
+            System.out.println("Vehículo actualizado correctamente.");
         } else {
-            System.out.println("Vehiculo no encontrado.");
+            System.out.println("Vehículo no encontrado.");
         }
     }
 
