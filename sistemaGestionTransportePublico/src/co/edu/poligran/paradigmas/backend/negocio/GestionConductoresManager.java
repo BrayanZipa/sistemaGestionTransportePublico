@@ -5,21 +5,36 @@ import java.util.List;
 
 import co.edu.poligran.paradigmas.backend.vo.ConductorVO;
 
+/**
+ * Clase encargada de gestionar el CRUD de conductores
+ */
 public class GestionConductoresManager {
 
-    List<ConductorVO> listaConductores = new ArrayList<>();
+    private List<ConductorVO> listaConductores = new ArrayList<>();
 
-    // Método que permite crear un nuevo conductor
+    /**
+     * Método que permite agregar conductores al catálogo
+     * @param c objeto de tipo ConductorVO que se va a agregar
+     * @return la lista de conductores
+     */
     public List<ConductorVO> agregarConductor(ConductorVO c){
         listaConductores.add(c);
         return listaConductores;
     }
 
-    // Método que permite visualizar los conductores registrados
+    /**
+     * Método que permite obtener todos los conductores
+     * @return lista de conductores
+     */
     public List<ConductorVO> obtenerConductores(){
         return listaConductores;
     }
 
+    /**
+     * Método que permite buscar un conductor por identificación
+     * @param identificacion identificador del conductor
+     * @return el conductor encontrado o null si no existe
+     */
     public ConductorVO buscarConductorPorId(String identificacion){
 
         for(ConductorVO c : listaConductores){
@@ -30,6 +45,11 @@ public class GestionConductoresManager {
         return null;
     }
 
+    /**
+     * Método que permite obtener la posición de un conductor por identificación
+     * @param identificacion del conductor
+     * @return índice o -1 si no existe
+     */
     public int obtenerIndicePorId(String identificacion){
 
         for(int i = 0; i < listaConductores.size(); i++){
@@ -41,7 +61,12 @@ public class GestionConductoresManager {
         return -1;
     }
 
-    // Método para actualizar informción del conductor
+    /**
+     * Método que permite actualizar un conductor por identificación
+     * @param identificacion identificador del conductor
+     * @param nuevo nuevo objeto ConductorVO con la información actualizada
+     * @return true si se actualizó correctamente, false si no existe
+     */
     public boolean actualizarConductor(String identificacion, ConductorVO nuevo){
 
         int indice = obtenerIndicePorId(identificacion);
@@ -54,7 +79,11 @@ public class GestionConductoresManager {
         return false;
     }
 
-    // Método para eliminar un conductor
+    /**
+     * Método que permite eliminar un conductor por identificación
+     * @param identificacion identificador del conductor
+     * @return true si se eliminó correctamente, false si no existe
+     */
     public boolean eliminarConductor(String identificacion){
 
         int indice = obtenerIndicePorId(identificacion);
@@ -66,4 +95,7 @@ public class GestionConductoresManager {
 
         return false;
     }
+
+
+
 }
