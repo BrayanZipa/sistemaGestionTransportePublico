@@ -22,8 +22,8 @@ public class MenuConductores {
             System.out.println("1. Crear conductor");
             System.out.println("2. Listar conductores");
             System.out.println("3. Obtener conductor por identificación");
-            System.out.println("4. Actualizar conductor");
-            System.out.println("5. Eliminar conductor");
+            System.out.println("4. Actualizar conductor por identificación");
+            System.out.println("5. Eliminar conductor por identificación");
             System.out.println("6. Volver al menú principal");
             System.out.print("\nSeleccione una opción: ");
 
@@ -31,31 +31,24 @@ public class MenuConductores {
             sc.nextLine();
 
             switch (opcion) {
-
                 case 1:
                     crearConductor();
                     break;
-
                 case 2:
                     listarConductores();
                     break;
-
                 case 3:
                     obtenerConductor();
                     break;
-
                 case 4:
                     actualizarConductor();
                     break;
-
                 case 5:
                     eliminarConductor();
                     break;
-
                 case 6:
                     System.out.println("Volviendo al menú principal...");
                     break;
-
                 default:
                     System.out.println("Opción inválida.");
             }
@@ -64,34 +57,60 @@ public class MenuConductores {
     }
 
     /**
-     * Solicita los datos al usuario y crea un nuevo conductor.
+     * Crea un nuevo conductor solicitando los datos al usuario.
      */
     private void crearConductor() {
 
         System.out.println("\n=== CREAR CONDUCTOR ===");
 
-        System.out.print("Nombre: ");
-        String nombre = sc.nextLine().trim();
+        String nombre;
+        do {
+            System.out.print("Ingrese el nombre: ");
+            nombre = sc.nextLine().trim();
 
-        System.out.print("Email: ");
-        String email = sc.nextLine().trim();
+            if (nombre.isEmpty()) {
+                System.out.println("El nombre no puede estar vacío.");
+            }
+        } while (nombre.isEmpty());
 
-        System.out.print("Identificacion: ");
-        String id = sc.nextLine().trim();
+        String email;
+        do {
+            System.out.print("Ingrese el email: ");
+            email = sc.nextLine().trim();
 
-        System.out.print("Licencia: ");
-        String licencia = sc.nextLine().trim();
+            if (email.isEmpty()) {
+                System.out.println("El email no puede estar vacío.");
+            }
+        } while (email.isEmpty());
 
-        ConductorVO c =
-                new ConductorVO(nombre, email, "Conductor", id, licencia);
+        String id;
+        do {
+            System.out.print("Ingrese la identificación: ");
+            id = sc.nextLine().trim();
 
+            if (id.isEmpty()) {
+                System.out.println("La identificación no puede estar vacía.");
+            }
+        } while (id.isEmpty());
+
+        String licencia;
+        do {
+            System.out.print("Ingrese la licencia: ");
+            licencia = sc.nextLine().trim();
+
+            if (licencia.isEmpty()) {
+                System.out.println("La licencia no puede estar vacía.");
+            }
+        } while (licencia.isEmpty());
+
+        ConductorVO c = new ConductorVO(nombre, email, "Conductor", id, licencia);
         conductorManager.agregarConductor(c);
 
         System.out.println("Conductor agregado correctamente.");
     }
 
     /**
-     * Lista todos los conductores registrados.
+     * Lista todos los conductores registrados en el sistema.
      */
     private void listarConductores() {
 
@@ -103,15 +122,14 @@ public class MenuConductores {
     }
 
     /**
-     * Busca y muestra un conductor por su identificación.
+     * Busca y muestra un conductor específico por su identificación.
      */
     private void obtenerConductor() {
 
-        System.out.print("Ingrese la identificación del conductor: ");
+        System.out.print("Ingrese la identificación del conductor a buscar: ");
         String id = sc.nextLine();
 
-        ConductorVO conductor =
-                conductorManager.buscarConductorPorId(id);
+        ConductorVO conductor = conductorManager.buscarConductorPorId(id);
 
         if (conductor != null) {
             System.out.println("\n=== CONDUCTOR ENCONTRADO ===");
@@ -122,15 +140,14 @@ public class MenuConductores {
     }
 
     /**
-     * Actualiza los datos de un conductor existente.
+     * Actualiza los datos de un conductor existente identificado por su identificación.
      */
     private void actualizarConductor() {
 
         System.out.print("Ingrese la identificación del conductor a actualizar: ");
         String id = sc.nextLine();
 
-        ConductorVO c =
-                conductorManager.buscarConductorPorId(id);
+        ConductorVO c = conductorManager.buscarConductorPorId(id);
 
         if (c != null) {
 
@@ -146,24 +163,29 @@ public class MenuConductores {
                 c.setEmail(nuevoEmail);
             }
 
-            conductorManager.actualizarConductor(id, c);
+            System.out.print("Nueva licencia (" + c.getLicencia() + "): ");
+            String nuevaLicencia = sc.nextLine().trim();
+            if (!nuevaLicencia.isEmpty()) {
+                c.setLicencia(nuevaLicencia);
+            }
 
+            conductorManager.actualizarConductor(id, c);
             System.out.println("Conductor actualizado correctamente.");
+
         } else {
             System.out.println("Conductor no encontrado.");
         }
     }
 
     /**
-     * Elimina un conductor del sistema usando su identificación.
+     * Elimina un conductor del sistema identificado por su identificación.
      */
     private void eliminarConductor() {
 
         System.out.print("Ingrese la identificación del conductor a eliminar: ");
         String id = sc.nextLine();
 
-        boolean eliminado =
-                conductorManager.eliminarConductor(id);
+        boolean eliminado = conductorManager.eliminarConductor(id);
 
         if (eliminado) {
             System.out.println("Conductor eliminado correctamente.");

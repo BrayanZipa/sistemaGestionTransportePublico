@@ -2,9 +2,18 @@ package co.edu.poligran.paradigmas.frontend;
 
 import java.util.Scanner;
 
+import co.edu.poligran.paradigmas.backend.negocio.GestionBoletosManager;
+import co.edu.poligran.paradigmas.backend.negocio.GestionPasajerosManager;
+
 public class Program {
 	
 	static Scanner sc = new Scanner(System.in);
+	// 👇 MANAGERS COMPARTIDOS
+    public static GestionPasajerosManager pasajeroManager =
+            new GestionPasajerosManager();
+
+    public static GestionBoletosManager boletoManager =
+            new GestionBoletosManager();
 
 	public static void main(String[] args) {
         int opcion = 0;
@@ -46,11 +55,11 @@ public class Program {
                     break;
                     
                 case 6:
-                	System.out.println("Modulo de pasajeros");
+                	new MenuPasajeros().mostrarMenu();
                     break;
                     
                 case 7:
-                	System.out.println("Modulo de boletos");
+                	new MenuBoletos().mostrarMenu();
                     break;
                     
                 case 8:

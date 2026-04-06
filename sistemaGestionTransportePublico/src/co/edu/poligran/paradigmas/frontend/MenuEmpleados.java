@@ -11,7 +11,7 @@ public class MenuEmpleados {
 
     /**
      * Muestra el menú principal del módulo de empleados
-     * y gestiona las opciones seleccionadas por el usuario.
+     * y maneja las opciones del usuario.
      */
     public void mostrarMenu() {
 
@@ -22,8 +22,8 @@ public class MenuEmpleados {
             System.out.println("1. Crear empleado");
             System.out.println("2. Listar empleados");
             System.out.println("3. Obtener empleado por identificación");
-            System.out.println("4. Actualizar empleado");
-            System.out.println("5. Eliminar empleado");
+            System.out.println("4. Actualizar empleado por identificación");
+            System.out.println("5. Eliminar empleado por identificación");
             System.out.println("6. Volver al menú principal");
             System.out.print("\nSeleccione una opción: ");
 
@@ -31,31 +31,24 @@ public class MenuEmpleados {
             sc.nextLine();
 
             switch (opcion) {
-
                 case 1:
                     crearEmpleado();
                     break;
-
                 case 2:
                     listarEmpleados();
                     break;
-
                 case 3:
                     obtenerEmpleado();
                     break;
-
                 case 4:
                     actualizarEmpleado();
                     break;
-
                 case 5:
                     eliminarEmpleado();
                     break;
-
                 case 6:
                     System.out.println("Volviendo al menú principal...");
                     break;
-
                 default:
                     System.out.println("Opción inválida.");
             }
@@ -64,26 +57,54 @@ public class MenuEmpleados {
     }
 
     /**
-     * Solicita los datos al usuario y crea un nuevo empleado.
+     * Crea un nuevo empleado solicitando los datos al usuario.
      */
     private void crearEmpleado() {
 
         System.out.println("\n=== CREAR EMPLEADO ===");
 
-        System.out.print("Nombre: ");
-        String nombre = sc.nextLine().trim();
+        String nombre;
+        do {
+            System.out.print("Ingrese el nombre: ");
+            nombre = sc.nextLine().trim();
 
-        System.out.print("Email: ");
-        String email = sc.nextLine().trim();
+            if (nombre.isEmpty()) {
+                System.out.println("El nombre no puede estar vacío.");
+            }
+        } while (nombre.isEmpty());
 
-        System.out.print("Identificacion: ");
-        String id = sc.nextLine().trim();
+        String email;
+        do {
+            System.out.print("Ingrese el email: ");
+            email = sc.nextLine().trim();
 
-        System.out.print("Password: ");
-        String password = sc.nextLine().trim();
+            if (email.isEmpty()) {
+                System.out.println("El email no puede estar vacío.");
+            }
+        } while (email.isEmpty());
+
+        String identificacion;
+        do {
+            System.out.print("Ingrese la identificación: ");
+            identificacion = sc.nextLine().trim();
+
+            if (identificacion.isEmpty()) {
+                System.out.println("La identificación no puede estar vacía.");
+            }
+        } while (identificacion.isEmpty());
+
+        String password;
+        do {
+            System.out.print("Ingrese la contraseña: ");
+            password = sc.nextLine().trim();
+
+            if (password.isEmpty()) {
+                System.out.println("La contraseña no puede estar vacía.");
+            }
+        } while (password.isEmpty());
 
         EmpleadoVO e =
-                new EmpleadoVO(nombre, email, "Empleado", id, password);
+                new EmpleadoVO(nombre, email, "Empleado", identificacion, password);
 
         empleadoManager.agregarEmpleado(e);
 
@@ -91,7 +112,7 @@ public class MenuEmpleados {
     }
 
     /**
-     * Lista todos los empleados registrados.
+     * Lista de todos los empleados registrados en el sistema.
      */
     private void listarEmpleados() {
 
@@ -103,15 +124,14 @@ public class MenuEmpleados {
     }
 
     /**
-     * Busca y muestra un empleado por su identificación.
+     * Busca y muestra un empleado específico por su identificación.
      */
     private void obtenerEmpleado() {
 
-        System.out.print("Ingrese la identificación del empleado: ");
+        System.out.print("Ingrese la identificación del empleado a buscar: ");
         String id = sc.nextLine();
 
-        EmpleadoVO empleado =
-                empleadoManager.buscarEmpleadoPorId(id);
+        EmpleadoVO empleado = empleadoManager.buscarEmpleadoPorId(id);
 
         if (empleado != null) {
             System.out.println("\n=== EMPLEADO ENCONTRADO ===");
@@ -122,15 +142,14 @@ public class MenuEmpleados {
     }
 
     /**
-     * Actualiza los datos de un empleado existente.
+     * Actualiza los datos de un empleado existente identificado por su identificación.
      */
     private void actualizarEmpleado() {
 
         System.out.print("Ingrese la identificación del empleado a actualizar: ");
         String id = sc.nextLine();
 
-        EmpleadoVO e =
-                empleadoManager.buscarEmpleadoPorId(id);
+        EmpleadoVO e = empleadoManager.buscarEmpleadoPorId(id);
 
         if (e != null) {
 
@@ -146,10 +165,10 @@ public class MenuEmpleados {
                 e.setEmail(nuevoEmail);
             }
 
-            System.out.print("Nuevo password: ");
-            String nuevoPassword = sc.nextLine().trim();
-            if (!nuevoPassword.isEmpty()) {
-                e.setPassword(nuevoPassword);
+            System.out.print("Nueva contraseña: ");
+            String nuevaPassword = sc.nextLine().trim();
+            if (!nuevaPassword.isEmpty()) {
+                e.setPassword(nuevaPassword);
             }
 
             empleadoManager.actualizarEmpleado(id, e);
@@ -161,15 +180,14 @@ public class MenuEmpleados {
     }
 
     /**
-     * Elimina un empleado del sistema usando su identificación.
+     * Elimina un empleado del sistema identificado por su identificación.
      */
     private void eliminarEmpleado() {
 
         System.out.print("Ingrese la identificación del empleado a eliminar: ");
         String id = sc.nextLine();
 
-        boolean eliminado =
-                empleadoManager.eliminarEmpleado(id);
+        boolean eliminado = empleadoManager.eliminarEmpleado(id);
 
         if (eliminado) {
             System.out.println("Empleado eliminado correctamente.");
