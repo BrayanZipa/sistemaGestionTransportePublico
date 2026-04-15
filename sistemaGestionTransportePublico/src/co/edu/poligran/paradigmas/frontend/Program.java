@@ -3,13 +3,23 @@ package co.edu.poligran.paradigmas.frontend;
 import java.util.Scanner;
 
 import co.edu.poligran.paradigmas.backend.negocio.GestionBoletosManager;
+import co.edu.poligran.paradigmas.backend.negocio.GestionConductoresManager;
+import co.edu.poligran.paradigmas.backend.negocio.GestionEmpleadosManager;
+import co.edu.poligran.paradigmas.backend.negocio.GestionParadasManager;
 import co.edu.poligran.paradigmas.backend.negocio.GestionPasajerosManager;
+import co.edu.poligran.paradigmas.backend.negocio.GestionRutasManager;
+import co.edu.poligran.paradigmas.backend.negocio.GestionVehiculosManager;
 
 public class Program {
-	static Scanner sc = new Scanner(System.in);
-	static GestionBoletosManager boletoManager = new GestionBoletosManager();
-	static GestionPasajerosManager pasajeroManager = new GestionPasajerosManager();
 	
+	static Scanner sc = new Scanner(System.in);
+	private static final GestionConductoresManager conductorManager = new GestionConductoresManager();
+	private static final GestionEmpleadosManager empleadoManager = new GestionEmpleadosManager();
+	private static final GestionPasajerosManager pasajeroManager = new GestionPasajerosManager();
+	private static final GestionVehiculosManager vehiculoManager = new GestionVehiculosManager();
+	private static final GestionParadasManager paradaManager = new GestionParadasManager();
+	private static final GestionBoletosManager boletoManager = new GestionBoletosManager();
+	private static final GestionRutasManager rutaManager = new GestionRutasManager();
 
 	public static void main(String[] args) {
         int opcion = 0;
@@ -31,23 +41,23 @@ public class Program {
 
             switch (opcion) {
                 case 1:
-                	new MenuEmpleados().mostrarMenu();
+                	new MenuEmpleados(empleadoManager).mostrarMenu();
                     break;
 
                 case 2:
-                	new MenuConductores().mostrarMenu();
+                	new MenuConductores(conductorManager).mostrarMenu();
                     break;
 
                 case 3:
-                	new MenuVehiculos().mostrarMenu();
+                	new MenuVehiculos(vehiculoManager, rutaManager).mostrarMenu();
                     break;
 
                 case 4:
-                	new MenuParadas().mostrarMenu();
+                	new MenuParadas(paradaManager, rutaManager).mostrarMenu();
                     break;
                     
                 case 5:
-                	System.out.println("Modulo de rutas");
+                	new MenuRutas(rutaManager).mostrarMenu();
                     break;
                     
                 case 6:
@@ -55,7 +65,7 @@ public class Program {
                     break;
                     
                 case 7:
-                	new MenuBoletos(boletoManager, pasajeroManager).mostrarMenu();
+                	new MenuBoletos(boletoManager, pasajeroManager, rutaManager).mostrarMenu();
                     break;
                     
                 case 8:

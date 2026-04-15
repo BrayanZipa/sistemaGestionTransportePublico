@@ -9,12 +9,13 @@ public class BoletoVO {
     private PasajeroVO pasajero;
     private RutaVO ruta;
     
-    public BoletoVO(int codigo, LocalDateTime fechaCompra, String numeroAsiento, PasajeroVO pasajero) {
+    public BoletoVO(int codigo, LocalDateTime fechaCompra, String numeroAsiento, PasajeroVO pasajero, RutaVO ruta) {
 		super();
 		this.codigo = codigo;
 		this.fechaCompra = fechaCompra;
 		this.numeroAsiento = numeroAsiento;
 		this.pasajero = pasajero;
+		this.ruta = ruta;
 	}
     
     @Override

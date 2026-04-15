@@ -2,31 +2,33 @@ package co.edu.poligran.paradigmas.frontend;
 
 import java.time.LocalDateTime;
 import java.util.Scanner;
-
 import co.edu.poligran.paradigmas.backend.negocio.GestionBoletosManager;
 import co.edu.poligran.paradigmas.backend.negocio.GestionPasajerosManager;
+import co.edu.poligran.paradigmas.backend.negocio.GestionRutasManager;
 import co.edu.poligran.paradigmas.backend.vo.BoletoVO;
 import co.edu.poligran.paradigmas.backend.vo.PasajeroVO;
+import co.edu.poligran.paradigmas.backend.vo.RutaVO;
 
 public class MenuBoletos {
-	
-    static Scanner sc = new Scanner(System.in);
 
-    private GestionPasajerosManager pasajerosManager; 
-    private GestionBoletosManager boletosManager;
+    static Scanner sc = new Scanner(System.in);
+    private GestionBoletosManager boletoManager;
+    private GestionPasajerosManager pasajeroManager;
+    private GestionRutasManager rutaManager;
     
     /**
      * Constructor de la clase MenuBoletos.
-     * Inicializa los managers necesarios para la gestión de boletos y la asociación con pasajeros.
-     *
-     * @param boletosManager manager de boletos
-     * @param pasajerosManager manager de pasajeros
+     * 
+     * @param boletoManager gestor encargado de las operaciones relacionadas con boletos
+     * @param pasajeroManager gestor encargado de las operaciones relacionadas con pasajeros
+     * @param rutaManager gestor encargado de las operaciones relacionadas con rutas
      */
-    public MenuBoletos(GestionBoletosManager boletosManager, GestionPasajerosManager pasajerosManager) {
-        this.boletosManager = boletosManager;
-        this.pasajerosManager = pasajerosManager;
-    }
-    
+    public MenuBoletos(GestionBoletosManager boletoManager, GestionPasajerosManager pasajeroManager, GestionRutasManager rutaManager) {
+		this.boletoManager = boletoManager;
+		this.pasajeroManager = pasajeroManager;
+		this.rutaManager = rutaManager;
+	}
+
     /**
      * Muestra el menú principal del módulo de boletos
      * y gestiona las opciones seleccionadas por el usuario.
@@ -92,25 +94,40 @@ public class MenuBoletos {
             }
         } while (asiento.isEmpty());
 
-        System.out.print("Identificación del pasajero: ");
-        String idPasajero = sc.nextLine().trim();
+        PasajeroVO pasajero;
+        do {
+            System.out.print("Identificación del pasajero: ");
+            String idPasajero = sc.nextLine();
 
-        PasajeroVO pasajero =
-                pasajerosManager.buscarPasajeroPorIdentificacion(idPasajero);
+            pasajero = pasajeroManager.buscarPasajeroPorIdentificacion(idPasajero);
 
-        if (pasajero == null) {
-            System.out.println("El pasajero no existe. Debe crearlo primero.");
-            return;
-        }
+            if (pasajero == null) {
+                System.out.println("El pasajero no existe. Intente nuevamente.");
+            }
+        } while (pasajero == null);
+
+        RutaVO ruta;
+        do {
+            System.out.print("Código de la ruta: ");
+            int codigoRuta = sc.nextInt();
+            sc.nextLine();
+
+            ruta = rutaManager.buscarRutaPorCodigo(codigoRuta);
+
+            if (ruta == null) {
+                System.out.println("La ruta no existe. Intente nuevamente.");
+            }
+        } while (ruta == null);
 
         BoletoVO boleto = new BoletoVO(
                 codigo,
                 LocalDateTime.now(),
                 asiento,
-                pasajero
+                pasajero,
+                ruta
         );
 
-        boletosManager.agregarBoleto(boleto);
+        boletoManager.agregarBoleto(boleto);
 
         System.out.println("Boleto creado correctamente.");
     }
@@ -119,7 +136,7 @@ public class MenuBoletos {
 
         System.out.println("\n=== LISTADO DE BOLETOS ===");
 
-        for (BoletoVO b : boletosManager.obtenerBoletos()) {
+        for (BoletoVO b : boletoManager.obtenerBoletos()) {
             System.out.println(b);
         }
     }
@@ -131,7 +148,7 @@ public class MenuBoletos {
         sc.nextLine();
 
         BoletoVO boleto =
-                boletosManager.buscarBoletoPorCodigo(codigo);
+                boletoManager.buscarBoletoPorCodigo(codigo);
 
         if (boleto != null) {
             System.out.println("\n=== BOLETO ENCONTRADO ===");
@@ -142,26 +159,50 @@ public class MenuBoletos {
     }
 
     private void actualizarBoleto() {
-
         System.out.print("Ingrese el código del boleto a actualizar: ");
         int codigo = sc.nextInt();
         sc.nextLine();
 
-        BoletoVO boleto =
-                boletosManager.buscarBoletoPorCodigo(codigo);
+        BoletoVO boleto = boletoManager.buscarBoletoPorCodigo(codigo);
 
         if (boleto != null) {
 
-            System.out.print("Nuevo número de asiento (" 
-                    + boleto.getNumeroAsiento() + "): ");
-
+            System.out.print("Nuevo número de asiento (" + boleto.getNumeroAsiento() + "): ");
             String nuevoAsiento = sc.nextLine().trim();
 
             if (!nuevoAsiento.isEmpty()) {
                 boleto.setNumeroAsiento(nuevoAsiento);
             }
+            
+            System.out.print("Identificación del pasajero: ");
+            String idPasajero = sc.nextLine().trim();
 
-            boletosManager.actualizarBoletoPorCodigo(codigo, boleto);
+            if (!idPasajero.isEmpty()) {
+                PasajeroVO nuevoPasajero = pasajeroManager.buscarPasajeroPorIdentificacion(idPasajero);
+
+                if (nuevoPasajero != null) {
+                    boleto.setPasajero(nuevoPasajero);
+                } else {
+                    System.out.println("Pasajero no encontrado. Se conserva el actual.");
+                }
+            }
+            
+            System.out.print("Código de la ruta: ");
+            String codigoRuta = sc.nextLine().trim();
+
+            if (!codigoRuta.isEmpty()) {
+                int nuevoCodigoRuta = Integer.parseInt(codigoRuta);
+
+                RutaVO nuevaRuta = rutaManager.buscarRutaPorCodigo(nuevoCodigoRuta);
+
+                if (nuevaRuta != null) {
+                    boleto.setRuta(nuevaRuta);
+                } else {
+                    System.out.println("Ruta no encontrada. Se conserva la actual.");
+                }
+            }
+            
+            boletoManager.actualizarBoletoPorCodigo(codigo, boleto);
 
             System.out.println("Boleto actualizado correctamente.");
 
@@ -177,7 +218,7 @@ public class MenuBoletos {
         sc.nextLine();
 
         boolean eliminado =
-                boletosManager.eliminarBoletoPorCodigo(codigo);
+                boletoManager.eliminarBoletoPorCodigo(codigo);
 
         if (eliminado) {
             System.out.println("Boleto eliminado correctamente.");

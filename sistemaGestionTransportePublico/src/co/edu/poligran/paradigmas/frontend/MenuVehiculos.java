@@ -1,13 +1,27 @@
 package co.edu.poligran.paradigmas.frontend;
 
 import java.util.Scanner;
+import co.edu.poligran.paradigmas.backend.negocio.GestionRutasManager;
 import co.edu.poligran.paradigmas.backend.negocio.GestionVehiculosManager;
+import co.edu.poligran.paradigmas.backend.vo.RutaVO;
 import co.edu.poligran.paradigmas.backend.vo.VehiculoVO;
 
 public class MenuVehiculos {
 	
     static Scanner sc = new Scanner(System.in);
-    static GestionVehiculosManager vehiculoManager = new GestionVehiculosManager();
+    private GestionVehiculosManager vehiculoManager;
+    private GestionRutasManager rutaManager;
+
+    /**
+     * Constructor de la clase MenuVehiculos.
+     * 
+     * @param vehiculoManager gestor encargado de las operaciones relacionadas con vehículos
+     * @param rutaManager gestor encargado de las operaciones relacionadas con rutas
+     */
+    public MenuVehiculos(GestionVehiculosManager vehiculoManager, GestionRutasManager rutaManager) {
+		this.vehiculoManager = vehiculoManager;
+		this.rutaManager = rutaManager;
+	}
 
     /**
      * Muestra el menú principal del módulo de vehículos y maneja las opciones del usuario.
@@ -23,7 +37,8 @@ public class MenuVehiculos {
             System.out.println("4. Actualizar vehículo por placa");
             System.out.println("5. Eliminar vehículo por placa");
             System.out.println("6. Cambiar disponibilidad de un vehículo");
-            System.out.println("7. Volver al menú principal");
+            System.out.println("7. Agregar ruta a un vehículo");
+            System.out.println("8. Volver al menú principal");
             System.out.print("\nSeleccione una opción: ");
 
             opcion = sc.nextInt();
@@ -49,13 +64,16 @@ public class MenuVehiculos {
                 	cambiarDisponibilidad();
                     break;
                 case 7:
+                	asignarRutaVehiculo();
+                    break;
+                case 8:
                     System.out.println("Volviendo al menu principal...");
                     break;
                 default:
                     System.out.println("Opción inválida.");
             }
 
-        } while (opcion != 7);
+        } while (opcion != 8);
     }
 
     /**
@@ -235,5 +253,38 @@ public class MenuVehiculos {
         } else {
             System.out.println("Vehiculo no encontrado.");
         }
+    }
+    
+    /**
+     * Asigna una ruta a un vehículo existente.
+     */
+    private void asignarRutaVehiculo() {
+        System.out.println("\n=== ASIGNAR RUTA A VEHÍCULO ===");
+
+        System.out.print("Ingrese la placa del vehículo: ");
+        String placa = sc.nextLine();
+
+        VehiculoVO vehiculo = vehiculoManager.buscarVehiculoPorPlaca(placa);
+
+        if (vehiculo == null) {
+            System.out.println("Vehículo no encontrado.");
+            return;
+        }
+
+        System.out.print("Ingrese el código de la ruta: ");
+        int codigoRuta = sc.nextInt();
+        sc.nextLine();
+
+        RutaVO ruta = rutaManager.buscarRutaPorCodigo(codigoRuta);
+
+        if (ruta == null) {
+            System.out.println("Ruta no encontrada.");
+            return;
+        }
+
+        vehiculo.agregarRuta(ruta);
+        ruta.setVehiculo(vehiculo);
+
+        System.out.println("Ruta asignada correctamente.");
     }
 }

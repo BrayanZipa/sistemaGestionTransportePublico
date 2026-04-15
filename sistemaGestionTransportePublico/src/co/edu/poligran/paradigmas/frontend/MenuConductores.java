@@ -7,7 +7,16 @@ import co.edu.poligran.paradigmas.backend.vo.ConductorVO;
 public class MenuConductores {
 
     static Scanner sc = new Scanner(System.in);
-    static GestionConductoresManager conductorManager = new GestionConductoresManager();
+    private GestionConductoresManager conductorManager;
+    
+    /**
+     * Constructor de la clase MenuConductores.
+     * 
+     * @param conductorManager gestor encargado de las operaciones relacionadas con conductores
+     */
+    public MenuConductores(GestionConductoresManager conductorManager) {
+        this.conductorManager = conductorManager;
+    }
 
     /**
      * Muestra el menú principal del módulo de conductores

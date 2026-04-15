@@ -7,7 +7,16 @@ import co.edu.poligran.paradigmas.backend.vo.EmpleadoVO;
 public class MenuEmpleados {
 
     static Scanner sc = new Scanner(System.in);
-    static GestionEmpleadosManager empleadoManager = new GestionEmpleadosManager();
+    private GestionEmpleadosManager empleadoManager;
+    
+    /**
+     * Constructor de la clase MenuEmpleados.
+     * 
+     * @param empleadoManager gestor encargado de las operaciones relacionadas con empleados
+     */
+    public MenuEmpleados(GestionEmpleadosManager empleadoManager) {
+        this.empleadoManager = empleadoManager;
+    }
 
     /**
      * Muestra el menú principal del módulo de empleados

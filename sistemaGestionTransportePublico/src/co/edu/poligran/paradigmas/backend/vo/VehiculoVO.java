@@ -24,7 +24,8 @@ public class VehiculoVO {
         return "Placa: " + placa +
                ", Modelo: " + modelo +
                ", Capacidad: " + capacidadPasajeros +
-               ", Disponible: " + estadoDisponibilidad;
+               ", Disponible: " + estadoDisponibilidad +
+        	   ", Rutas: " + rutas.size();
     }
     
 	/**

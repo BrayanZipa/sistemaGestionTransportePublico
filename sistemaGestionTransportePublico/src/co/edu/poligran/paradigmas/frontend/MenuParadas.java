@@ -2,12 +2,26 @@ package co.edu.poligran.paradigmas.frontend;
 
 import java.util.Scanner;
 import co.edu.poligran.paradigmas.backend.negocio.GestionParadasManager;
+import co.edu.poligran.paradigmas.backend.negocio.GestionRutasManager;
 import co.edu.poligran.paradigmas.backend.vo.ParadaVO;
+import co.edu.poligran.paradigmas.backend.vo.RutaVO;
 
 public class MenuParadas {
 
     static Scanner sc = new Scanner(System.in);
-    static GestionParadasManager paradaManager = new GestionParadasManager();
+    private GestionParadasManager paradaManager;
+    private GestionRutasManager rutaManager;
+
+    /**
+     * Constructor de la clase MenuParadas.
+     * 
+     * @param paradaManager gestor encargado de las operaciones relacionadas con paradas
+     * @param rutaManager gestor encargado de las operaciones relacionadas con rutas
+     */
+    public MenuParadas(GestionParadasManager paradaManager, GestionRutasManager rutaManager) {
+		this.paradaManager = paradaManager;
+		this.rutaManager = rutaManager;
+	}
 
     /**
      * Muestra el menú principal del módulo de paradas y maneja las opciones del usuario.
@@ -22,7 +36,8 @@ public class MenuParadas {
             System.out.println("3. Obtener parada por código");
             System.out.println("4. Actualizar parada por código");
             System.out.println("5. Eliminar parada por código");
-            System.out.println("6. Volver al menú principal");
+            System.out.println("6. Agregar parada a una ruta");
+            System.out.println("7. Volver al menú principal");
             System.out.print("\nSeleccione una opción: ");
 
             opcion = sc.nextInt();
@@ -44,14 +59,14 @@ public class MenuParadas {
                 case 5:
                     eliminarParada();
                     break;
-                case 6:
-                    System.out.println("Volviendo al menú principal...");
+                case 7:
+                	asignarRutaParada();
                     break;
                 default:
                     System.out.println("Opción inválida.");
             }
 
-        } while (opcion != 6);
+        } while (opcion != 7);
     }
 
     /**
@@ -171,5 +186,38 @@ public class MenuParadas {
         } else {
             System.out.println("Parada no encontrada.");
         }
+    }
+    
+    /**
+     * Asigna una parada a una ruta existente.
+     */
+    private void asignarRutaParada() {
+        System.out.println("\n=== ASIGNAR PARADA A RUTA ===");
+
+        System.out.print("Ingrese el código de la ruta: ");
+        int codigoRuta = sc.nextInt();
+        sc.nextLine();
+
+        RutaVO ruta = rutaManager.buscarRutaPorCodigo(codigoRuta);
+
+        if (ruta == null) {
+            System.out.println("Ruta no encontrada.");
+            return;
+        }
+
+        System.out.print("Ingrese el código de la parada: ");
+        String codigoParada = sc.nextLine();
+
+        ParadaVO parada = paradaManager.buscarParadaPorCodigo(codigoParada);
+
+        if (parada == null) {
+            System.out.println("Parada no encontrada.");
+            return;
+        }
+
+        parada.agregarRuta(ruta);
+        ruta.agregarParada(parada);
+
+        System.out.println("Parada asignada correctamente.");
     }
 }

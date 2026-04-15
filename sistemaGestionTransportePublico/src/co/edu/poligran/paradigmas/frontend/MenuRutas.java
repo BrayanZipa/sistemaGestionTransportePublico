@@ -3,6 +3,7 @@ package co.edu.poligran.paradigmas.frontend;
 import java.time.LocalDateTime;
 import java.util.Scanner;
 
+import co.edu.poligran.paradigmas.backend.negocio.GestionConductoresManager;
 import co.edu.poligran.paradigmas.backend.negocio.GestionRutasManager;
 import co.edu.poligran.paradigmas.backend.vo.ConductorVO;
 import co.edu.poligran.paradigmas.backend.vo.ParadaVO;
@@ -12,7 +13,16 @@ import co.edu.poligran.paradigmas.backend.vo.VehiculoVO;
 public class MenuRutas {
 
     static Scanner sc = new Scanner(System.in);
-    static GestionRutasManager rutaManager = Program.rutasManager;
+    private GestionRutasManager rutaManager;
+    
+    /**
+     * Constructor de la clase MenuRutas.
+     * 
+     * @param rutaManager gestor encargado de las operaciones relacionadas con rutas
+     */
+    public MenuRutas(GestionRutasManager rutaManager) {
+        this.rutaManager = rutaManager;
+    }
 
     /**
      * Muestra el menú principal del módulo de rutas y maneja las opciones del usuario.
