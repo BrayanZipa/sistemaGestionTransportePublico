@@ -6,14 +6,10 @@ import co.edu.poligran.paradigmas.backend.negocio.GestionBoletosManager;
 import co.edu.poligran.paradigmas.backend.negocio.GestionPasajerosManager;
 
 public class Program {
-	
 	static Scanner sc = new Scanner(System.in);
-	// 👇 MANAGERS COMPARTIDOS
-    public static GestionPasajerosManager pasajeroManager =
-            new GestionPasajerosManager();
-
-    public static GestionBoletosManager boletoManager =
-            new GestionBoletosManager();
+	static GestionBoletosManager boletoManager = new GestionBoletosManager();
+	static GestionPasajerosManager pasajeroManager = new GestionPasajerosManager();
+	
 
 	public static void main(String[] args) {
         int opcion = 0;
@@ -55,11 +51,11 @@ public class Program {
                     break;
                     
                 case 6:
-                	new MenuPasajeros().mostrarMenu();
+                	new MenuPasajeros(pasajeroManager).mostrarMenu();
                     break;
                     
                 case 7:
-                	new MenuBoletos().mostrarMenu();
+                	new MenuBoletos(boletoManager, pasajeroManager).mostrarMenu();
                     break;
                     
                 case 8:

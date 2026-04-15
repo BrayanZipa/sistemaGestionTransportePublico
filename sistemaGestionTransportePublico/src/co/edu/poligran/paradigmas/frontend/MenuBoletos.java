@@ -9,16 +9,24 @@ import co.edu.poligran.paradigmas.backend.vo.BoletoVO;
 import co.edu.poligran.paradigmas.backend.vo.PasajeroVO;
 
 public class MenuBoletos {
-
+	
     static Scanner sc = new Scanner(System.in);
 
-    // Manager compartido del sistema para que pasajero aparezca en el menu boleto
-    static GestionPasajerosManager pasajeroManager =
-            Program.pasajeroManager;
-
-    static GestionBoletosManager boletoManager =
-            Program.boletoManager;
-
+    private GestionPasajerosManager pasajerosManager; 
+    private GestionBoletosManager boletosManager;
+    
+    /**
+     * Constructor de la clase MenuBoletos.
+     * Inicializa los managers necesarios para la gestión de boletos y la asociación con pasajeros.
+     *
+     * @param boletosManager manager de boletos
+     * @param pasajerosManager manager de pasajeros
+     */
+    public MenuBoletos(GestionBoletosManager boletosManager, GestionPasajerosManager pasajerosManager) {
+        this.boletosManager = boletosManager;
+        this.pasajerosManager = pasajerosManager;
+    }
+    
     /**
      * Muestra el menú principal del módulo de boletos
      * y gestiona las opciones seleccionadas por el usuario.
@@ -85,10 +93,10 @@ public class MenuBoletos {
         } while (asiento.isEmpty());
 
         System.out.print("Identificación del pasajero: ");
-        String idPasajero = sc.nextLine();
+        String idPasajero = sc.nextLine().trim();
 
         PasajeroVO pasajero =
-                pasajeroManager.buscarPasajeroPorIdentificacion(idPasajero);
+                pasajerosManager.buscarPasajeroPorIdentificacion(idPasajero);
 
         if (pasajero == null) {
             System.out.println("El pasajero no existe. Debe crearlo primero.");
@@ -102,7 +110,7 @@ public class MenuBoletos {
                 pasajero
         );
 
-        boletoManager.agregarBoleto(boleto);
+        boletosManager.agregarBoleto(boleto);
 
         System.out.println("Boleto creado correctamente.");
     }
@@ -111,7 +119,7 @@ public class MenuBoletos {
 
         System.out.println("\n=== LISTADO DE BOLETOS ===");
 
-        for (BoletoVO b : boletoManager.obtenerBoletos()) {
+        for (BoletoVO b : boletosManager.obtenerBoletos()) {
             System.out.println(b);
         }
     }
@@ -123,7 +131,7 @@ public class MenuBoletos {
         sc.nextLine();
 
         BoletoVO boleto =
-                boletoManager.buscarBoletoPorCodigo(codigo);
+                boletosManager.buscarBoletoPorCodigo(codigo);
 
         if (boleto != null) {
             System.out.println("\n=== BOLETO ENCONTRADO ===");
@@ -140,7 +148,7 @@ public class MenuBoletos {
         sc.nextLine();
 
         BoletoVO boleto =
-                boletoManager.buscarBoletoPorCodigo(codigo);
+                boletosManager.buscarBoletoPorCodigo(codigo);
 
         if (boleto != null) {
 
@@ -153,7 +161,7 @@ public class MenuBoletos {
                 boleto.setNumeroAsiento(nuevoAsiento);
             }
 
-            boletoManager.actualizarBoletoPorCodigo(codigo, boleto);
+            boletosManager.actualizarBoletoPorCodigo(codigo, boleto);
 
             System.out.println("Boleto actualizado correctamente.");
 
@@ -169,7 +177,7 @@ public class MenuBoletos {
         sc.nextLine();
 
         boolean eliminado =
-                boletoManager.eliminarBoletoPorCodigo(codigo);
+                boletosManager.eliminarBoletoPorCodigo(codigo);
 
         if (eliminado) {
             System.out.println("Boleto eliminado correctamente.");

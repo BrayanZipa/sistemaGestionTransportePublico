@@ -2,16 +2,27 @@ package co.edu.poligran.paradigmas.frontend;
 
 import java.util.Scanner;
 
+import co.edu.poligran.paradigmas.backend.negocio.GestionBoletosManager;
 import co.edu.poligran.paradigmas.backend.negocio.GestionPasajerosManager;
+import co.edu.poligran.paradigmas.backend.negocio.GestionVehiculosManager;
 import co.edu.poligran.paradigmas.backend.vo.PasajeroVO;
 
 public class MenuPasajeros {
 
     static Scanner sc = new Scanner(System.in);
 
-    // Manager compartido del sistema para que pasajero aparezca en el menu boleto
-    static GestionPasajerosManager pasajeroManager =
-            Program.pasajeroManager;
+    private GestionPasajerosManager pasajerosManager; 
+    
+    /**
+     * Constructor de la clase MenuPasajeros.
+     * Inicializa los managers necesarios para la gestión de pasajeros.
+     *
+     * @param pasajerosManager manager de pasajeros
+     */
+    public MenuPasajeros(GestionPasajerosManager pasajerosManager) {
+        this.pasajerosManager = pasajerosManager;
+    }
+    
 
     /**
      * Muestra el menú principal del módulo de pasajeros
@@ -85,7 +96,7 @@ public class MenuPasajeros {
         } while (nombre.isEmpty());
 
         PasajeroVO pasajero = new PasajeroVO(identificacion, nombre);
-        pasajeroManager.agregarPasajero(pasajero);
+        pasajerosManager.agregarPasajero(pasajero);
 
         System.out.println("Pasajero creado correctamente.");
     }
@@ -94,7 +105,7 @@ public class MenuPasajeros {
 
         System.out.println("\n=== LISTADO DE PASAJEROS ===");
 
-        for (PasajeroVO p : pasajeroManager.obtenerPasajeros()) {
+        for (PasajeroVO p : pasajerosManager.obtenerPasajeros()) {
             System.out.println(p);
         }
     }
@@ -105,7 +116,7 @@ public class MenuPasajeros {
         String id = sc.nextLine();
 
         PasajeroVO pasajero =
-                pasajeroManager.buscarPasajeroPorIdentificacion(id);
+                pasajerosManager.buscarPasajeroPorIdentificacion(id);
 
         if (pasajero != null) {
             System.out.println("\n=== PASAJERO ENCONTRADO ===");
@@ -121,7 +132,7 @@ public class MenuPasajeros {
         String id = sc.nextLine();
 
         PasajeroVO pasajero =
-                pasajeroManager.buscarPasajeroPorIdentificacion(id);
+                pasajerosManager.buscarPasajeroPorIdentificacion(id);
 
         if (pasajero != null) {
 
@@ -132,7 +143,7 @@ public class MenuPasajeros {
                 pasajero.setNombre(nuevoNombre);
             }
 
-            pasajeroManager.actualizarPasajeroPorIdentificacion(id, pasajero);
+            pasajerosManager.actualizarPasajeroPorIdentificacion(id, pasajero);
 
             System.out.println("Pasajero actualizado correctamente.");
 
@@ -147,7 +158,7 @@ public class MenuPasajeros {
         String id = sc.nextLine();
 
         boolean eliminado =
-                pasajeroManager.eliminarPasajeroPorIdentificacion(id);
+                pasajerosManager.eliminarPasajeroPorIdentificacion(id);
 
         if (eliminado) {
             System.out.println("Pasajero eliminado correctamente.");
