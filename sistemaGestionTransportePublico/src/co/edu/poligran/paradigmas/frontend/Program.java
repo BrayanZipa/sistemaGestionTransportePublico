@@ -57,7 +57,7 @@ public class Program {
                     break;
                     
                 case 5:
-                	new MenuRutas(rutaManager).mostrarMenu();
+                	new MenuRutas(rutaManager, paradaManager, boletoManager).mostrarMenu();
                     break;
                     
                 case 6:

@@ -3,8 +3,11 @@ package co.edu.poligran.paradigmas.frontend;
 import java.time.LocalDateTime;
 import java.util.Scanner;
 
+import co.edu.poligran.paradigmas.backend.negocio.GestionBoletosManager;
 import co.edu.poligran.paradigmas.backend.negocio.GestionConductoresManager;
+import co.edu.poligran.paradigmas.backend.negocio.GestionParadasManager;
 import co.edu.poligran.paradigmas.backend.negocio.GestionRutasManager;
+import co.edu.poligran.paradigmas.backend.vo.BoletoVO;
 import co.edu.poligran.paradigmas.backend.vo.ConductorVO;
 import co.edu.poligran.paradigmas.backend.vo.ParadaVO;
 import co.edu.poligran.paradigmas.backend.vo.RutaVO;
@@ -14,14 +17,21 @@ public class MenuRutas {
 
     static Scanner sc = new Scanner(System.in);
     private GestionRutasManager rutaManager;
+    private GestionParadasManager paradaManager;
+    private GestionBoletosManager boletoManager;
     
     /**
      * Constructor de la clase MenuRutas.
      * 
      * @param rutaManager gestor encargado de las operaciones relacionadas con rutas
+     * @param paradaManager gestor encargado de las operaciones relacionadas con paradas
+     * @param boletoManager gestor encargado de las operaciones relacionadas con boletos
+     * 
      */
-    public MenuRutas(GestionRutasManager rutaManager) {
+    public MenuRutas(GestionRutasManager rutaManager, GestionParadasManager paradaManager, GestionBoletosManager boletoManager) {
         this.rutaManager = rutaManager;
+        this.paradaManager = paradaManager;
+        this.boletoManager = boletoManager;
     }
 
     /**
@@ -36,8 +46,11 @@ public class MenuRutas {
             System.out.println("1. Crear ruta");
             System.out.println("2. Listar rutas");
             System.out.println("3. Obtener ruta por código");
-            System.out.println("4. Eliminar ruta por código");
-            System.out.println("5. Volver al menú principal");
+            System.out.println("4. Actualizar ruta");
+            System.out.println("5. Eliminar ruta por código");
+            System.out.println("6. Agregar parada a una ruta");
+            System.out.println("7. Agregar boleto a una ruta");
+            System.out.println("8. Volver al menú principal");
             System.out.print("\nSeleccione una opción: ");
 
             opcion = sc.nextInt();
@@ -57,13 +70,22 @@ public class MenuRutas {
                     eliminarRuta();
                     break;
                 case 5:
+                    eliminarRuta();
+                    break;
+                case 6:
+                    eliminarRuta();
+                    break;
+                case 7:
+                    eliminarRuta();
+                    break;
+                case 8:
                     System.out.println("Volviendo al menu principal...");
                     break;
                 default:
                     System.out.println("Opción inválida.");
             }
 
-        } while (opcion != 5);
+        } while (opcion != 8);
     }
 
     /**
@@ -154,7 +176,6 @@ public class MenuRutas {
      * Busca y muestra una ruta específica por su código.
      */
     private void obtenerRuta() {
-
         System.out.print("Ingrese el código de la ruta a buscar: ");
         int codigo = sc.nextInt();
 
@@ -172,7 +193,6 @@ public class MenuRutas {
      * Elimina una ruta del sistema identificada por su código.
      */
     private void eliminarRuta() {
-
         System.out.print("Ingrese el código de la ruta a eliminar: ");
         int codigo = sc.nextInt();
 
@@ -183,5 +203,35 @@ public class MenuRutas {
         } else {
             System.out.println("Ruta no encontrada.");
         }
+    }
+    
+    private void asignarBoletoRuta() {
+        System.out.println("\n=== ASIGNAR BOLETO A RUTA ===");
+
+        System.out.print("Ingrese el código de la ruta: ");
+        int codigoRuta = sc.nextInt();
+        sc.nextLine();
+
+        RutaVO ruta = rutaManager.buscarRutaPorCodigo(codigoRuta);
+
+        if (ruta == null) {
+            System.out.println("Ruta no encontrada.");
+            return;
+        }
+
+        System.out.print("Ingrese el código del boleto: ");
+        int codigoBoleto = sc.nextInt();
+        sc.nextLine();
+
+        BoletoVO boleto = boletoManager.buscarBoletoPorCodigo(codigoBoleto);
+
+        if (boleto == null) {
+            System.out.println("Boleto no encontrado.");
+            return;
+        }
+
+        boleto.setRuta(ruta);
+        ruta.agregarBoleto(boleto);
+        System.out.println("Boleto asignado correctamente.");
     }
 }

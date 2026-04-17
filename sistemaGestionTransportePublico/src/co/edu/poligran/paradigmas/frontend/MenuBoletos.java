@@ -41,7 +41,7 @@ public class MenuBoletos {
             System.out.println("\n=== GESTIÓN DE BOLETOS ===");
             System.out.println("1. Crear boleto");
             System.out.println("2. Listar boletos");
-            System.out.println("3. Buscar boleto por código");
+            System.out.println("3. Obtener boleto por código");
             System.out.println("4. Actualizar boleto");
             System.out.println("5. Eliminar boleto");
             System.out.println("6. Volver al menú principal");
@@ -212,7 +212,6 @@ public class MenuBoletos {
     }
 
     private void eliminarBoleto() {
-
         System.out.print("Ingrese el código del boleto a eliminar: ");
         int codigo = sc.nextInt();
         sc.nextLine();
