@@ -9,6 +9,7 @@ public class VehiculoVO {
     private int capacidadPasajeros;
     private boolean estadoDisponibilidad;
     private List<RutaVO> rutas;
+    private List<MantenimientoVO> mantenimientos; 
     
     public VehiculoVO(String placa, String modelo, int capacidadPasajeros, boolean estadoDisponibilidad) {
 		super();
@@ -17,6 +18,7 @@ public class VehiculoVO {
 		this.capacidadPasajeros = capacidadPasajeros;
 		this.estadoDisponibilidad = estadoDisponibilidad;
 		this.rutas = new ArrayList<>();
+		this.mantenimientos = new ArrayList<>();
 	}
 
 	@Override
@@ -104,5 +106,20 @@ public class VehiculoVO {
 	 */
 	public void agregarRuta(RutaVO ruta) {
 	    rutas.add(ruta);
+	}
+	
+	/**
+	 * Método que agrega un mantenimiento al vehículo
+	 * @param m mantenimiento que se desea agregar
+	 */
+	public void agregarMantenimiento(MantenimientoVO m) {
+	    mantenimientos.add(m);
+	}
+	
+	/**
+	 * @return the mantenimientos
+	 */
+	public List<MantenimientoVO> getMantenimientos() {
+	    return mantenimientos;
 	}
 }

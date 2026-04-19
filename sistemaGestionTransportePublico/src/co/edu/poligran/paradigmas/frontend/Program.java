@@ -9,6 +9,9 @@ import co.edu.poligran.paradigmas.backend.negocio.GestionParadasManager;
 import co.edu.poligran.paradigmas.backend.negocio.GestionPasajerosManager;
 import co.edu.poligran.paradigmas.backend.negocio.GestionRutasManager;
 import co.edu.poligran.paradigmas.backend.negocio.GestionVehiculosManager;
+import co.edu.poligran.paradigmas.backend.negocio.GestionPagosManager;
+import co.edu.poligran.paradigmas.backend.negocio.GestionTarifasManager;
+import co.edu.poligran.paradigmas.backend.negocio.GestionMantenimientoManager;
 
 public class Program {
 	
@@ -20,10 +23,13 @@ public class Program {
 	private static final GestionParadasManager paradaManager = new GestionParadasManager();
 	private static final GestionBoletosManager boletoManager = new GestionBoletosManager();
 	private static final GestionRutasManager rutaManager = new GestionRutasManager();
+	private static final GestionPagosManager pagosManager = new GestionPagosManager();
+	private static final GestionTarifasManager tarifasManager = new GestionTarifasManager();
+	private static final GestionMantenimientoManager mantenimientoManager = new GestionMantenimientoManager();
 
 	public static void main(String[] args) {
 		
-		DataLoader.cargarTodo(empleadoManager, conductorManager, pasajeroManager, vehiculoManager, paradaManager, rutaManager, boletoManager);
+		DataLoader.cargarTodo(empleadoManager, conductorManager, pasajeroManager, vehiculoManager, paradaManager, rutaManager, boletoManager, pagosManager, tarifasManager, mantenimientoManager );
 		
         int opcion = 0;
 
@@ -36,7 +42,10 @@ public class Program {
             System.out.println("5. Gestionar Rutas");
             System.out.println("6. Gestionar Pasajeros");
             System.out.println("7. Gestionar Boletos");
-            System.out.println("8. Salir");
+            System.out.println("8. Gestionar Pagos");
+            System.out.println("9. Gestionar Tarifa");
+            System.out.println("10. Gestionar Mantenimiento");
+            System.out.println("11. Salir");
             System.out.print("\nSeleccione una opcion: ");
 
             opcion = sc.nextInt();
@@ -68,10 +77,22 @@ public class Program {
                     break;
                     
                 case 7:
-                	new MenuBoletos(boletoManager, pasajeroManager, rutaManager).mostrarMenu();
+                	new MenuBoletos(boletoManager, pasajeroManager, rutaManager, pagosManager,tarifasManager).mostrarMenu();
                     break;
                     
-                case 8:
+               case 8:
+            	    new MenuPagos(pagosManager).mostrarMenu();
+                    break;
+                    
+                case 9:
+                	new MenuTarifas(tarifasManager).mostrarMenu(); 
+                    break;
+                    
+                case 10:
+                	new MenuMantenimientos(mantenimientoManager, vehiculoManager).mostrarMenu();
+                    break;
+                    
+                case 11:
                     System.out.println("Saliendo del sistema...");
                     break;
 
@@ -79,7 +100,7 @@ public class Program {
                     System.out.println("Opcion invalida.");
             }
 
-        } while (opcion != 8);
+        } while (opcion != 11); 
 
         sc.close();
 	}

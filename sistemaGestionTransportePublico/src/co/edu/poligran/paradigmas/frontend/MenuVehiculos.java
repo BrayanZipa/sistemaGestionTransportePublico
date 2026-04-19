@@ -3,6 +3,7 @@ package co.edu.poligran.paradigmas.frontend;
 import java.util.Scanner;
 import co.edu.poligran.paradigmas.backend.negocio.GestionRutasManager;
 import co.edu.poligran.paradigmas.backend.negocio.GestionVehiculosManager;
+import co.edu.poligran.paradigmas.backend.vo.MantenimientoVO;
 import co.edu.poligran.paradigmas.backend.vo.RutaVO;
 import co.edu.poligran.paradigmas.backend.vo.VehiculoVO;
 
@@ -154,6 +155,18 @@ public class MenuVehiculos {
         System.out.println("\n=== LISTADO DE VEHICULOS ===");
         for (VehiculoVO v : vehiculoManager.obtenerVehiculos()) {
             System.out.println(v);
+            
+            /*
+             * Mostrar Mantenimiento
+             * */
+            if (v.getMantenimientos().isEmpty()) {
+                System.out.println("  -> Sin mantenimientos");
+            } else {
+                System.out.println("  -> Mantenimientos:");
+                for (MantenimientoVO m : v.getMantenimientos()) {
+                    System.out.println("     " + m);
+              }
+           }    
         }
     }
     

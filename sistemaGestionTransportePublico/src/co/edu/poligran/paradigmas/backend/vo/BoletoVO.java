@@ -8,14 +8,18 @@ public class BoletoVO {
     private String numeroAsiento;
     private PasajeroVO pasajero;
     private RutaVO ruta;
+    private PagoVO pago;
+    private TarifasVO tarifa; 
     
-    public BoletoVO(int codigo, LocalDateTime fechaCompra, String numeroAsiento, PasajeroVO pasajero, RutaVO ruta) {
+    public BoletoVO(int codigo, LocalDateTime fechaCompra, String numeroAsiento, PasajeroVO pasajero, RutaVO ruta, PagoVO pago, TarifasVO tarifa) {
 		super();
 		this.codigo = codigo;
 		this.fechaCompra = fechaCompra;
 		this.numeroAsiento = numeroAsiento;
 		this.pasajero = pasajero;
 		this.ruta = ruta;
+		this.pago = pago;
+		this.tarifa = tarifa; 
 	}
     
     @Override
@@ -24,7 +28,9 @@ public class BoletoVO {
                ", Fecha Compra: " + fechaCompra +
                ", Asiento: " + numeroAsiento +
                ", Pasajero: " + (pasajero != null ? pasajero.toString() : "N/A") +
-               ", Ruta: " + (ruta != null ? ruta.toString() : "N/A");
+               ", Ruta: " + (ruta != null ? ruta.toString() : "N/A") + 
+               ", Pago: " + (pago != null ? pago.getIdPago() : "N/A") +
+               ", Tarifa: " + (tarifa != null ? tarifa.getTipoTarifa() + " ($" + tarifa.getValor() + ")" : "N/A");
     }
     
 	/**
@@ -95,5 +101,21 @@ public class BoletoVO {
 	 */
 	public void setRuta(RutaVO ruta) {
 		this.ruta = ruta;
+	}
+	
+	public PagoVO getPago() {
+	    return pago;
+	}
+
+	public void setPago(PagoVO pago) {
+	    this.pago = pago;
+	}
+	
+	public TarifasVO getTarifa() {
+	    return tarifa;
+	}
+
+	public void setTarifa(TarifasVO tarifa) {
+	    this.tarifa = tarifa;
 	}
 }

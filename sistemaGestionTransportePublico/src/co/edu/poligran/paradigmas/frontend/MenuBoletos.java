@@ -3,11 +3,15 @@ package co.edu.poligran.paradigmas.frontend;
 import java.time.LocalDateTime;
 import java.util.Scanner;
 import co.edu.poligran.paradigmas.backend.negocio.GestionBoletosManager;
+import co.edu.poligran.paradigmas.backend.negocio.GestionPagosManager;
 import co.edu.poligran.paradigmas.backend.negocio.GestionPasajerosManager;
 import co.edu.poligran.paradigmas.backend.negocio.GestionRutasManager;
+import co.edu.poligran.paradigmas.backend.negocio.GestionTarifasManager;
 import co.edu.poligran.paradigmas.backend.vo.BoletoVO;
+import co.edu.poligran.paradigmas.backend.vo.PagoVO;
 import co.edu.poligran.paradigmas.backend.vo.PasajeroVO;
 import co.edu.poligran.paradigmas.backend.vo.RutaVO;
+import co.edu.poligran.paradigmas.backend.vo.TarifasVO;
 
 public class MenuBoletos {
 
@@ -15,6 +19,8 @@ public class MenuBoletos {
     private GestionBoletosManager boletoManager;
     private GestionPasajerosManager pasajeroManager;
     private GestionRutasManager rutaManager;
+    private GestionPagosManager pagosManager;
+    private GestionTarifasManager tarifasManager;
     
     /**
      * Constructor de la clase MenuBoletos.
@@ -23,10 +29,13 @@ public class MenuBoletos {
      * @param pasajeroManager gestor encargado de las operaciones relacionadas con pasajeros
      * @param rutaManager gestor encargado de las operaciones relacionadas con rutas
      */
-    public MenuBoletos(GestionBoletosManager boletoManager, GestionPasajerosManager pasajeroManager, GestionRutasManager rutaManager) {
+    public MenuBoletos(GestionBoletosManager boletoManager, GestionPasajerosManager pasajeroManager, GestionRutasManager rutaManager,GestionPagosManager pagosManager, GestionTarifasManager tarifasManager ) {
 		this.boletoManager = boletoManager;
 		this.pasajeroManager = pasajeroManager;
 		this.rutaManager = rutaManager;
+		this.pagosManager = pagosManager;
+		this.tarifasManager = tarifasManager;
+		
 	}
 
     /**
@@ -113,18 +122,46 @@ public class MenuBoletos {
             sc.nextLine();
 
             ruta = rutaManager.buscarRutaPorCodigo(codigoRuta);
-
             if (ruta == null) {
                 System.out.println("La ruta no existe. Intente nuevamente.");
             }
+            
         } while (ruta == null);
+        
+        PagoVO pago; 
+        do {
+            System.out.print("ID del pago: ");
+            String idPago = sc.nextLine();
+
+            pago = pagosManager.buscarPagoPorId(idPago);
+
+            if (pago == null) {
+                System.out.println("El pago no existe. Intente nuevamente.");
+            }
+        } while (pago == null);  
+        
+        TarifasVO tarifa;
+        do {
+            System.out.print("Código de la tarifa: ");
+            int codigoTarifa = sc.nextInt();
+            sc.nextLine();
+
+            tarifa = tarifasManager.buscarTarifaPorCodigo(codigoTarifa);
+
+            if (tarifa == null) {
+                System.out.println("La tarifa no existe. Intente nuevamente.");
+            }
+        } while (tarifa == null);
+        
 
         BoletoVO boleto = new BoletoVO(
                 codigo,
                 LocalDateTime.now(),
                 asiento,
                 pasajero,
-                ruta
+                ruta,
+                pago,
+                tarifa
         );
 
         boletoManager.agregarBoleto(boleto);
@@ -203,6 +240,19 @@ public class MenuBoletos {
             } else {
                 System.out.println("Ruta no encontrada. Se conserva la actual.");
             }
+            System.out.print("Codigo del pago: ");
+            String idPago = sc.nextLine().trim();
+
+            if (!idPago.isEmpty()) {
+                PagoVO nuevoPago = pagosManager.buscarPagoPorId(idPago);
+
+                if (nuevoPago != null) {
+                    boleto.setPago(nuevoPago);
+                } else {
+                    System.out.println("Pago no encontrado. Se conserva el actual.");
+                }
+            }
+            
         }
         
         boletoManager.actualizarBoletoPorCodigo(codigo, boleto);
