@@ -22,6 +22,9 @@ public class Program {
 	private static final GestionRutasManager rutaManager = new GestionRutasManager();
 
 	public static void main(String[] args) {
+		
+		DataLoader.cargarTodo(empleadoManager, conductorManager, pasajeroManager, vehiculoManager, paradaManager, rutaManager, boletoManager);
+		
         int opcion = 0;
 
         do {

@@ -11,7 +11,6 @@ public class MenuPasajeros {
     
     /**
      * Constructor de la clase MenuPasajeros.
-     * 
      * @param pasajeroManager gestor encargado de las operaciones relacionadas con pasajeros
      */
     public MenuPasajeros(GestionPasajerosManager pasajeroManager) {
@@ -19,8 +18,7 @@ public class MenuPasajeros {
     }
     
     /**
-     * Muestra el menú principal del módulo de pasajeros
-     * y gestiona las opciones seleccionadas por el usuario.
+     * Muestra el menú principal del módulo de pasajeros y gestiona las opciones seleccionadas por el usuario.
      */
     public void mostrarMenu() {
 

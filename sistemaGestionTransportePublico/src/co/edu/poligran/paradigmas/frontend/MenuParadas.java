@@ -59,8 +59,11 @@ public class MenuParadas {
                 case 5:
                     eliminarParada();
                     break;
-                case 7:
+                case 6:
                 	asignarRutaParada();
+                    break;
+                case 7:
+                    System.out.println("Volviendo al menu principal...");
                     break;
                 default:
                     System.out.println("Opción inválida.");
