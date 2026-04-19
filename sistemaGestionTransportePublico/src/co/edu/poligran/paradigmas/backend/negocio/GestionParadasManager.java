@@ -43,7 +43,7 @@ public class GestionParadasManager {
      * @param codigo identificador de la parada
      * @return la parada encontrada o null
      * @throws IllegalArgumentException si el código es nulo o vacío
-     * @throws IllegalStateException si la lista de objetos está vacía
+     * @throws IllegalStateException si no hay paradas registradas
      */
     public ParadaVO buscarParadaPorCodigo(String codigo) {
         if (codigo == null || codigo.trim().isEmpty()) {
@@ -67,7 +67,7 @@ public class GestionParadasManager {
      * @param codigo identificador de la parada
      * @return índice o -1 si no existe
      * @throws IllegalArgumentException si el código es nulo o vacío
-     * @throws IllegalStateException si la lista de objetos está vacía
+     * @throws IllegalStateException si no hay paradas registradas
      */
     public int obtenerIndicePorCodigo(String codigo) {
         if (codigo == null || codigo.trim().isEmpty()) {
@@ -90,9 +90,9 @@ public class GestionParadasManager {
      * Método que permite actualizar una parada por índice
      * @param indice posición en la lista
      * @param p nueva parada
-     * @return parada anterior o null si no existe
+     * @return parada anterior
      * @throws IllegalArgumentException si el objeto es nulo o su código está vacío
-     * @throws IndexOutOfBoundsException si el índice está fuera del rango de la lista
+     * @throws IndexOutOfBoundsException si el índice es inválido
      */
     public ParadaVO actualizarParada(int indice, ParadaVO p){
         if (p == null) {
@@ -108,7 +108,6 @@ public class GestionParadasManager {
                 "Índice fuera de rango: " + indice + ". Total: " + listaParadas.size()
             );
         }
-
         return listaParadas.set(indice, p);
     }
 
@@ -140,8 +139,8 @@ public class GestionParadasManager {
      * Método que permite eliminar una parada por índice
      * @param indice posición en la lista
      * @return true si se eliminó, false si no existe
-     * @throws IllegalStateException si la lista de objetos está vacía
-     * @throws IndexOutOfBoundsException si el índice está fuera del rango de la lista
+     * @throws IllegalStateException si no hay paradas registradas
+     * @throws IndexOutOfBoundsException i el índice es inválido
      */
     public void eliminarParada(int indice){
         if (listaParadas.isEmpty()) {
