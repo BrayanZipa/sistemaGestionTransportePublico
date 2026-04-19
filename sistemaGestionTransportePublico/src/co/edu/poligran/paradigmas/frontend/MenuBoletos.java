@@ -162,53 +162,52 @@ public class MenuBoletos {
         System.out.print("Ingrese el código del boleto a actualizar: ");
         int codigo = sc.nextInt();
         sc.nextLine();
-
+        
         BoletoVO boleto = boletoManager.buscarBoletoPorCodigo(codigo);
 
-        if (boleto != null) {
-
-            System.out.print("Nuevo número de asiento (" + boleto.getNumeroAsiento() + "): ");
-            String nuevoAsiento = sc.nextLine().trim();
-
-            if (!nuevoAsiento.isEmpty()) {
-                boleto.setNumeroAsiento(nuevoAsiento);
-            }
-            
-            System.out.print("Identificación del pasajero: ");
-            String idPasajero = sc.nextLine().trim();
-
-            if (!idPasajero.isEmpty()) {
-                PasajeroVO nuevoPasajero = pasajeroManager.buscarPasajeroPorIdentificacion(idPasajero);
-
-                if (nuevoPasajero != null) {
-                    boleto.setPasajero(nuevoPasajero);
-                } else {
-                    System.out.println("Pasajero no encontrado. Se conserva el actual.");
-                }
-            }
-            
-            System.out.print("Código de la ruta: ");
-            String codigoRuta = sc.nextLine().trim();
-
-            if (!codigoRuta.isEmpty()) {
-                int nuevoCodigoRuta = Integer.parseInt(codigoRuta);
-
-                RutaVO nuevaRuta = rutaManager.buscarRutaPorCodigo(nuevoCodigoRuta);
-
-                if (nuevaRuta != null) {
-                    boleto.setRuta(nuevaRuta);
-                } else {
-                    System.out.println("Ruta no encontrada. Se conserva la actual.");
-                }
-            }
-            
-            boletoManager.actualizarBoletoPorCodigo(codigo, boleto);
-
-            System.out.println("Boleto actualizado correctamente.");
-
-        } else {
+        if (boleto == null) {
             System.out.println("Boleto no encontrado.");
+            return;
         }
+
+        System.out.print("Nuevo número de asiento (" + boleto.getNumeroAsiento() + "): ");
+        String nuevoAsiento = sc.nextLine().trim();
+
+        if (!nuevoAsiento.isEmpty()) {
+        	boleto.setNumeroAsiento(nuevoAsiento);
+        }
+        
+        System.out.print("Identificación del pasajero: ");
+        String idPasajero = sc.nextLine().trim();
+
+        if (!idPasajero.isEmpty()) {
+            PasajeroVO nuevoPasajero = pasajeroManager.buscarPasajeroPorIdentificacion(idPasajero);
+
+            if (nuevoPasajero != null) {
+                boleto.setPasajero(nuevoPasajero);
+            } else {
+                System.out.println("Pasajero no encontrado. Se conserva el actual.");
+            }
+        }
+        
+        System.out.print("Código de la ruta: ");
+        String codigoRuta = sc.nextLine().trim();
+
+        if (!codigoRuta.isEmpty()) {
+            int nuevoCodigoRuta = Integer.parseInt(codigoRuta);
+
+            RutaVO nuevaRuta = rutaManager.buscarRutaPorCodigo(nuevoCodigoRuta);
+
+            if (nuevaRuta != null) {
+                boleto.setRuta(nuevaRuta);
+            } else {
+                System.out.println("Ruta no encontrada. Se conserva la actual.");
+            }
+        }
+        
+        boletoManager.actualizarBoletoPorCodigo(codigo, boleto);
+
+        System.out.println("Boleto actualizado correctamente.");
     }
 
     private void eliminarBoleto() {

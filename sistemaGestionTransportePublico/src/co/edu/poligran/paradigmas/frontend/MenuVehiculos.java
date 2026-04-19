@@ -173,6 +173,9 @@ public class MenuVehiculos {
         }
     }
     
+    /**
+     * Actualiza los datos de un vehículo existente identificado por su placa.
+     */
     private void actualizarVehiculo() {
         System.out.print("Ingrese la placa del vehículo a actualizar: ");
         String placa = sc.nextLine();

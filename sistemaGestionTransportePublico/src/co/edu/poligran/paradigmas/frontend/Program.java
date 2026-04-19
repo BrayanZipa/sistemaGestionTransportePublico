@@ -25,7 +25,7 @@ public class Program {
         int opcion = 0;
 
         do {
-            System.out.println("\n=== SISTEMA DE GESTION ===");
+            System.out.println("\n=== SISTEMA DE GESTION DE TRANSPORTE ===");
             System.out.println("1. Gestionar Empleados");
             System.out.println("2. Gestionar Conductores");
             System.out.println("3. Gestionar Vehículos");
@@ -57,7 +57,7 @@ public class Program {
                     break;
                     
                 case 5:
-                	new MenuRutas(rutaManager, paradaManager, boletoManager).mostrarMenu();
+                	new MenuRutas(rutaManager, paradaManager, boletoManager, vehiculoManager, conductorManager).mostrarMenu();
                     break;
                     
                 case 6:

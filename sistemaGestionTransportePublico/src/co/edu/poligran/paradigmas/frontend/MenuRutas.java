@@ -7,6 +7,7 @@ import co.edu.poligran.paradigmas.backend.negocio.GestionBoletosManager;
 import co.edu.poligran.paradigmas.backend.negocio.GestionConductoresManager;
 import co.edu.poligran.paradigmas.backend.negocio.GestionParadasManager;
 import co.edu.poligran.paradigmas.backend.negocio.GestionRutasManager;
+import co.edu.poligran.paradigmas.backend.negocio.GestionVehiculosManager;
 import co.edu.poligran.paradigmas.backend.vo.BoletoVO;
 import co.edu.poligran.paradigmas.backend.vo.ConductorVO;
 import co.edu.poligran.paradigmas.backend.vo.ParadaVO;
@@ -19,6 +20,8 @@ public class MenuRutas {
     private GestionRutasManager rutaManager;
     private GestionParadasManager paradaManager;
     private GestionBoletosManager boletoManager;
+    private GestionVehiculosManager vehiculoManager;
+    private GestionConductoresManager conductorManager;
     
     /**
      * Constructor de la clase MenuRutas.
@@ -26,12 +29,15 @@ public class MenuRutas {
      * @param rutaManager gestor encargado de las operaciones relacionadas con rutas
      * @param paradaManager gestor encargado de las operaciones relacionadas con paradas
      * @param boletoManager gestor encargado de las operaciones relacionadas con boletos
-     * 
+     * @param vehiculoManager gestor encargado de las operaciones relacionadas con vehiculos
+     * @param conductorManager gestor encargado de las operaciones relacionadas con conductores
      */
-    public MenuRutas(GestionRutasManager rutaManager, GestionParadasManager paradaManager, GestionBoletosManager boletoManager) {
+    public MenuRutas(GestionRutasManager rutaManager, GestionParadasManager paradaManager, GestionBoletosManager boletoManager, GestionVehiculosManager vehiculoManager, GestionConductoresManager conductorManager) {
         this.rutaManager = rutaManager;
         this.paradaManager = paradaManager;
         this.boletoManager = boletoManager;
+        this.vehiculoManager = vehiculoManager;
+        this.conductorManager = conductorManager;
     }
 
     /**
@@ -67,16 +73,16 @@ public class MenuRutas {
                     obtenerRuta();
                     break;
                 case 4:
-                    eliminarRuta();
+                	actualizarRuta();
                     break;
                 case 5:
                     eliminarRuta();
                     break;
                 case 6:
-                    eliminarRuta();
+                	asignarParadaRuta();
                     break;
                 case 7:
-                    eliminarRuta();
+                	asignarBoletoRuta();
                     break;
                 case 8:
                     System.out.println("Volviendo al menu principal...");
@@ -92,79 +98,78 @@ public class MenuRutas {
      * Crea una nueva ruta solicitando los datos al usuario.
      */
     private void crearRuta() {
-
         System.out.println("\n=== CREAR RUTA ===");
 
         System.out.print("Ingrese el código de la ruta: ");
         int codigo = sc.nextInt();
         sc.nextLine();
 
-        System.out.print("Ingrese código de parada origen: ");
-        String codOrigen = sc.nextLine();
+        ParadaVO origen;
+        do {
+            System.out.print("Código parada origen: ");
+            String codOrigen = sc.nextLine();
+            origen = paradaManager.buscarParadaPorCodigo(codOrigen);
 
-        ParadaVO origen = Program.paradaManager.buscarParadaPorCodigo(codOrigen);
+            if (origen == null) {
+                System.out.println("Parada origen no encontrada.");
+            }
+        } while (origen == null);
 
-        if (origen == null) {
-            System.out.println("Parada origen no encontrada.");
-            return;
-        }
+        ParadaVO destino;
+        do {
+            System.out.print("Código parada destino: ");
+            String codDestino = sc.nextLine();
+            destino = paradaManager.buscarParadaPorCodigo(codDestino);
 
-        System.out.print("Ingrese código de parada destino: ");
-        String codDestino = sc.nextLine();
+            if (destino == null) {
+                System.out.println("Parada destino no encontrada.");
+            }
+        } while (destino == null);
 
-        ParadaVO destino = Program.paradaManager.buscarParadaPorCodigo(codDestino);
-
-        if (destino == null) {
-            System.out.println("Parada destino no encontrada.");
-            return;
-        }
-
-        System.out.print("Ingrese la distancia en km: ");
+        System.out.print("Distancia en km: ");
         float distancia = sc.nextFloat();
         sc.nextLine();
 
-        System.out.print("Ingrese la placa del vehículo: ");
-        String placa = sc.nextLine();
+        VehiculoVO vehiculo;
+        do {
+            System.out.print("Placa del vehículo: ");
+            String placa = sc.nextLine();
+            vehiculo = vehiculoManager.buscarVehiculoPorPlaca(placa);
 
-        VehiculoVO vehiculo = Program.vehiculoManager.buscarVehiculoPorPlaca(placa);
+            if (vehiculo == null) {
+                System.out.println("Vehículo no encontrado.");
+            }
+        } while (vehiculo == null);
 
-        if (vehiculo == null) {
-            System.out.println("Vehículo no encontrado.");
-            return;
-        }
+        ConductorVO conductor;
+        do {
+            System.out.print("ID del conductor: ");
+            String id = sc.nextLine();
+            conductor = conductorManager.buscarConductorPorId(id);
 
-        System.out.print("Ingrese identificación del conductor: ");
-        String id = sc.nextLine();
-
-        ConductorVO conductor = Program.conductorManager.buscarConductorPorId(id);
-
-        if (conductor == null) {
-            System.out.println("Conductor no encontrado.");
-            return;
-        }
-
-        LocalDateTime fecha = LocalDateTime.now();
+            if (conductor == null) {
+                System.out.println("Conductor no encontrado.");
+            }
+        } while (conductor == null);
 
         RutaVO ruta = new RutaVO(
                 codigo,
                 origen,
                 destino,
                 distancia,
-                fecha,
+                LocalDateTime.now(),
                 vehiculo,
                 conductor
         );
 
         rutaManager.agregarRuta(ruta);
-
-        System.out.println("Ruta agregada correctamente.");
+        System.out.println("Ruta creada correctamente.");
     }
 
     /**
      * Lista todas las rutas registradas en el sistema.
      */
     private void listarRutas() {
-
         System.out.println("\n=== LISTADO DE RUTAS ===");
 
         for (RutaVO r : rutaManager.obtenerRutas()) {
@@ -188,6 +193,57 @@ public class MenuRutas {
             System.out.println("Ruta no encontrada.");
         }
     }
+    
+    /**
+     * Actualiza los datos de una ruta existente identificada por su código.
+     */
+    private void actualizarRuta() {
+        System.out.print("Ingrese el código de la ruta a actualizar: ");
+        int codigo = sc.nextInt();
+        sc.nextLine();
+
+        RutaVO ruta = rutaManager.buscarRutaPorCodigo(codigo);
+
+        if (ruta == null) {
+            System.out.println("Ruta no encontrada.");
+            return;
+        }
+
+        System.out.print("Nueva distancia (" + ruta.getDistancia() + "): ");
+        String distanciaStr = sc.nextLine();
+
+        if (!distanciaStr.isEmpty()) {
+            ruta.setDistancia(Float.parseFloat(distanciaStr));
+        }
+
+        System.out.print("Placa del vehículo: ");
+        String placa = sc.nextLine();
+
+        if (!placa.isEmpty()) {
+            VehiculoVO vehiculo = vehiculoManager.buscarVehiculoPorPlaca(placa);
+            if (vehiculo != null) {
+                ruta.setVehiculo(vehiculo);
+            } else {
+                System.out.println("Vehículo no encontrado. Se conserva el actual.");
+            }
+        }
+
+        System.out.print("Identificación del conductor: ");
+        String id = sc.nextLine();
+
+        if (!id.isEmpty()) {
+            ConductorVO conductor = conductorManager.buscarConductorPorId(id);
+            if (conductor != null) {
+                ruta.setConductor(conductor);
+            } else {
+                System.out.println("Conductor no encontrado. Se conserva el actual.");
+            }
+        }
+
+        rutaManager.actualizarRuta(codigo, ruta);
+
+        System.out.println("Ruta actualizada correctamente.");
+    }
 
     /**
      * Elimina una ruta del sistema identificada por su código.
@@ -205,9 +261,45 @@ public class MenuRutas {
         }
     }
     
+    /**
+     * Asigna una ruta a una parada existente.
+     */
+    private void asignarParadaRuta() {
+    	System.out.println("\n=== ASIGNAR PARADA A RUTA ===");
+    	
+        System.out.print("Código de la ruta: ");
+        int codigoRuta = sc.nextInt();
+        sc.nextLine();
+
+        RutaVO ruta = rutaManager.buscarRutaPorCodigo(codigoRuta);
+
+        if (ruta == null) {
+            System.out.println("Ruta no encontrada.");
+            return;
+        }
+
+        System.out.print("Código de la parada: ");
+        String codParada = sc.nextLine();
+
+        ParadaVO parada = paradaManager.buscarParadaPorCodigo(codParada);
+
+        if (parada == null) {
+            System.out.println("Parada no encontrada.");
+            return;
+        }
+
+        ruta.agregarParada(parada);
+        parada.agregarRuta(ruta);
+        
+        System.out.println("Parada agregada correctamente.");
+    }
+    
+    /**
+     * Asigna una ruta a un boleto existente.
+     */
     private void asignarBoletoRuta() {
         System.out.println("\n=== ASIGNAR BOLETO A RUTA ===");
-
+        
         System.out.print("Ingrese el código de la ruta: ");
         int codigoRuta = sc.nextInt();
         sc.nextLine();
@@ -232,6 +324,7 @@ public class MenuRutas {
 
         boleto.setRuta(ruta);
         ruta.agregarBoleto(boleto);
+        
         System.out.println("Boleto asignado correctamente.");
     }
 }
