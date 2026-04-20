@@ -2,7 +2,6 @@ package co.edu.poligran.paradigmas.frontend;
 
 import java.util.Scanner;
 import co.edu.poligran.paradigmas.backend.negocio.GestionPasajerosManager;
-import co.edu.poligran.paradigmas.backend.vo.ParadaVO;
 import co.edu.poligran.paradigmas.backend.vo.PasajeroVO;
 
 public class MenuPasajeros {
