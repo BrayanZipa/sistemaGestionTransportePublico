@@ -1,5 +1,6 @@
 package co.edu.poligran.paradigmas.frontend;
 
+import java.util.InputMismatchException;
 import java.util.Scanner;
 import co.edu.poligran.paradigmas.backend.negocio.GestionParadasManager;
 import co.edu.poligran.paradigmas.backend.negocio.GestionRutasManager;
@@ -78,43 +79,47 @@ public class MenuParadas {
     private void crearParada() {
         System.out.println("\n=== CREAR PARADA ===");
 
-        String codigo;
+        try {
+	        String codigo;
+	        do {
+	            System.out.print("Ingrese el código: ");
+	            codigo = sc.nextLine().trim();
+	
+	            if (codigo.isEmpty()) {
+	                System.out.println("El código no puede estar vacío.");
+	            }
+	        } while (codigo.isEmpty());
+	
+	        String nombre;
+	        do {
+	            System.out.print("Ingrese el nombre: ");
+	            nombre = sc.nextLine().trim();
+	
+	            if (nombre.isEmpty()) {
+	                System.out.println("El nombre no puede estar vacío.");
+	            }
+	        } while (nombre.isEmpty());
+	
+	        String ubicacion;
+	        do {
+	            System.out.print("Ingrese la ubicación: ");
+	            ubicacion = sc.nextLine().trim();
+	
+	            if (ubicacion.isEmpty()) {
+	                System.out.println("La ubicación no puede estar vacía.");
+	            }
+	        } while (ubicacion.isEmpty());
+	
+	        ParadaVO p = new ParadaVO(codigo, nombre, ubicacion);
+	        paradaManager.agregarParada(p);
+	
+	        System.out.println("Parada agregada correctamente.");
         
-        do {
-            System.out.print("Ingrese el código: ");
-            codigo = sc.nextLine().trim();
-
-            if (codigo.isEmpty()) {
-                System.out.println("El código no puede estar vacío.");
-            }
-        } while (codigo.isEmpty());
-
-        String nombre;
-        
-        do {
-            System.out.print("Ingrese el nombre: ");
-            nombre = sc.nextLine().trim();
-
-            if (nombre.isEmpty()) {
-                System.out.println("El nombre no puede estar vacío.");
-            }
-        } while (nombre.isEmpty());
-
-        String ubicacion;
-        
-        do {
-            System.out.print("Ingrese la ubicación: ");
-            ubicacion = sc.nextLine().trim();
-
-            if (ubicacion.isEmpty()) {
-                System.out.println("La ubicación no puede estar vacía.");
-            }
-        } while (ubicacion.isEmpty());
-
-        ParadaVO p = new ParadaVO(codigo, nombre, ubicacion);
-        paradaManager.agregarParada(p);
-
-        System.out.println("Parada agregada correctamente.");
+        } catch (IllegalArgumentException e) {
+            System.out.println("Error de validación: " + e.getMessage());
+        } catch (Exception e) {
+            System.out.println("Error inesperado: " + e.getMessage());
+        }
     }
 
     /**
@@ -132,16 +137,23 @@ public class MenuParadas {
      * Busca y muestra una parada específica por su código.
      */
     private void obtenerParada() {
-        System.out.print("Ingrese el código de la parada a buscar: ");
-        String codigo = sc.nextLine();
-
-        ParadaVO parada = paradaManager.buscarParadaPorCodigo(codigo);
-
-        if (parada != null) {
-            System.out.println("\n=== PARADA ENCONTRADA ===");
-            System.out.println(parada);
-        } else {
-            System.out.println("Parada no encontrada.");
+        try {
+            System.out.print("Ingrese el código de la parada a buscar: ");
+            String codigo = sc.nextLine().trim();
+            
+        	ParadaVO parada = paradaManager.buscarParadaPorCodigo(codigo);
+        	
+            if (parada != null) {
+                System.out.println("\n=== PARADA ENCONTRADA ===");
+                System.out.println(parada);
+            } else {
+                System.out.println("Parada no encontrada.");
+            }
+            
+        } catch (IllegalArgumentException e) {
+            System.out.println("Error de validación: " + e.getMessage());
+        } catch (Exception e) {
+            System.out.println("Error inesperado: " + e.getMessage());
         }
     }
 
@@ -149,11 +161,16 @@ public class MenuParadas {
      * Actualiza los datos de una parada existente identificada por su código.
      */
     private void actualizarParada() {
-        System.out.print("Ingrese el código de la parada a actualizar: ");
-        String codigo = sc.nextLine();
-        ParadaVO p = paradaManager.buscarParadaPorCodigo(codigo);
+        try {
+            System.out.print("Ingrese el código de la parada a actualizar: ");
+            String codigo = sc.nextLine().trim();
+            
+            ParadaVO p = paradaManager.buscarParadaPorCodigo(codigo);
+            if (p == null) {
+                System.out.println("Parada no encontrada.");
+                return;
+            }
 
-        if (p != null) {
             System.out.print("Nuevo nombre (" + p.getNombre() + "): ");
             String nuevoNombre = sc.nextLine().trim();
 
@@ -170,8 +187,13 @@ public class MenuParadas {
 
             paradaManager.actualizarParadaPorCodigo(codigo, p);
             System.out.println("Parada actualizada correctamente.");
-        } else {
-            System.out.println("Parada no encontrada.");
+
+        } catch (IllegalArgumentException e) {
+            System.out.println("Error de validación: " + e.getMessage());
+        } catch (IllegalStateException e) {
+            System.out.println("Error: " + e.getMessage());
+        } catch (Exception e) {
+            System.out.println("Error inesperado: " + e.getMessage());
         }
     }
 
@@ -179,15 +201,22 @@ public class MenuParadas {
      * Elimina una parada del sistema identificada por su código.
      */
     private void eliminarParada() {
-        System.out.print("Ingrese el código de la parada a eliminar: ");
-        String codigo = sc.nextLine();
+        try {
+            System.out.print("Ingrese el código de la parada a eliminar: ");
+            String codigo = sc.nextLine().trim();
+            
+            boolean eliminada = paradaManager.eliminarParadaPorCodigo(codigo);
 
-        boolean eliminada = paradaManager.eliminarParadaPorCodigo(codigo);
-
-        if (eliminada) {
-            System.out.println("Parada eliminada correctamente.");
-        } else {
-            System.out.println("Parada no encontrada.");
+            if (eliminada) {
+                System.out.println("Parada eliminada correctamente.");
+            } else {
+                System.out.println("Parada no encontrada.");
+            }
+            
+        } catch (IllegalArgumentException e) {
+            System.out.println("Error de validación: " + e.getMessage());
+        } catch (Exception e) {
+            System.out.println("Error inesperado: " + e.getMessage());
         }
     }
     
@@ -196,31 +225,45 @@ public class MenuParadas {
      */
     private void asignarRutaParada() {
         System.out.println("\n=== ASIGNAR PARADA A RUTA ===");
-
-        System.out.print("Ingrese el código de la ruta: ");
-        int codigoRuta = sc.nextInt();
-        sc.nextLine();
-
-        RutaVO ruta = rutaManager.buscarRutaPorCodigo(codigoRuta);
-
-        if (ruta == null) {
-            System.out.println("Ruta no encontrada.");
-            return;
-        }
-
-        System.out.print("Ingrese el código de la parada: ");
-        String codigoParada = sc.nextLine();
-
-        ParadaVO parada = paradaManager.buscarParadaPorCodigo(codigoParada);
-
-        if (parada == null) {
-            System.out.println("Parada no encontrada.");
-            return;
-        }
-
-        parada.agregarRuta(ruta);
-        ruta.agregarParada(parada);
-
-        System.out.println("Parada asignada correctamente.");
+        
+        try {
+	        System.out.print("Ingrese el código de la ruta: ");
+	        int codigoRuta = sc.nextInt();
+	        sc.nextLine();
+	
+	        RutaVO ruta = rutaManager.buscarRutaPorCodigo(codigoRuta);
+	        if (ruta == null) {
+	            System.out.println("Ruta no encontrada.");
+	            return;
+	        }
+	
+	        System.out.print("Ingrese el código de la parada: ");
+	        String codigoParada = sc.nextLine();
+	
+	        ParadaVO parada = paradaManager.buscarParadaPorCodigo(codigoParada);
+	        if (parada == null) {
+	            System.out.println("Parada no encontrada.");
+	            return;
+	        }
+	        
+	        if (ruta.getParadas().contains(parada)) {
+	            System.out.println("La parada ya está asignada a esta ruta.");
+	            return;
+	        }
+	
+	        parada.agregarRuta(ruta);
+	        ruta.agregarParada(parada);
+	        System.out.println("Parada asignada correctamente.");
+        
+	    } catch (InputMismatchException e) {
+	        System.out.println("Debe ingresar un número válido.");
+	        sc.nextLine();
+	    } catch (IllegalArgumentException e) {
+	        System.out.println("Error de validación: " + e.getMessage());
+	    } catch (IllegalStateException e) {
+	        System.out.println("Error: " + e.getMessage());
+	    } catch (Exception e) {
+	        System.out.println("Error inesperado: " + e.getMessage());
+	    }
     }
 }

@@ -29,6 +29,10 @@ public class GestionRutasManager {
         if (r.getOrigen() == null || r.getDestino() == null) {
             throw new IllegalArgumentException("La ruta debe tener origen y destino.");
         }
+        
+        if (r.getOrigen().equals(r.getDestino())) {
+            throw new IllegalArgumentException("El origen y destino no pueden ser iguales.");
+        }
 
         if (r.getDistancia() <= 0) {
             throw new IllegalArgumentException("La distancia debe ser mayor a cero.");
