@@ -2,6 +2,7 @@ package co.edu.poligran.paradigmas.frontend;
 
 import java.util.Scanner;
 import co.edu.poligran.paradigmas.backend.negocio.GestionPasajerosManager;
+import co.edu.poligran.paradigmas.backend.vo.ParadaVO;
 import co.edu.poligran.paradigmas.backend.vo.PasajeroVO;
 
 public class MenuPasajeros {
@@ -64,37 +65,41 @@ public class MenuPasajeros {
     }
 
     private void crearPasajero() {
-
         System.out.println("\n=== CREAR PASAJERO ===");
-
-        String identificacion;
-        do {
-            System.out.print("Identificación: ");
-            identificacion = sc.nextLine().trim();
-
-            if (identificacion.isEmpty()) {
-                System.out.println("La identificación no puede estar vacía.");
-            }
-        } while (identificacion.isEmpty());
-
-        String nombre;
-        do {
-            System.out.print("Nombre: ");
-            nombre = sc.nextLine().trim();
-
-            if (nombre.isEmpty()) {
-                System.out.println("El nombre no puede estar vacío.");
-            }
-        } while (nombre.isEmpty());
-
-        PasajeroVO pasajero = new PasajeroVO(identificacion, nombre);
-        pasajeroManager.agregarPasajero(pasajero);
-
-        System.out.println("Pasajero creado correctamente.");
+        
+        try {
+	        String identificacion;
+	        do {
+	            System.out.print("Identificación: ");
+	            identificacion = sc.nextLine().trim();
+	
+	            if (identificacion.isEmpty()) {
+	                System.out.println("La identificación no puede estar vacía.");
+	            }
+	        } while (identificacion.isEmpty());
+	
+	        String nombre;
+	        do {
+	            System.out.print("Nombre: ");
+	            nombre = sc.nextLine().trim();
+	
+	            if (nombre.isEmpty()) {
+	                System.out.println("El nombre no puede estar vacío.");
+	            }
+	        } while (nombre.isEmpty());
+	
+	        PasajeroVO pasajero = new PasajeroVO(identificacion, nombre);
+	        pasajeroManager.agregarPasajero(pasajero);
+	        System.out.println("Pasajero creado correctamente.");
+        
+        } catch (IllegalArgumentException e) {
+            System.out.println("Error de validación: " + e.getMessage());
+        } catch (Exception e) {
+            System.out.println("Error inesperado: " + e.getMessage());
+        }
     }
 
     private void listarPasajeros() {
-
         System.out.println("\n=== LISTADO DE PASAJEROS ===");
 
         for (PasajeroVO p : pasajeroManager.obtenerPasajeros()) {
@@ -103,28 +108,38 @@ public class MenuPasajeros {
     }
 
     private void buscarPasajero() {
-
-        System.out.print("Ingrese la identificación del pasajero: ");
-        String id = sc.nextLine();
-
-        PasajeroVO pasajero = pasajeroManager.buscarPasajeroPorIdentificacion(id);
-
-        if (pasajero != null) {
-            System.out.println("\n=== PASAJERO ENCONTRADO ===");
-            System.out.println(pasajero);
-        } else {
-            System.out.println("Pasajero no encontrado.");
+    	try {
+	        System.out.print("Ingrese la identificación del pasajero: ");
+	        String id = sc.nextLine();
+	
+	        PasajeroVO pasajero = pasajeroManager.buscarPasajeroPorIdentificacion(id);
+	
+	        if (pasajero != null) {
+	            System.out.println("\n=== PASAJERO ENCONTRADO ===");
+	            System.out.println(pasajero);
+	        } else {
+	            System.out.println("Pasajero no encontrado.");
+	        }
+	        
+        } catch (IllegalArgumentException e) {
+            System.out.println("Error de validación: " + e.getMessage());
+        } catch (IllegalStateException e) {
+	        System.out.println("Error: " + e.getMessage());
+	    } catch (Exception e) {
+            System.out.println("Error inesperado: " + e.getMessage());
         }
     }
 
     private void actualizarPasajero() {
-
-        System.out.print("Ingrese la identificación del pasajero a actualizar: ");
-        String id = sc.nextLine();
-
-        PasajeroVO pasajero = pasajeroManager.buscarPasajeroPorIdentificacion(id);
-
-        if (pasajero != null) {
+    	try {
+	        System.out.print("Ingrese la identificación del pasajero a actualizar: ");
+	        String id = sc.nextLine();
+	        
+	        PasajeroVO pasajero = pasajeroManager.buscarPasajeroPorIdentificacion(id);
+            if (pasajero == null) {
+            	System.out.println("Pasajero no encontrado.");
+                return;
+            }
 
             System.out.print("Nuevo nombre (" + pasajero.getNombre() + "): ");
             String nuevoNombre = sc.nextLine().trim();
@@ -134,25 +149,33 @@ public class MenuPasajeros {
             }
 
             pasajeroManager.actualizarPasajeroPorIdentificacion(id, pasajero);
-
             System.out.println("Pasajero actualizado correctamente.");
-
-        } else {
-            System.out.println("Pasajero no encontrado.");
+        
+        } catch (IllegalArgumentException e) {
+            System.out.println("Error de validación: " + e.getMessage());
+        } catch (IllegalStateException e) {
+            System.out.println("Error: " + e.getMessage());
+        } catch (Exception e) {
+            System.out.println("Error inesperado: " + e.getMessage());
         }
     }
 
     private void eliminarPasajero() {
-
-        System.out.print("Ingrese la identificación del pasajero a eliminar: ");
-        String id = sc.nextLine();
-
-        boolean eliminado = pasajeroManager.eliminarPasajeroPorIdentificacion(id);
-
-        if (eliminado) {
-            System.out.println("Pasajero eliminado correctamente.");
-        } else {
-            System.out.println("Pasajero no encontrado.");
+    	try {
+	        System.out.print("Ingrese la identificación del pasajero a eliminar: ");
+	        String id = sc.nextLine();
+	
+	        boolean eliminado = pasajeroManager.eliminarPasajeroPorIdentificacion(id);
+	        if (eliminado) {
+	            System.out.println("Pasajero eliminado correctamente.");
+	        } else {
+	            System.out.println("Pasajero no encontrado.");
+	        }
+        
+        } catch (IllegalArgumentException e) {
+            System.out.println("Error de validación: " + e.getMessage());
+        } catch (Exception e) {
+            System.out.println("Error inesperado: " + e.getMessage());
         }
     }
 }

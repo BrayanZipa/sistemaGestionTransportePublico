@@ -30,8 +30,8 @@ public class GestionVehiculosManager {
             throw new IllegalArgumentException("El modelo no puede ser nulo o vacío.");
         }
 
-        if (v.getCapacidadPasajeros() <= 0) {
-            throw new IllegalArgumentException("La capacidad debe ser mayor a cero.");
+        if (v.getCapacidadPasajeros() <= 5) {
+            throw new IllegalArgumentException("La capacidad debe ser mayor a cinco.");
         }
 
         listaVehiculos.add(v);

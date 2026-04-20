@@ -1,5 +1,6 @@
 package co.edu.poligran.paradigmas.frontend;
 
+import java.util.InputMismatchException;
 import java.util.Scanner;
 import co.edu.poligran.paradigmas.backend.negocio.GestionRutasManager;
 import co.edu.poligran.paradigmas.backend.negocio.GestionVehiculosManager;
@@ -82,70 +83,77 @@ public class MenuVehiculos {
      */
     private void crearVehiculo() {
         System.out.println("\n=== CREAR VEHICULO ===");
-
-        String placa;
         
-        do {
-            System.out.print("Ingrese la placa: ");
-            placa = sc.nextLine().trim();
-
-            if (placa.isEmpty()) {
-                System.out.println("La placa no puede estar vacía.");
-            }
-        } while (placa.isEmpty());
-
-        String modelo;
+        try {
+	        String placa;
+	        do {
+	            System.out.print("Ingrese la placa: ");
+	            placa = sc.nextLine().trim();
+	
+	            if (placa.isEmpty()) {
+	                System.out.println("La placa no puede estar vacía.");
+	            }
+	        } while (placa.isEmpty());
+	
+	        String modelo;       
+	        do {
+	            System.out.print("Ingrese el modelo: ");
+	            modelo = sc.nextLine().trim();
+	
+	            if (modelo.isEmpty()) {
+	                System.out.println("El modelo no puede estar vacío.");
+	            }
+	        } while (modelo.isEmpty());
+	
+	        int capacidad = 0;
+	        boolean capacidadValida = false;
+	
+	        while (!capacidadValida) {
+	            System.out.print("Ingrese la capacidad de pasajeros: ");
+	
+	            if (sc.hasNextInt()) {
+	                capacidad = sc.nextInt();
+	                sc.nextLine();
+	
+	                if (capacidad > 5) {
+	                    capacidadValida = true;
+	                } else {
+	                    System.out.println("La capacidad debe ser mayor a 5.");
+	                }
+	            } else {
+	                System.out.println("Debe ingresar un número válido.");
+	                sc.nextLine();
+	            }
+	        }
+	
+	        boolean estado = false;
+	        boolean estadoValido = false;
+	
+	        while (!estadoValido) {
+	            System.out.print("¿Está disponible? (true/false): ");
+	
+	            String entrada = sc.nextLine().trim().toLowerCase();
+	
+	            if (entrada.equals("true") || entrada.equals("false")) {
+	                estado = Boolean.parseBoolean(entrada);
+	                estadoValido = true;
+	            } else {
+	                System.out.println("Ingrese únicamente true o false.");
+	            }
+	        }
+	
+	        VehiculoVO v = new VehiculoVO(placa, modelo, capacidad, estado);
+	        vehiculoManager.agregarVehiculo(v);
+	        System.out.println("Vehículo agregado correctamente.");
         
-        do {
-            System.out.print("Ingrese el modelo: ");
-            modelo = sc.nextLine().trim();
-
-            if (modelo.isEmpty()) {
-                System.out.println("El modelo no puede estar vacío.");
-            }
-        } while (modelo.isEmpty());
-
-        int capacidad = 0;
-        boolean capacidadValida = false;
-
-        while (!capacidadValida) {
-            System.out.print("Ingrese la capacidad de pasajeros: ");
-
-            if (sc.hasNextInt()) {
-                capacidad = sc.nextInt();
-                sc.nextLine();
-
-                if (capacidad > 5) {
-                    capacidadValida = true;
-                } else {
-                    System.out.println("La capacidad debe ser mayor a 5.");
-                }
-            } else {
-                System.out.println("Debe ingresar un número válido.");
-                sc.nextLine();
-            }
+        } catch (InputMismatchException e) {
+	        System.out.println("Debe ingresar un valor válido.");
+	        sc.nextLine();
+	    } catch (IllegalArgumentException e) {
+            System.out.println("Error de validación: " + e.getMessage());
+        } catch (Exception e) {
+            System.out.println("Error inesperado: " + e.getMessage());
         }
-
-        boolean estado = false;
-        boolean estadoValido = false;
-
-        while (!estadoValido) {
-            System.out.print("¿Está disponible? (true/false): ");
-
-            String entrada = sc.nextLine().trim().toLowerCase();
-
-            if (entrada.equals("true") || entrada.equals("false")) {
-                estado = Boolean.parseBoolean(entrada);
-                estadoValido = true;
-            } else {
-                System.out.println("Ingrese únicamente true o false.");
-            }
-        }
-
-        VehiculoVO v = new VehiculoVO(placa, modelo, capacidad, estado);
-        vehiculoManager.agregarVehiculo(v);
-
-        System.out.println("Vehículo agregado correctamente.");
     }
 
     /**
@@ -174,15 +182,24 @@ public class MenuVehiculos {
      * Busca y muestra un vehículo específico por su placa.
      */
     private void obtenerVehiculo() {
-        System.out.print("Ingrese la placa del vehiculo a buscar: ");
-        String placa = sc.nextLine();
-        VehiculoVO vehiculo = vehiculoManager.buscarVehiculoPorPlaca(placa);
+        try {
+            System.out.print("Ingrese la placa del vehiculo a buscar: ");
+            String placa = sc.nextLine();
+            VehiculoVO vehiculo = vehiculoManager.buscarVehiculoPorPlaca(placa);
 
-        if (vehiculo != null) {
-            System.out.println("\n=== VEHICULO ENCONTRADO ===");
-            System.out.println(vehiculo);
-        } else {
-            System.out.println("Vehiculo no encontrado.");
+            if (vehiculo != null) {
+                System.out.println("\n=== VEHICULO ENCONTRADO ===");
+                System.out.println(vehiculo);
+            } else {
+                System.out.println("Vehiculo no encontrado.");
+            }
+            
+        } catch (IllegalArgumentException e) {
+            System.out.println("Error de validación: " + e.getMessage());
+        } catch (IllegalStateException e) {
+	        System.out.println("Error: " + e.getMessage());
+	    } catch (Exception e) {
+            System.out.println("Error inesperado: " + e.getMessage());
         }
     }
     
@@ -190,12 +207,16 @@ public class MenuVehiculos {
      * Actualiza los datos de un vehículo existente identificado por su placa.
      */
     private void actualizarVehiculo() {
-        System.out.print("Ingrese la placa del vehículo a actualizar: ");
-        String placa = sc.nextLine();
+    	try {
+	        System.out.print("Ingrese la placa del vehículo a actualizar: ");
+	        String placa = sc.nextLine();
+	        
+	        VehiculoVO v = vehiculoManager.buscarVehiculoPorPlaca(placa);
+            if (v == null) {
+            	System.out.println("Vehículo no encontrado.");
+                return;
+            }
 
-        VehiculoVO v = vehiculoManager.buscarVehiculoPorPlaca(placa);
-
-        if (v != null) {
             System.out.print("Nuevo modelo (" + v.getModelo() + "): ");
             String nuevoModelo = sc.nextLine().trim();
 
@@ -233,8 +254,16 @@ public class MenuVehiculos {
 
             vehiculoManager.actualizarVehiculoPorPlaca(placa, v);
             System.out.println("Vehículo actualizado correctamente.");
-        } else {
-            System.out.println("Vehículo no encontrado.");
+
+        } catch (InputMismatchException e) {
+	        System.out.println("Debe ingresar un valor válido.");
+	        sc.nextLine();
+	    } catch (IllegalArgumentException e) {
+            System.out.println("Error de validación: " + e.getMessage());
+        } catch (IllegalStateException e) {
+            System.out.println("Error: " + e.getMessage());
+        } catch (Exception e) {
+            System.out.println("Error inesperado: " + e.getMessage());
         }
     }
 
@@ -242,14 +271,21 @@ public class MenuVehiculos {
      * Elimina un vehículo del sistema identificado por su placa.
      */
     private void eliminarVehiculo() {
-        System.out.print("Ingrese la placa del vehiculo a eliminar: ");
-        String placa = sc.nextLine();
-        boolean eliminado = vehiculoManager.eliminarVehiculoPorPlaca(placa);
-
-        if (eliminado) {
-            System.out.println("Vehiculo eliminado correctamente.");
-        } else {
-            System.out.println("Vehiculo no encontrado.");
+    	try {
+	        System.out.print("Ingrese la placa del vehiculo a eliminar: ");
+	        String placa = sc.nextLine();
+	        boolean eliminado = vehiculoManager.eliminarVehiculoPorPlaca(placa);
+	
+	        if (eliminado) {
+	            System.out.println("Vehiculo eliminado correctamente.");
+	        } else {
+	            System.out.println("Vehiculo no encontrado.");
+	        }
+        
+        } catch (IllegalArgumentException e) {
+            System.out.println("Error de validación: " + e.getMessage());
+        } catch (Exception e) {
+            System.out.println("Error inesperado: " + e.getMessage());
         }
     }
 
@@ -257,17 +293,27 @@ public class MenuVehiculos {
      * Cambia el estado de disponibilidad de un vehículo identificado por su placa.
      */
     private void cambiarDisponibilidad() {
-        System.out.print("Ingrese la placa del vehiculo: ");
-        String placa = sc.nextLine();
-        System.out.print("Nuevo estado de disponibilidad (true/false): ");
-        boolean estado = sc.nextBoolean();
-        sc.nextLine();
-
-        boolean actualizado = vehiculoManager.cambiarDisponibilidad(placa, estado);
-        if (actualizado) {
-            System.out.println("Disponibilidad actualizada correctamente.");
-        } else {
-            System.out.println("Vehiculo no encontrado.");
+    	try {
+	        System.out.print("Ingrese la placa del vehiculo: ");
+	        String placa = sc.nextLine();
+	        System.out.print("Nuevo estado de disponibilidad (true/false): ");
+	        boolean estado = sc.nextBoolean();
+	        sc.nextLine();
+	
+	        boolean actualizado = vehiculoManager.cambiarDisponibilidad(placa, estado);
+	        if (actualizado) {
+	            System.out.println("Disponibilidad actualizada correctamente.");
+	        } else {
+	            System.out.println("Vehiculo no encontrado.");
+	        }
+	        
+	    } catch (InputMismatchException e) {
+	        System.out.println("Debe ingresar un valor válido.");
+	        sc.nextLine();
+	    } catch (IllegalArgumentException e) {
+            System.out.println("Error de validación: " + e.getMessage());
+        } catch (Exception e) {
+            System.out.println("Error inesperado: " + e.getMessage());
         }
     }
     
@@ -276,31 +322,40 @@ public class MenuVehiculos {
      */
     private void asignarRutaVehiculo() {
         System.out.println("\n=== ASIGNAR RUTA A VEHÍCULO ===");
-
-        System.out.print("Ingrese la placa del vehículo: ");
-        String placa = sc.nextLine();
-
-        VehiculoVO vehiculo = vehiculoManager.buscarVehiculoPorPlaca(placa);
-
-        if (vehiculo == null) {
-            System.out.println("Vehículo no encontrado.");
-            return;
-        }
-
-        System.out.print("Ingrese el código de la ruta: ");
-        int codigoRuta = sc.nextInt();
-        sc.nextLine();
-
-        RutaVO ruta = rutaManager.buscarRutaPorCodigo(codigoRuta);
-
-        if (ruta == null) {
-            System.out.println("Ruta no encontrada.");
-            return;
-        }
-
-        vehiculo.agregarRuta(ruta);
-        ruta.setVehiculo(vehiculo);
-
-        System.out.println("Ruta asignada correctamente.");
+        
+        try {
+	        System.out.print("Ingrese la placa del vehículo: ");
+	        String placa = sc.nextLine();
+	
+	        VehiculoVO vehiculo = vehiculoManager.buscarVehiculoPorPlaca(placa);
+	        if (vehiculo == null) {
+	            System.out.println("Vehículo no encontrado.");
+	            return;
+	        }
+	
+	        System.out.print("Ingrese el código de la ruta: ");
+	        int codigoRuta = sc.nextInt();
+	        sc.nextLine();
+	
+	        RutaVO ruta = rutaManager.buscarRutaPorCodigo(codigoRuta);
+	        if (ruta == null) {
+	            System.out.println("Ruta no encontrada.");
+	            return;
+	        }
+	
+	        vehiculo.agregarRuta(ruta);
+	        ruta.setVehiculo(vehiculo);
+	        System.out.println("Ruta asignada correctamente.");
+        
+	    } catch (InputMismatchException e) {
+	        System.out.println("Debe ingresar un número válido.");
+	        sc.nextLine();
+	    } catch (IllegalArgumentException e) {
+	        System.out.println("Error de validación: " + e.getMessage());
+	    } catch (IllegalStateException e) {
+	        System.out.println("Error: " + e.getMessage());
+	    } catch (Exception e) {
+	        System.out.println("Error inesperado: " + e.getMessage());
+	    }
     }
 }
