@@ -152,7 +152,9 @@ public class MenuParadas {
             
         } catch (IllegalArgumentException e) {
             System.out.println("Error de validación: " + e.getMessage());
-        } catch (Exception e) {
+        } catch (IllegalStateException e) {
+	        System.out.println("Error: " + e.getMessage());
+	    } catch (Exception e) {
             System.out.println("Error inesperado: " + e.getMessage());
         }
     }

@@ -1,5 +1,6 @@
 package co.edu.poligran.paradigmas.frontend;
 
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 import co.edu.poligran.paradigmas.backend.negocio.GestionBoletosManager;
@@ -47,9 +48,16 @@ public class Program {
             System.out.println("10. Gestionar Mantenimiento");
             System.out.println("11. Salir");
             System.out.print("\nSeleccione una opcion: ");
-
-            opcion = sc.nextInt();
-            sc.nextLine();
+            
+            try {
+                opcion = sc.nextInt();
+                sc.nextLine();
+                
+            } catch (InputMismatchException e) {
+                System.out.println("Entrada inválida. Por favor ingrese un número.");
+                sc.nextLine();
+                opcion = -1;
+            }
 
             switch (opcion) {
                 case 1:

@@ -1,6 +1,7 @@
 package co.edu.poligran.paradigmas.frontend;
 
 import java.time.LocalDateTime;
+import java.util.InputMismatchException;
 import java.util.Scanner;
 import co.edu.poligran.paradigmas.backend.negocio.GestionBoletosManager;
 import co.edu.poligran.paradigmas.backend.negocio.GestionPagosManager;
@@ -86,91 +87,99 @@ public class MenuBoletos {
     }
 
     private void crearBoleto() {
-
         System.out.println("\n=== CREAR BOLETO ===");
 
-        System.out.print("Código del boleto: ");
-        int codigo = sc.nextInt();
-        sc.nextLine();
-
-        String asiento;
-        do {
-            System.out.print("Número de asiento: ");
-            asiento = sc.nextLine().trim();
-
-            if (asiento.isEmpty()) {
-                System.out.println("El número de asiento no puede estar vacío.");
-            }
-        } while (asiento.isEmpty());
-
-        PasajeroVO pasajero;
-        do {
-            System.out.print("Identificación del pasajero: ");
-            String idPasajero = sc.nextLine();
-
-            pasajero = pasajeroManager.buscarPasajeroPorIdentificacion(idPasajero);
-
-            if (pasajero == null) {
-                System.out.println("El pasajero no existe. Intente nuevamente.");
-            }
-        } while (pasajero == null);
-
-        RutaVO ruta;
-        do {
-            System.out.print("Código de la ruta: ");
-            int codigoRuta = sc.nextInt();
-            sc.nextLine();
-
-            ruta = rutaManager.buscarRutaPorCodigo(codigoRuta);
-            if (ruta == null) {
-                System.out.println("La ruta no existe. Intente nuevamente.");
-            }
-            
-        } while (ruta == null);
+        try {
+	        System.out.print("Código del boleto: ");
+	        int codigo = sc.nextInt();
+	        sc.nextLine();
+	
+	        String asiento;
+	        do {
+	            System.out.print("Número de asiento: ");
+	            asiento = sc.nextLine().trim();
+	
+	            if (asiento.isEmpty()) {
+	                System.out.println("El número de asiento no puede estar vacío.");
+	            }
+	        } while (asiento.isEmpty());
+	
+	        PasajeroVO pasajero;
+	        do {
+	            System.out.print("Identificación del pasajero: ");
+	            String idPasajero = sc.nextLine();
+	
+	            pasajero = pasajeroManager.buscarPasajeroPorIdentificacion(idPasajero);
+	
+	            if (pasajero == null) {
+	                System.out.println("El pasajero no existe. Intente nuevamente.");
+	            }
+	        } while (pasajero == null);
+	
+	        RutaVO ruta;
+	        do {
+	            System.out.print("Código de la ruta: ");
+	            int codigoRuta = sc.nextInt();
+	            sc.nextLine();
+	
+	            ruta = rutaManager.buscarRutaPorCodigo(codigoRuta);
+	            if (ruta == null) {
+	                System.out.println("La ruta no existe. Intente nuevamente.");
+	            }
+	            
+	        } while (ruta == null);
+	        
+	        PagoVO pago; 
+	        do {
+	            System.out.print("ID del pago: ");
+	            String idPago = sc.nextLine();
+	
+	            pago = pagosManager.buscarPagoPorId(idPago);
+	
+	            if (pago == null) {
+	                System.out.println("El pago no existe. Intente nuevamente.");
+	            }
+	        } while (pago == null);  
+	        
+	        TarifasVO tarifa;
+	        do {
+	            System.out.print("Código de la tarifa: ");
+	            int codigoTarifa = sc.nextInt();
+	            sc.nextLine();
+	
+	            tarifa = tarifasManager.buscarTarifaPorCodigo(codigoTarifa);
+	
+	            if (tarifa == null) {
+	                System.out.println("La tarifa no existe. Intente nuevamente.");
+	            }
+	        } while (tarifa == null);
+	        
+	        BoletoVO boleto = new BoletoVO(
+	                codigo,
+	                LocalDateTime.now(),
+	                asiento,
+	                pasajero,
+	                ruta,
+	                pago,
+	                tarifa
+	        );
+	
+	        boletoManager.agregarBoleto(boleto);
+	        System.out.println("Boleto creado correctamente.");
         
-        PagoVO pago; 
-        do {
-            System.out.print("ID del pago: ");
-            String idPago = sc.nextLine();
-
-            pago = pagosManager.buscarPagoPorId(idPago);
-
-            if (pago == null) {
-                System.out.println("El pago no existe. Intente nuevamente.");
-            }
-        } while (pago == null);  
-        
-        TarifasVO tarifa;
-        do {
-            System.out.print("Código de la tarifa: ");
-            int codigoTarifa = sc.nextInt();
-            sc.nextLine();
-
-            tarifa = tarifasManager.buscarTarifaPorCodigo(codigoTarifa);
-
-            if (tarifa == null) {
-                System.out.println("La tarifa no existe. Intente nuevamente.");
-            }
-        } while (tarifa == null);
-        
-
-        BoletoVO boleto = new BoletoVO(
-                codigo,
-                LocalDateTime.now(),
-                asiento,
-                pasajero,
-                ruta,
-                pago,
-                tarifa
-        );
-
-        boletoManager.agregarBoleto(boleto);
-
-        System.out.println("Boleto creado correctamente.");
+	    } catch (InputMismatchException e) {
+	        System.out.println("Debe ingresar un número válido.");
+	        sc.nextLine();
+	    } catch (IllegalArgumentException e) {
+	        System.out.println("Error de validación: " + e.getMessage());
+	    } catch (IllegalStateException e) {
+	        System.out.println("Error: " + e.getMessage());
+	    } catch (Exception e) {
+	        System.out.println("Error inesperado: " + e.getMessage());
+	    }
     }
 
     private void listarBoletos() {
-
         System.out.println("\n=== LISTADO DE BOLETOS ===");
 
         for (BoletoVO b : boletoManager.obtenerBoletos()) {
@@ -179,99 +188,129 @@ public class MenuBoletos {
     }
 
     private void buscarBoleto() {
+        try {
+            System.out.print("Ingrese el código del boleto: ");
+            int codigo = sc.nextInt();
+            sc.nextLine();
 
-        System.out.print("Ingrese el código del boleto: ");
-        int codigo = sc.nextInt();
-        sc.nextLine();
+            BoletoVO boleto = boletoManager.buscarBoletoPorCodigo(codigo);
 
-        BoletoVO boleto =
-                boletoManager.buscarBoletoPorCodigo(codigo);
-
-        if (boleto != null) {
-            System.out.println("\n=== BOLETO ENCONTRADO ===");
-            System.out.println(boleto);
-        } else {
-            System.out.println("Boleto no encontrado.");
+            if (boleto != null) {
+                System.out.println("\n=== BOLETO ENCONTRADO ===");
+                System.out.println(boleto);
+            } else {
+                System.out.println("Boleto no encontrado.");
+            }
+            
+        } catch (InputMismatchException e) {
+	        System.out.println("Debe ingresar un número válido.");
+	        sc.nextLine();
+	    } catch (IllegalArgumentException e) {
+            System.out.println("Error de validación: " + e.getMessage());
+        } catch (IllegalStateException e) {
+	        System.out.println("Error: " + e.getMessage());
+	    } catch (Exception e) {
+            System.out.println("Error inesperado: " + e.getMessage());
         }
     }
 
     private void actualizarBoleto() {
-        System.out.print("Ingrese el código del boleto a actualizar: ");
-        int codigo = sc.nextInt();
-        sc.nextLine();
-        
-        BoletoVO boleto = boletoManager.buscarBoletoPorCodigo(codigo);
-
-        if (boleto == null) {
-            System.out.println("Boleto no encontrado.");
-            return;
+    	try {
+	        System.out.print("Ingrese el código del boleto a actualizar: ");
+	        int codigo = sc.nextInt();
+	        sc.nextLine();
+	        
+	        BoletoVO boleto = boletoManager.buscarBoletoPorCodigo(codigo);
+	
+	        if (boleto == null) {
+	            System.out.println("Boleto no encontrado.");
+	            return;
+	        }
+	
+	        System.out.print("Nuevo número de asiento (" + boleto.getNumeroAsiento() + "): ");
+	        String nuevoAsiento = sc.nextLine().trim();
+	
+	        if (!nuevoAsiento.isEmpty()) {
+	        	boleto.setNumeroAsiento(nuevoAsiento);
+	        }
+	        
+	        System.out.print("Identificación del pasajero: ");
+	        String idPasajero = sc.nextLine().trim();
+	
+	        if (!idPasajero.isEmpty()) {
+	            PasajeroVO nuevoPasajero = pasajeroManager.buscarPasajeroPorIdentificacion(idPasajero);
+	
+	            if (nuevoPasajero != null) {
+	                boleto.setPasajero(nuevoPasajero);
+	            } else {
+	                System.out.println("Pasajero no encontrado. Se conserva el actual.");
+	            }
+	        }
+	        
+	        System.out.print("Código de la ruta: ");
+	        String codigoRuta = sc.nextLine().trim();
+	
+	        if (!codigoRuta.isEmpty()) {
+	            int nuevoCodigoRuta = Integer.parseInt(codigoRuta);
+	
+	            RutaVO nuevaRuta = rutaManager.buscarRutaPorCodigo(nuevoCodigoRuta);
+	
+	            if (nuevaRuta != null) {
+	                boleto.setRuta(nuevaRuta);
+	            } else {
+	                System.out.println("Ruta no encontrada. Se conserva la actual.");
+	            }
+	            
+	            System.out.print("Codigo del pago: ");
+	            String idPago = sc.nextLine().trim();
+	
+	            if (!idPago.isEmpty()) {
+	                PagoVO nuevoPago = pagosManager.buscarPagoPorId(idPago);
+	
+	                if (nuevoPago != null) {
+	                    boleto.setPago(nuevoPago);
+	                } else {
+	                    System.out.println("Pago no encontrado. Se conserva el actual.");
+	                }
+	            }
+	        }
+	        
+	        boletoManager.actualizarBoletoPorCodigo(codigo, boleto);
+	        System.out.println("Boleto actualizado correctamente.");
+	        
+        } catch (InputMismatchException e) {
+	        System.out.println("Debe ingresar un número válido.");
+	        sc.nextLine();
+	    } catch (IllegalArgumentException e) {
+            System.out.println("Error de validación: " + e.getMessage());
+        } catch (IllegalStateException e) {
+	        System.out.println("Error: " + e.getMessage());
+	    } catch (Exception e) {
+            System.out.println("Error inesperado: " + e.getMessage());
         }
-
-        System.out.print("Nuevo número de asiento (" + boleto.getNumeroAsiento() + "): ");
-        String nuevoAsiento = sc.nextLine().trim();
-
-        if (!nuevoAsiento.isEmpty()) {
-        	boleto.setNumeroAsiento(nuevoAsiento);
-        }
-        
-        System.out.print("Identificación del pasajero: ");
-        String idPasajero = sc.nextLine().trim();
-
-        if (!idPasajero.isEmpty()) {
-            PasajeroVO nuevoPasajero = pasajeroManager.buscarPasajeroPorIdentificacion(idPasajero);
-
-            if (nuevoPasajero != null) {
-                boleto.setPasajero(nuevoPasajero);
-            } else {
-                System.out.println("Pasajero no encontrado. Se conserva el actual.");
-            }
-        }
-        
-        System.out.print("Código de la ruta: ");
-        String codigoRuta = sc.nextLine().trim();
-
-        if (!codigoRuta.isEmpty()) {
-            int nuevoCodigoRuta = Integer.parseInt(codigoRuta);
-
-            RutaVO nuevaRuta = rutaManager.buscarRutaPorCodigo(nuevoCodigoRuta);
-
-            if (nuevaRuta != null) {
-                boleto.setRuta(nuevaRuta);
-            } else {
-                System.out.println("Ruta no encontrada. Se conserva la actual.");
-            }
-            System.out.print("Codigo del pago: ");
-            String idPago = sc.nextLine().trim();
-
-            if (!idPago.isEmpty()) {
-                PagoVO nuevoPago = pagosManager.buscarPagoPorId(idPago);
-
-                if (nuevoPago != null) {
-                    boleto.setPago(nuevoPago);
-                } else {
-                    System.out.println("Pago no encontrado. Se conserva el actual.");
-                }
-            }
-            
-        }
-        
-        boletoManager.actualizarBoletoPorCodigo(codigo, boleto);
-
-        System.out.println("Boleto actualizado correctamente.");
     }
 
     private void eliminarBoleto() {
-        System.out.print("Ingrese el código del boleto a eliminar: ");
-        int codigo = sc.nextInt();
-        sc.nextLine();
-
-        boolean eliminado =
-                boletoManager.eliminarBoletoPorCodigo(codigo);
-
-        if (eliminado) {
-            System.out.println("Boleto eliminado correctamente.");
-        } else {
-            System.out.println("Boleto no encontrado.");
+    	try {
+	        System.out.print("Ingrese el código del boleto a eliminar: ");
+	        int codigo = sc.nextInt();
+	        sc.nextLine();
+	
+	        boolean eliminado = boletoManager.eliminarBoletoPorCodigo(codigo);
+	
+	        if (eliminado) {
+	            System.out.println("Boleto eliminado correctamente.");
+	        } else {
+	            System.out.println("Boleto no encontrado.");
+	        }
+	        
+        } catch (InputMismatchException e) {
+	        System.out.println("Debe ingresar un número válido.");
+	        sc.nextLine();
+	    } catch (IllegalArgumentException e) {
+            System.out.println("Error de validación: " + e.getMessage());
+        } catch (Exception e) {
+            System.out.println("Error inesperado: " + e.getMessage());
         }
     }
 }
