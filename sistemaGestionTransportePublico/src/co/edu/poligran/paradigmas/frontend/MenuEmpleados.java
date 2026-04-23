@@ -6,202 +6,231 @@ import co.edu.poligran.paradigmas.backend.vo.EmpleadoVO;
 
 public class MenuEmpleados {
 
-    static Scanner sc = new Scanner(System.in);
-    private GestionEmpleadosManager empleadoManager;
-    
-    /**
-     * Constructor de la clase MenuEmpleados.
-     * 
-     * @param empleadoManager gestor encargado de las operaciones relacionadas con empleados
-     */
-    public MenuEmpleados(GestionEmpleadosManager empleadoManager) {
-        this.empleadoManager = empleadoManager;
-    }
+	static Scanner sc = new Scanner(System.in);
+	private GestionEmpleadosManager empleadoManager;
 
-    /**
-     * Muestra el menú principal del módulo de empleados
-     * y maneja las opciones del usuario.
-     */
-    public void mostrarMenu() {
+	/**
+	 * Constructor de la clase MenuEmpleados.
+	 * 
+	 * @param empleadoManager gestor encargado de las operaciones relacionadas con
+	 *                        empleados
+	 */
+	public MenuEmpleados(GestionEmpleadosManager empleadoManager) {
+		this.empleadoManager = empleadoManager;
+	}
 
-        int opcion = 0;
+	/**
+	 * Muestra el menú principal del módulo de empleados y maneja las opciones del
+	 * usuario.
+	 */
+	public void mostrarMenu() {
 
-        do {
-            System.out.println("\n=== GESTIÓN DE EMPLEADOS ===");
-            System.out.println("1. Crear empleado");
-            System.out.println("2. Listar empleados");
-            System.out.println("3. Obtener empleado por identificación");
-            System.out.println("4. Actualizar empleado por identificación");
-            System.out.println("5. Eliminar empleado por identificación");
-            System.out.println("6. Volver al menú principal");
-            System.out.print("\nSeleccione una opción: ");
+		int opcion = 0;
 
-            opcion = sc.nextInt();
-            sc.nextLine();
+		do {
+			System.out.println("\n=== GESTIÓN DE EMPLEADOS ===");
+			System.out.println("1. Crear empleado");
+			System.out.println("2. Listar empleados");
+			System.out.println("3. Obtener empleado por identificación");
+			System.out.println("4. Actualizar empleado por identificación");
+			System.out.println("5. Eliminar empleado por identificación");
+			System.out.println("6. Volver al menú principal");
+			System.out.print("\nSeleccione una opción: ");
 
-            switch (opcion) {
-                case 1:
-                    crearEmpleado();
-                    break;
-                case 2:
-                    listarEmpleados();
-                    break;
-                case 3:
-                    obtenerEmpleado();
-                    break;
-                case 4:
-                    actualizarEmpleado();
-                    break;
-                case 5:
-                    eliminarEmpleado();
-                    break;
-                case 6:
-                    System.out.println("Volviendo al menú principal...");
-                    break;
-                default:
-                    System.out.println("Opción inválida.");
-            }
+			opcion = sc.nextInt();
+			sc.nextLine();
 
-        } while (opcion != 6);
-    }
+			switch (opcion) {
+			case 1:
+				crearEmpleado();
+				break;
+			case 2:
+				listarEmpleados();
+				break;
+			case 3:
+				obtenerEmpleado();
+				break;
+			case 4:
+				actualizarEmpleado();
+				break;
+			case 5:
+				eliminarEmpleado();
+				break;
+			case 6:
+				System.out.println("Volviendo al menú principal...");
+				break;
+			default:
+				System.out.println("Opción inválida.");
+			}
 
-    /**
-     * Crea un nuevo empleado solicitando los datos al usuario.
-     */
-    private void crearEmpleado() {
+		} while (opcion != 6);
+	}
 
-        System.out.println("\n=== CREAR EMPLEADO ===");
+	/**
+	 * Crea un nuevo empleado solicitando los datos al usuario.
+	 */
+	private void crearEmpleado() {
 
-        String nombre;
-        do {
-            System.out.print("Ingrese el nombre: ");
-            nombre = sc.nextLine().trim();
+		System.out.println("\n=== CREAR EMPLEADO ===");
 
-            if (nombre.isEmpty()) {
-                System.out.println("El nombre no puede estar vacío.");
-            }
-        } while (nombre.isEmpty());
+		try {
 
-        String email;
-        do {
-            System.out.print("Ingrese el email: ");
-            email = sc.nextLine().trim();
+			String nombre;
+			do {
+				System.out.print("Ingrese el nombre: ");
+				nombre = sc.nextLine().trim();
 
-            if (email.isEmpty()) {
-                System.out.println("El email no puede estar vacío.");
-            }
-        } while (email.isEmpty());
+				if (nombre.isEmpty()) {
+					System.out.println("El nombre no puede estar vacío.");
+				}
+			} while (nombre.isEmpty());
 
-        String identificacion;
-        do {
-            System.out.print("Ingrese la identificación: ");
-            identificacion = sc.nextLine().trim();
+			String email;
+			do {
+				System.out.print("Ingrese el email: ");
+				email = sc.nextLine().trim();
 
-            if (identificacion.isEmpty()) {
-                System.out.println("La identificación no puede estar vacía.");
-            }
-        } while (identificacion.isEmpty());
+				if (email.isEmpty()) {
+					System.out.println("El email no puede estar vacío.");
+				}
+			} while (email.isEmpty());
 
-        String password;
-        do {
-            System.out.print("Ingrese la contraseña: ");
-            password = sc.nextLine().trim();
+			String identificacion;
+			do {
+				System.out.print("Ingrese la identificación: ");
+				identificacion = sc.nextLine().trim();
 
-            if (password.isEmpty()) {
-                System.out.println("La contraseña no puede estar vacía.");
-            }
-        } while (password.isEmpty());
+				if (identificacion.isEmpty()) {
+					System.out.println("La identificación no puede estar vacía.");
+				}
+			} while (identificacion.isEmpty());
 
-        EmpleadoVO e =
-                new EmpleadoVO(nombre, email, "Empleado", identificacion, password);
+			String password;
+			do {
+				System.out.print("Ingrese la contraseña: ");
+				password = sc.nextLine().trim();
 
-        empleadoManager.agregarEmpleado(e);
+				if (password.isEmpty()) {
+					System.out.println("La contraseña no puede estar vacía.");
+				}
+			} while (password.isEmpty());
 
-        System.out.println("Empleado agregado correctamente.");
-    }
+			EmpleadoVO e = new EmpleadoVO(nombre, email, "Empleado", identificacion, password);
 
-    /**
-     * Lista de todos los empleados registrados en el sistema.
-     */
-    private void listarEmpleados() {
+			empleadoManager.agregarEmpleado(e);
 
-        System.out.println("\n=== LISTADO DE EMPLEADOS ===");
+			System.out.println("Empleado agregado correctamente.");
+		} catch (IllegalArgumentException e) {
+			System.out.println("Error de validación: " + e.getMessage());
+		} catch (Exception e) {
+			System.out.println("Error inesperado: " + e.getMessage());
+		}
+	}
 
-        for (EmpleadoVO e : empleadoManager.obtenerEmpleados()) {
-            System.out.println(e);
-        }
-    }
+	/**
+	 * Lista de todos los empleados registrados en el sistema.
+	 */
+	private void listarEmpleados() {
 
-    /**
-     * Busca y muestra un empleado específico por su identificación.
-     */
-    private void obtenerEmpleado() {
+		System.out.println("\n=== LISTADO DE EMPLEADOS ===");
 
-        System.out.print("Ingrese la identificación del empleado a buscar: ");
-        String id = sc.nextLine();
+		for (EmpleadoVO e : empleadoManager.obtenerEmpleados()) {
+			System.out.println(e);
+		}
+	}
 
-        EmpleadoVO empleado = empleadoManager.buscarEmpleadoPorId(id);
+	/**
+	 * Busca y muestra un empleado específico por su identificación.
+	 */
+	private void obtenerEmpleado() {
+		try {
+			System.out.print("Ingrese la identificación del empleado a buscar: ");
+			String id = sc.nextLine();
 
-        if (empleado != null) {
-            System.out.println("\n=== EMPLEADO ENCONTRADO ===");
-            System.out.println(empleado);
-        } else {
-            System.out.println("Empleado no encontrado.");
-        }
-    }
+			EmpleadoVO empleado = empleadoManager.buscarEmpleadoPorId(id);
 
-    /**
-     * Actualiza los datos de un empleado existente identificado por su identificación.
-     */
-    private void actualizarEmpleado() {
+			if (empleado != null) {
+				System.out.println("\n=== EMPLEADO ENCONTRADO ===");
+				System.out.println(empleado);
+			} else {
+				System.out.println("Empleado no encontrado.");
+			}
 
-        System.out.print("Ingrese la identificación del empleado a actualizar: ");
-        String id = sc.nextLine();
+		} catch (IllegalArgumentException e) {
+			System.out.println("Error de validación: " + e.getMessage());
+		} catch (IllegalStateException e) {
+			System.out.println("Error: " + e.getMessage());
+		} catch (Exception e) {
+			System.out.println("Error inesperado: " + e.getMessage());
+		}
+	}
 
-        EmpleadoVO e = empleadoManager.buscarEmpleadoPorId(id);
+	/**
+	 * Actualiza los datos de un empleado existente identificado por su
+	 * identificación.
+	 */
+	private void actualizarEmpleado() {
+		try {
+			System.out.print("Ingrese la identificación del empleado a actualizar: ");
+			String id = sc.nextLine();
 
-        if (e != null) {
+			EmpleadoVO e = empleadoManager.buscarEmpleadoPorId(id);
 
-            System.out.print("Nuevo nombre (" + e.getNombre() + "): ");
-            String nuevoNombre = sc.nextLine().trim();
-            if (!nuevoNombre.isEmpty()) {
-                e.setNombre(nuevoNombre);
-            }
+			if (e != null) {
 
-            System.out.print("Nuevo email (" + e.getEmail() + "): ");
-            String nuevoEmail = sc.nextLine().trim();
-            if (!nuevoEmail.isEmpty()) {
-                e.setEmail(nuevoEmail);
-            }
+				System.out.print("Nuevo nombre (" + e.getNombre() + "): ");
+				String nuevoNombre = sc.nextLine().trim();
+				if (!nuevoNombre.isEmpty()) {
+					e.setNombre(nuevoNombre);
+				}
 
-            System.out.print("Nueva contraseña: ");
-            String nuevaPassword = sc.nextLine().trim();
-            if (!nuevaPassword.isEmpty()) {
-                e.setPassword(nuevaPassword);
-            }
+				System.out.print("Nuevo email (" + e.getEmail() + "): ");
+				String nuevoEmail = sc.nextLine().trim();
+				if (!nuevoEmail.isEmpty()) {
+					e.setEmail(nuevoEmail);
+				}
 
-            empleadoManager.actualizarEmpleado(id, e);
+				System.out.print("Nueva contraseña: ");
+				String nuevaPassword = sc.nextLine().trim();
+				if (!nuevaPassword.isEmpty()) {
+					e.setPassword(nuevaPassword);
+				}
 
-            System.out.println("Empleado actualizado correctamente.");
-        } else {
-            System.out.println("Empleado no encontrado.");
-        }
-    }
+				empleadoManager.actualizarEmpleado(id, e);
 
-    /**
-     * Elimina un empleado del sistema identificado por su identificación.
-     */
-    private void eliminarEmpleado() {
+				System.out.println("Empleado actualizado correctamente.");
+			} else {
+				System.out.println("Empleado no encontrado.");
+			}
 
-        System.out.print("Ingrese la identificación del empleado a eliminar: ");
-        String id = sc.nextLine();
+		} catch (IllegalArgumentException e) {
+			System.out.println("Error de validación: " + e.getMessage());
+		} catch (IllegalStateException e) {
+			System.out.println("Error: " + e.getMessage());
+		} catch (Exception e) {
+			System.out.println("Error inesperado: " + e.getMessage());
+		}
+	}
 
-        boolean eliminado = empleadoManager.eliminarEmpleado(id);
+	/**
+	 * Elimina un empleado del sistema identificado por su identificación.
+	 */
+	private void eliminarEmpleado() {
+		try {
+			System.out.print("Ingrese la identificación del empleado a eliminar: ");
+			String id = sc.nextLine();
 
-        if (eliminado) {
-            System.out.println("Empleado eliminado correctamente.");
-        } else {
-            System.out.println("Empleado no encontrado.");
-        }
-    }
+			boolean eliminado = empleadoManager.eliminarEmpleado(id);
+
+			if (eliminado) {
+				System.out.println("Empleado eliminado correctamente.");
+			} else {
+				System.out.println("Empleado no encontrado.");
+			}
+		} catch (IllegalArgumentException e) {
+			System.out.println("Error de validación: " + e.getMessage());
+		} catch (Exception e) {
+			System.out.println("Error inesperado: " + e.getMessage());
+		}
+	}
 }

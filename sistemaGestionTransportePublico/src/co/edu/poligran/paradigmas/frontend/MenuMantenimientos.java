@@ -1,187 +1,222 @@
 package co.edu.poligran.paradigmas.frontend;
 
 import java.util.Scanner;
-import co.edu.poligran.paradigmas.backend.negocio.GestionMantenimientoManager; 
+import co.edu.poligran.paradigmas.backend.negocio.GestionMantenimientoManager;
 import co.edu.poligran.paradigmas.backend.negocio.GestionVehiculosManager;
 import co.edu.poligran.paradigmas.backend.vo.MantenimientoVO;
 import co.edu.poligran.paradigmas.backend.vo.VehiculoVO;
 
-
-
 public class MenuMantenimientos {
 
-    static Scanner sc = new Scanner(System.in);
-    private GestionMantenimientoManager mantenimientoManager;
-    private GestionVehiculosManager vehiculoManager;
+	static Scanner sc = new Scanner(System.in);
+	private GestionMantenimientoManager mantenimientoManager;
+	private GestionVehiculosManager vehiculoManager;
 
-    /**
-     * Constructor de la clase MenuMantenimientos.
-     * @param mantenimientoManager gestor encargado de mantenimientos
-     * @param vehiculoManager gestor encargado de vehículos
-     */
-    public MenuMantenimientos(GestionMantenimientoManager mantenimientoManager,
-                              GestionVehiculosManager vehiculoManager) {
-        this.mantenimientoManager = mantenimientoManager;
-        this.vehiculoManager = vehiculoManager;
-    }
+	/**
+	 * Constructor de la clase MenuMantenimientos.
+	 * 
+	 * @param mantenimientoManager gestor encargado de mantenimientos
+	 * @param vehiculoManager      gestor encargado de vehículos
+	 */
+	public MenuMantenimientos(GestionMantenimientoManager mantenimientoManager,
+			GestionVehiculosManager vehiculoManager) {
+		this.mantenimientoManager = mantenimientoManager;
+		this.vehiculoManager = vehiculoManager;
+	}
 
-    /**
-     * Muestra el menú principal del módulo de mantenimientos
-     * y gestiona las opciones seleccionadas por el usuario.
-     */
-    public void mostrarMenu() {
+	/**
+	 * Muestra el menú principal del módulo de mantenimientos y gestiona las
+	 * opciones seleccionadas por el usuario.
+	 */
+	public void mostrarMenu() {
 
-        int opcion = 0;
+		int opcion = 0;
 
-        do {
-            System.out.println("\n=== GESTIÓN DE MANTENIMIENTOS ===");
-            System.out.println("1. Crear mantenimiento");
-            System.out.println("2. Listar mantenimientos");
-            System.out.println("3. Buscar mantenimiento por ID");
-            System.out.println("4. Actualizar mantenimiento");
-            System.out.println("5. Eliminar mantenimiento");
-            System.out.println("6. Volver al menú principal");
-            System.out.print("\nSeleccione una opción: ");
+		do {
+			System.out.println("\n=== GESTIÓN DE MANTENIMIENTOS ===");
+			System.out.println("1. Crear mantenimiento");
+			System.out.println("2. Listar mantenimientos");
+			System.out.println("3. Buscar mantenimiento por ID");
+			System.out.println("4. Actualizar mantenimiento");
+			System.out.println("5. Eliminar mantenimiento");
+			System.out.println("6. Volver al menú principal");
+			System.out.print("\nSeleccione una opción: ");
 
-            opcion = sc.nextInt();
-            sc.nextLine();
+			opcion = sc.nextInt();
+			sc.nextLine();
 
-            switch (opcion) {
-                case 1:
-                    crearMantenimiento();
-                    break;
-                case 2:
-                    listarMantenimientos();
-                    break;
-                case 3:
-                    buscarMantenimiento();
-                    break;
-                case 4:
-                    actualizarMantenimiento();
-                    break;
-                case 5:
-                    eliminarMantenimiento();
-                    break;
-                case 6:
-                    System.out.println("Volviendo al menú principal...");
-                    break;
-                default:
-                    System.out.println("Opción inválida.");
-            }
+			switch (opcion) {
+			case 1:
+				crearMantenimiento();
+				break;
+			case 2:
+				listarMantenimientos();
+				break;
+			case 3:
+				buscarMantenimiento();
+				break;
+			case 4:
+				actualizarMantenimiento();
+				break;
+			case 5:
+				eliminarMantenimiento();
+				break;
+			case 6:
+				System.out.println("Volviendo al menú principal...");
+				break;
+			default:
+				System.out.println("Opción inválida.");
+			}
 
-        } while (opcion != 6);
-    }
+		} while (opcion != 6);
+	}
 
-    private void crearMantenimiento() {
+	private void crearMantenimiento() {
 
-        System.out.println("\n=== CREAR MANTENIMIENTO ===");
+		System.out.println("\n=== CREAR MANTENIMIENTO ===");
 
-        String id;
-        do {
-            System.out.print("Id del mantenimiento: ");
-            id = sc.nextLine().trim();
+		try {
 
-            if (id.isEmpty()) {
-                System.out.println("El Id no puede estar vacío.");
-            }
-        } while (id.isEmpty());
+			String id;
+			do {
+				System.out.print("Id del mantenimiento: ");
+				id = sc.nextLine().trim();
 
-        System.out.print("Fecha: ");
-        String fecha = sc.nextLine();
+				if (id.isEmpty()) {
+					System.out.println("El Id no puede estar vacío.");
+				}
+			} while (id.isEmpty());
 
-        System.out.print("Descripción: ");
-        String descripcion = sc.nextLine();
+			System.out.print("Fecha: ");
+			String fecha = sc.nextLine();
 
-        System.out.print("Costo: ");
-        double costo = sc.nextDouble();
-        sc.nextLine();
+			System.out.print("Descripción: ");
+			String descripcion = sc.nextLine();
 
-        VehiculoVO vehiculo;
-        do {
-            System.out.print("Placa del vehículo: ");
-            String placa = sc.nextLine();
+			System.out.print("Costo: ");
+			double costo = sc.nextDouble();
+			sc.nextLine();
 
-            vehiculo = vehiculoManager.buscarVehiculoPorPlaca(placa);
+			VehiculoVO vehiculo;
+			do {
+				System.out.print("Placa del vehículo: ");
+				String placa = sc.nextLine();
 
-            if (vehiculo == null) {
-                System.out.println("El vehículo no existe. Intente nuevamente.");
-            }
-        } while (vehiculo == null);
+				vehiculo = vehiculoManager.buscarVehiculoPorPlaca(placa);
 
-        MantenimientoVO m = new MantenimientoVO(id, fecha, descripcion, costo, vehiculo);
-        vehiculo.agregarMantenimiento(m);
-        mantenimientoManager.agregarMantenimiento(m);
+				if (vehiculo == null) {
+					System.out.println("El vehículo no existe. Intente nuevamente.");
+				}
+			} while (vehiculo == null);
 
-        System.out.println("Mantenimiento creado correctamente.");
-    }
+			MantenimientoVO m = new MantenimientoVO(id, fecha, descripcion, costo, vehiculo);
+			vehiculo.agregarMantenimiento(m);
+			mantenimientoManager.agregarMantenimiento(m);
 
-    private void listarMantenimientos() {
+			System.out.println("Mantenimiento creado correctamente.");
 
-        System.out.println("\n=== LISTADO DE MANTENIMIENTOS ===");
+		} catch (java.util.InputMismatchException e) {
+			System.out.println("Debe ingresar un valor numérico válido para el costo.");
+			sc.nextLine();
+		} catch (IllegalArgumentException e) {
+			System.out.println("Error de validación: " + e.getMessage());
+		} catch (IllegalStateException e) {
+			System.out.println("Error: " + e.getMessage());
+		} catch (Exception e) {
+			System.out.println("Error inesperado: " + e.getMessage());
+		}
+	}
 
-        for (MantenimientoVO m : mantenimientoManager.obtenerMantenimientos()) {
-            System.out.println(m);
-        }
-    }
+	private void listarMantenimientos() {
 
-    private void buscarMantenimiento() {
+		System.out.println("\n=== LISTADO DE MANTENIMIENTOS ===");
 
-        System.out.print("Ingrese el ID del mantenimiento: ");
-        String id = sc.nextLine();
+		for (MantenimientoVO m : mantenimientoManager.obtenerMantenimientos()) {
+			System.out.println(m);
+		}
+	}
 
-        MantenimientoVO m = mantenimientoManager.buscarMantenimientoPorId(id);
+	private void buscarMantenimiento() {
+		try {
+			System.out.print("Ingrese el ID del mantenimiento: ");
+			String id = sc.nextLine();
 
-        if (m != null) {
-            System.out.println("\n=== MANTENIMIENTO ENCONTRADO ===");
-            System.out.println(m);
-        } else {
-            System.out.println("Mantenimiento no encontrado.");
-        }
-    }
+			MantenimientoVO m = mantenimientoManager.buscarMantenimientoPorId(id);
 
-    private void actualizarMantenimiento() {
+			if (m != null) {
+				System.out.println("\n=== MANTENIMIENTO ENCONTRADO ===");
+				System.out.println(m);
+			} else {
+				System.out.println("Mantenimiento no encontrado.");
+			}
 
-        System.out.print("Ingrese el ID del mantenimiento a actualizar: ");
-        String id = sc.nextLine();
+		} catch (IllegalArgumentException e) {
+			System.out.println("Error de validación: " + e.getMessage());
+		} catch (IllegalStateException e) {
+			System.out.println("Error: " + e.getMessage());
+		} catch (Exception e) {
+			System.out.println("Error inesperado: " + e.getMessage());
+		}
+	}
 
-        MantenimientoVO m = mantenimientoManager.buscarMantenimientoPorId(id);
+	private void actualizarMantenimiento() {
+		try {
+			System.out.print("Ingrese el ID del mantenimiento a actualizar: ");
+			String id = sc.nextLine();
 
-        if (m != null) {
+			MantenimientoVO m = mantenimientoManager.buscarMantenimientoPorId(id);
 
-            System.out.print("Nueva descripción (" + m.getDescripcion() + "): ");
-            String desc = sc.nextLine().trim();
+			if (m != null) {
 
-            if (!desc.isEmpty()) {
-                m.setDescripcion(desc);
-            }
+				System.out.print("Nueva descripción (" + m.getDescripcion() + "): ");
+				String desc = sc.nextLine().trim();
 
-            System.out.print("Nuevo costo (" + m.getCosto() + "): ");
-            String costo = sc.nextLine().trim();
+				if (!desc.isEmpty()) {
+					m.setDescripcion(desc);
+				}
 
-            if (!costo.isEmpty()) {
-                m.setCosto(Double.parseDouble(costo));
-            }
+				System.out.print("Nuevo costo (" + m.getCosto() + "): ");
+				String costo = sc.nextLine().trim();
 
-            mantenimientoManager.actualizarMantenimientoPorId(id, m);
+				if (!costo.isEmpty()) {
+					m.setCosto(Double.parseDouble(costo));
+				}
 
-            System.out.println("Mantenimiento actualizado correctamente.");
+				mantenimientoManager.actualizarMantenimientoPorId(id, m);
 
-        } else {
-            System.out.println("Mantenimiento no encontrado.");
-        }
-    }
+				System.out.println("Mantenimiento actualizado correctamente.");
 
-    private void eliminarMantenimiento() {
+			} else {
+				System.out.println("Mantenimiento no encontrado.");
+			}
 
-        System.out.print("Ingrese el ID del mantenimiento a eliminar: ");
-        String id = sc.nextLine();
+		} catch (NumberFormatException e) {
+			System.out.println("El costo debe ser un número válido.");
+		} catch (IllegalArgumentException e) {
+			System.out.println("Error de validación: " + e.getMessage());
+		} catch (IllegalStateException e) {
+			System.out.println("Error: " + e.getMessage());
+		} catch (Exception e) {
+			System.out.println("Error inesperado: " + e.getMessage());
+		}
+	}
 
-        boolean eliminado = mantenimientoManager.eliminarMantenimientoPorId(id);
+	private void eliminarMantenimiento() {
+		try {
+			System.out.print("Ingrese el ID del mantenimiento a eliminar: ");
+			String id = sc.nextLine();
 
-        if (eliminado) {
-            System.out.println("Mantenimiento eliminado correctamente.");
-        } else {
-            System.out.println("Mantenimiento no encontrado.");
-        }
-    }
+			boolean eliminado = mantenimientoManager.eliminarMantenimientoPorId(id);
+
+			if (eliminado) {
+				System.out.println("Mantenimiento eliminado correctamente.");
+			} else {
+				System.out.println("Mantenimiento no encontrado.");
+			}
+		} catch (IllegalArgumentException e) {
+			System.out.println("Error de validación: " + e.getMessage());
+		} catch (Exception e) {
+			System.out.println("Error inesperado: " + e.getMessage());
+		}
+	}
 }

@@ -272,6 +272,24 @@ public class MenuBoletos {
 	                } else {
 	                    System.out.println("Pago no encontrado. Se conserva el actual.");
 	                }
+	                System.out.print("Código de la tarifa: ");
+	                String codigoTarifaStr = sc.nextLine().trim();
+
+	                if (!codigoTarifaStr.isEmpty()) {
+	                    try {
+	                        int codigoTarifa = Integer.parseInt(codigoTarifaStr);
+
+	                        TarifasVO nuevaTarifa = tarifasManager.buscarTarifaPorCodigo(codigoTarifa);
+
+	                        if (nuevaTarifa != null) {
+	                            boleto.setTarifa(nuevaTarifa);
+	                        } else {
+	                            System.out.println("Tarifa no encontrada. Se conserva la actual.");
+	                        }
+	                    } catch (NumberFormatException e) {
+	                        System.out.println("Código de tarifa inválido. Se conserva la actual.");
+	                    }
+	                }
 	            }
 	        }
 	        
