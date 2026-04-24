@@ -106,41 +106,41 @@ public class MenuVehiculos {
 	        } while (modelo.isEmpty());
 	
 	        int capacidad = 0;
-	        boolean capacidadValida = false;
-	
-	        while (!capacidadValida) {
+	        do {
 	            System.out.print("Ingrese la capacidad de pasajeros: ");
-	
-	            if (sc.hasNextInt()) {
-	                capacidad = sc.nextInt();
-	                sc.nextLine();
-	
-	                if (capacidad > 5) {
-	                    capacidadValida = true;
-	                } else {
+	            String input = sc.nextLine().trim();
+
+	            if (input.isEmpty()) {
+	                System.out.println("La capacidad no puede estar vacía.");
+	                continue;
+	            }
+
+	            try {
+	                capacidad = Integer.parseInt(input);
+
+	                if (capacidad <= 5) {
 	                    System.out.println("La capacidad debe ser mayor a 5.");
 	                }
-	            } else {
+
+	            } catch (NumberFormatException e) {
 	                System.out.println("Debe ingresar un número válido.");
-	                sc.nextLine();
+	                capacidad = 0;
 	            }
-	        }
+
+	        } while (capacidad <= 5);
 	
-	        boolean estado = false;
-	        boolean estadoValido = false;
-	
-	        while (!estadoValido) {
+	        boolean estado;
+	        String entrada;
+	        do {
 	            System.out.print("¿Está disponible? (true/false): ");
-	
-	            String entrada = sc.nextLine().trim().toLowerCase();
-	
-	            if (entrada.equals("true") || entrada.equals("false")) {
-	                estado = Boolean.parseBoolean(entrada);
-	                estadoValido = true;
-	            } else {
+	            entrada = sc.nextLine().trim().toLowerCase();
+
+	            if (!entrada.equals("true") && !entrada.equals("false")) {
 	                System.out.println("Ingrese únicamente true o false.");
 	            }
-	        }
+	        } while (!entrada.equals("true") && !entrada.equals("false"));
+
+	        estado = Boolean.parseBoolean(entrada);
 	
 	        VehiculoVO v = new VehiculoVO(placa, modelo, capacidad, estado);
 	        vehiculoManager.agregarVehiculo(v);
