@@ -102,13 +102,32 @@ public class MenuMantenimientos {
 			        System.out.println("Formato de fecha inválido. Use YYYY-MM-DD.");
 			    }
 			} while (fecha == null);
+			
+			String descripcion;
+			do {
+			    System.out.print("Descripción: ");
+			    descripcion = sc.nextLine().trim();
 
-			System.out.print("Descripción: ");
-			String descripcion = sc.nextLine();
+			    if (descripcion.isEmpty()) {
+			        System.out.println("La descripción no puede estar vacía.");
+			    }
+			} while (descripcion.isEmpty());
+			
+			Double costo = null;
+			do {
+			    try {
+			        System.out.print("Costo: ");
+			        costo = Double.parseDouble(sc.nextLine());
 
-			System.out.print("Costo: ");
-			double costo = sc.nextDouble();
-			sc.nextLine();
+			        if (costo < 0) {
+			            System.out.println("El costo no puede ser negativo.");
+			            costo = null;
+			        }
+
+			    } catch (NumberFormatException e) {
+			        System.out.println("Debe ingresar un número válido.");
+			    }
+			} while (costo == null);
 
 			VehiculoVO vehiculo;
 			do {
