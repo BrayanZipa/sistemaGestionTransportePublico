@@ -1,22 +1,21 @@
 package co.edu.poligran.paradigmas.backend.vo;
-
+import java.time.LocalDate;
 
 public class MantenimientoVO {
 
 	private String idMantenimiento;
-    private String fecha;
+	private LocalDate fecha;
     private String descripcion;
     private double costo;
     private VehiculoVO vehiculo;
     
-    public MantenimientoVO(String idMantenimiento, String fecha, String descripcion, double costo, VehiculoVO vehiculo) {
-		super();
-		this.idMantenimiento = idMantenimiento;
-		this.fecha = fecha;
-		this.descripcion = descripcion;
-		this.costo = costo;
-		this.vehiculo = vehiculo;
-	}
+    public MantenimientoVO(String idMantenimiento, LocalDate fecha, String descripcion, double costo, VehiculoVO vehiculo) {
+        this.idMantenimiento = idMantenimiento;
+        this.fecha = fecha;
+        this.descripcion = descripcion;
+        this.costo = costo;
+        this.vehiculo = vehiculo;
+    }
 
 	@Override
     public String toString() {
@@ -44,15 +43,15 @@ public class MantenimientoVO {
 	/**
 	 * @return the fecha
 	 */
-	public String getFecha() {
-		return fecha;
+	public LocalDate getFecha() {
+	    return fecha;
 	}
 	
 	/**
 	 * @param fecha the fecha to set
 	 */
-	public void setFecha(String fecha) {
-		this.fecha = fecha;
+	public void setFecha(LocalDate fecha) {
+	    this.fecha = fecha;
 	}
 	
 	/**

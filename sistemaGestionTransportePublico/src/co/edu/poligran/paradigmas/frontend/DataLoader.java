@@ -1,5 +1,6 @@
 package co.edu.poligran.paradigmas.frontend;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import co.edu.poligran.paradigmas.backend.negocio.GestionBoletosManager;
@@ -306,32 +307,32 @@ public class DataLoader {
      * Precarga un conjunto de mantenimientos de prueba en memoria
      */
     private static void precargarMantenimientos(
-        GestionMantenimientoManager mantenimientoManager,
-        GestionVehiculosManager vehiculoManager
-    ) {
+    	    GestionMantenimientoManager mantenimientoManager,
+    	    GestionVehiculosManager vehiculoManager
+    	) {
 
-        MantenimientoVO m1 = new MantenimientoVO(
-            "M001",
-            "2026-01-10",
-            "Cambio de aceite",
-            150000,
-            vehiculoManager.buscarVehiculoPorPlaca("ABC123")
-        );
+    	    MantenimientoVO m1 = new MantenimientoVO(
+    	        "M001",
+    	        LocalDate.of(2026, 1, 10),
+    	        "Cambio de aceite",
+    	        150000,
+    	        vehiculoManager.buscarVehiculoPorPlaca("ABC123")
+    	    );
 
-        MantenimientoVO m2 = new MantenimientoVO(
-            "M002",
-            "2026-02-15",
-            "Revisión de frenos",
-            200000,
-            vehiculoManager.buscarVehiculoPorPlaca("DEF456")
-        );
+    	    MantenimientoVO m2 = new MantenimientoVO(
+    	        "M002",
+    	        LocalDate.of(2026, 2, 15),
+    	        "Revisión de frenos",
+    	        200000,
+    	        vehiculoManager.buscarVehiculoPorPlaca("DEF456")
+    	    );
 
-        mantenimientoManager.agregarMantenimiento(m1);
-        mantenimientoManager.agregarMantenimiento(m2);
+    	    mantenimientoManager.agregarMantenimiento(m1);
+    	    mantenimientoManager.agregarMantenimiento(m2);
 
-        m1.getVehiculo().agregarMantenimiento(m1);
-        m2.getVehiculo().agregarMantenimiento(m2);
-    }
+    	    m1.getVehiculo().agregarMantenimiento(m1);
+    	    m2.getVehiculo().agregarMantenimiento(m2);
+    	}
   
     /**
      * Precarga un conjunto de boletos de prueba en memoria

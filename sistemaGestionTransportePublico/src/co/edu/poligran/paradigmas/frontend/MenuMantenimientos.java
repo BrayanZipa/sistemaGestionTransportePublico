@@ -1,6 +1,8 @@
 package co.edu.poligran.paradigmas.frontend;
 
 import java.util.Scanner;
+import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 import co.edu.poligran.paradigmas.backend.negocio.GestionMantenimientoManager;
 import co.edu.poligran.paradigmas.backend.negocio.GestionVehiculosManager;
 import co.edu.poligran.paradigmas.backend.vo.MantenimientoVO;
@@ -87,8 +89,19 @@ public class MenuMantenimientos {
 				}
 			} while (id.isEmpty());
 
-			System.out.print("Fecha: ");
-			String fecha = sc.nextLine();
+			LocalDate fecha = null;
+
+			do {
+			    try {
+			        System.out.print("Fecha (YYYY-MM-DD): ");
+			        String fechaStr = sc.nextLine();
+
+			        fecha = LocalDate.parse(fechaStr);
+
+			    } catch (DateTimeParseException e) {
+			        System.out.println("Formato de fecha inválido. Use YYYY-MM-DD.");
+			    }
+			} while (fecha == null);
 
 			System.out.print("Descripción: ");
 			String descripcion = sc.nextLine();
