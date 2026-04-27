@@ -71,60 +71,73 @@ public class MenuEmpleados {
 	 */
 	private void crearEmpleado() {
 
-		System.out.println("\n=== CREAR EMPLEADO ===");
+	    System.out.println("\n=== CREAR EMPLEADO ===");
 
-		try {
+	    try {
 
-			String nombre;
-			do {
-				System.out.print("Ingrese el nombre: ");
-				nombre = sc.nextLine().trim();
+	        String nombre;
+	        do {
+	            System.out.print("Ingrese el nombre: ");
+	            nombre = sc.nextLine().trim();
 
-				if (nombre.isEmpty()) {
-					System.out.println("El nombre no puede estar vacío.");
-				}
-			} while (nombre.isEmpty());
+	            if (nombre.isEmpty()) {
+	                System.out.println("El nombre no puede estar vacío.");
+	            } else if (!nombre.matches("[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+")) {
+	                System.out.println("El nombre solo debe contener letras.");
+	                nombre = "";
+	            }
+	        } while (nombre.isEmpty());
 
-			String email;
-			do {
-				System.out.print("Ingrese el email: ");
-				email = sc.nextLine().trim();
+	        String email;
+	        do {
+	            System.out.print("Ingrese el email: ");
+	            email = sc.nextLine().trim();
 
-				if (email.isEmpty()) {
-					System.out.println("El email no puede estar vacío.");
-				}
-			} while (email.isEmpty());
+	            if (email.isEmpty()) {
+	                System.out.println("El email no puede estar vacío.");
+	            } else if (!email.contains("@")) {
+	                System.out.println("Ingrese un email válido.");
+	                email = "";
+	            }
+	        } while (email.isEmpty());
 
-			String identificacion;
-			do {
-				System.out.print("Ingrese la identificación: ");
-				identificacion = sc.nextLine().trim();
+	        String identificacion;
+	        do {
+	            System.out.print("Ingrese la identificación: ");
+	            identificacion = sc.nextLine().trim();
 
-				if (identificacion.isEmpty()) {
-					System.out.println("La identificación no puede estar vacía.");
-				}
-			} while (identificacion.isEmpty());
+	            if (identificacion.isEmpty()) {
+	                System.out.println("La identificación no puede estar vacía.");
+	            } else if (!identificacion.matches("\\d+")) {
+	                System.out.println("La identificación solo debe contener números.");
+	                identificacion = "";
+	            }
+	        } while (identificacion.isEmpty());
 
-			String password;
-			do {
-				System.out.print("Ingrese la contraseña: ");
-				password = sc.nextLine().trim();
+	        String password;
+	        do {
+	            System.out.print("Ingrese la contraseña: ");
+	            password = sc.nextLine().trim();
 
-				if (password.isEmpty()) {
-					System.out.println("La contraseña no puede estar vacía.");
-				}
-			} while (password.isEmpty());
+	            if (password.isEmpty()) {
+	                System.out.println("La contraseña no puede estar vacía.");
+	            } else if (password.length() < 4) {
+	                System.out.println("La contraseña debe tener al menos 4 caracteres.");
+	                password = "";
+	            }
+	        } while (password.isEmpty());
 
-			EmpleadoVO e = new EmpleadoVO(nombre, email, "Empleado", identificacion, password);
+	        EmpleadoVO e = new EmpleadoVO(nombre, email, "Empleado", identificacion, password);
 
-			empleadoManager.agregarEmpleado(e);
+	        empleadoManager.agregarEmpleado(e);
 
-			System.out.println("Empleado agregado correctamente.");
-		} catch (IllegalArgumentException e) {
-			System.out.println("Error de validación: " + e.getMessage());
-		} catch (Exception e) {
-			System.out.println("Error inesperado: " + e.getMessage());
-		}
+	        System.out.println("Empleado agregado correctamente.");
+
+	    } catch (IllegalArgumentException e) {
+	        System.out.println("Error de validación: " + e.getMessage());
+	    } catch (Exception e) {
+	        System.out.println("Error inesperado: " + e.getMessage());
+	    }
 	}
 
 	/**
@@ -146,7 +159,11 @@ public class MenuEmpleados {
 		try {
 			System.out.print("Ingrese la identificación del empleado a buscar: ");
 			String id = sc.nextLine();
-
+			
+			if (!id.matches("\\d+")) {
+			    System.out.println("La identificación debe contener solo números.");
+			    return;
+			}
 			EmpleadoVO empleado = empleadoManager.buscarEmpleadoPorId(id);
 
 			if (empleado != null) {
@@ -181,19 +198,30 @@ public class MenuEmpleados {
 				System.out.print("Nuevo nombre (" + e.getNombre() + "): ");
 				String nuevoNombre = sc.nextLine().trim();
 				if (!nuevoNombre.isEmpty()) {
-					e.setNombre(nuevoNombre);
+				    if (nuevoNombre.matches("[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+")) {
+				        e.setNombre(nuevoNombre);
+				    } else {
+				        System.out.println("Nombre inválido. Solo letras. Se conserva el anterior.");
+				    }
 				}
 
 				System.out.print("Nuevo email (" + e.getEmail() + "): ");
 				String nuevoEmail = sc.nextLine().trim();
 				if (!nuevoEmail.isEmpty()) {
-					e.setEmail(nuevoEmail);
+				    if (nuevoEmail.contains("@")) {
+				        e.setEmail(nuevoEmail);
+				    } else {
+				        System.out.println("Email inválido. Se conserva el anterior.");
+				    }
 				}
-
 				System.out.print("Nueva contraseña: ");
 				String nuevaPassword = sc.nextLine().trim();
 				if (!nuevaPassword.isEmpty()) {
-					e.setPassword(nuevaPassword);
+				    if (nuevaPassword.length() >= 4) {
+				        e.setPassword(nuevaPassword);
+				    } else {
+				        System.out.println("La contraseña debe tener al menos 4 caracteres. Se conserva la anterior.");
+				    }
 				}
 
 				empleadoManager.actualizarEmpleado(id, e);
@@ -219,6 +247,11 @@ public class MenuEmpleados {
 		try {
 			System.out.print("Ingrese la identificación del empleado a eliminar: ");
 			String id = sc.nextLine();
+			
+			if (!id.matches("\\d+")) {
+			    System.out.println("La identificación debe contener solo números.");
+			    return;
+			}
 
 			boolean eliminado = empleadoManager.eliminarEmpleado(id);
 

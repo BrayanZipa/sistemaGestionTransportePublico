@@ -86,6 +86,9 @@ public class MenuBoletos {
         } while (opcion != 6);
     }
 
+    /**
+     * Crea un nuevo boleto solicitando los datos al usuario.
+     */    
     private void crearBoleto() {
         System.out.println("\n=== CREAR BOLETO ===");
 

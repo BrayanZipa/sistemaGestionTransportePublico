@@ -39,9 +39,10 @@ public class MenuMantenimientos {
 			System.out.println("1. Crear mantenimiento");
 			System.out.println("2. Listar mantenimientos");
 			System.out.println("3. Buscar mantenimiento por ID");
-			System.out.println("4. Actualizar mantenimiento");
-			System.out.println("5. Eliminar mantenimiento");
-			System.out.println("6. Volver al menú principal");
+			System.out.println("4. Obtener mantenimiento por ID");
+			System.out.println("5. Actualizar mantenimiento");
+			System.out.println("6. Eliminar mantenimiento");
+			System.out.println("7. Volver al menú principal");
 			System.out.print("\nSeleccione una opción: ");
 
 			opcion = sc.nextInt();
@@ -58,21 +59,27 @@ public class MenuMantenimientos {
 				buscarMantenimiento();
 				break;
 			case 4:
-				actualizarMantenimiento();
-				break;
+			    obtenerMantenimiento();
+			    break;
 			case 5:
-				eliminarMantenimiento();
-				break;
+			    actualizarMantenimiento();
+			    break;
 			case 6:
-				System.out.println("Volviendo al menú principal...");
-				break;
+			    eliminarMantenimiento();
+			    break;
+			case 7:
+			    System.out.println("Volviendo al menú principal...");
+			    break;
 			default:
 				System.out.println("Opción inválida.");
 			}
 
-		} while (opcion != 6);
+		} while (opcion != 7);
 	}
-
+	
+	/**
+     * Crea un nuevo mantenimiento solicitando los datos al usuario.
+     */
 	private void crearMantenimiento() {
 
 		System.out.println("\n=== CREAR MANTENIMIENTO ===");
@@ -85,7 +92,10 @@ public class MenuMantenimientos {
 				id = sc.nextLine().trim();
 
 				if (id.isEmpty()) {
-					System.out.println("El Id no puede estar vacío.");
+				    System.out.println("El Id no puede estar vacío.");
+				} else if (id.length() < 3) {
+				    System.out.println("El Id debe tener al menos 3 caracteres.");
+				    id = "";
 				}
 			} while (id.isEmpty());
 
@@ -114,31 +124,49 @@ public class MenuMantenimientos {
 			} while (descripcion.isEmpty());
 			
 			Double costo = null;
-			do {
-			    try {
-			        System.out.print("Costo: ");
-			        costo = Double.parseDouble(sc.nextLine());
 
-			        if (costo < 0) {
-			            System.out.println("El costo no puede ser negativo.");
+			do {
+			    System.out.print("Costo (mínimo 1.000): ");
+			    String input = sc.nextLine().trim();
+
+			    if (input.isEmpty()) {
+			        System.out.println("El costo no puede estar vacío.");
+			        continue;
+			    }
+
+			    try {
+			        String limpio = input.replace(".", "");
+			        costo = Double.parseDouble(limpio);
+
+			        if (costo < 1000) {
+			            System.out.println("El costo debe ser mínimo 1.000.");
 			            costo = null;
 			        }
 
 			    } catch (NumberFormatException e) {
 			        System.out.println("Debe ingresar un número válido.");
 			    }
+
 			} while (costo == null);
 
-			VehiculoVO vehiculo;
+			VehiculoVO vehiculo = null;
+			String placa;
+
 			do {
-				System.out.print("Placa del vehículo: ");
-				String placa = sc.nextLine();
+			    System.out.print("Placa del vehículo: ");
+			    placa = sc.nextLine().trim();
 
-				vehiculo = vehiculoManager.buscarVehiculoPorPlaca(placa);
+			    if (placa.isEmpty()) {
+			        System.out.println("La placa no puede estar vacía.");
+			        continue;
+			    }
 
-				if (vehiculo == null) {
-					System.out.println("El vehículo no existe. Intente nuevamente.");
-				}
+			    vehiculo = vehiculoManager.buscarVehiculoPorPlaca(placa);
+
+			    if (vehiculo == null) {
+			        System.out.println("El vehículo no existe. Intente nuevamente.");
+			    }
+
 			} while (vehiculo == null);
 
 			MantenimientoVO m = new MantenimientoVO(id, fecha, descripcion, costo, vehiculo);
@@ -190,6 +218,31 @@ public class MenuMantenimientos {
 			System.out.println("Error inesperado: " + e.getMessage());
 		}
 	}
+	
+	private void obtenerMantenimiento() {
+
+	    String id;
+
+	    do {
+	        System.out.print("Ingrese el ID del mantenimiento: ");
+	        id = sc.nextLine().trim();
+
+	        if (id.isEmpty()) {
+	            System.out.println("El ID no puede estar vacío.");
+	        }
+
+	    } while (id.isEmpty());
+
+	    MantenimientoVO m = mantenimientoManager.buscarMantenimientoPorId(id);
+
+	    if (m != null) {
+	        System.out.println("\n=== MANTENIMIENTO ENCONTRADO ===");
+	        System.out.println(m);
+	    } else {
+	        System.out.println("Mantenimiento no encontrado.");
+	    }
+	}
+	
 
 	private void actualizarMantenimiento() {
 		try {
@@ -211,9 +264,36 @@ public class MenuMantenimientos {
 				String costo = sc.nextLine().trim();
 
 				if (!costo.isEmpty()) {
-					m.setCosto(Double.parseDouble(costo));
+				    try {
+				        String limpio = costo.replace(".", "");
+				        double nuevoCosto = Double.parseDouble(limpio);
+
+				        if (nuevoCosto < 1000) {
+				            System.out.println("El costo debe ser mínimo 1.000. Se conserva el anterior.");
+				        } else {
+				            m.setCosto(nuevoCosto);
+				        }
+
+				    } catch (NumberFormatException e) {
+				        System.out.println("Costo inválido. Se conserva el anterior.");
+				    }
 				}
 
+				if (!costo.isEmpty()) {
+				    try {
+				        String limpio = costo.replace(".", "");
+				        double nuevoCosto = Double.parseDouble(limpio);
+
+				        if (nuevoCosto < 1000) {
+				            System.out.println("El costo debe ser mínimo 1.000. Se conserva el anterior.");
+				        } else {
+				            m.setCosto(nuevoCosto);
+				        }
+
+				    } catch (NumberFormatException e) {
+				        System.out.println("Costo inválido. Se conserva el anterior.");
+				    }
+				}
 				mantenimientoManager.actualizarMantenimientoPorId(id, m);
 
 				System.out.println("Mantenimiento actualizado correctamente.");

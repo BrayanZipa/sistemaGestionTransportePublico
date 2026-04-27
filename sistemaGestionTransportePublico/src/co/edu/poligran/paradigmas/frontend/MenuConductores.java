@@ -70,59 +70,71 @@ public class MenuConductores {
 	 * Crea un nuevo conductor solicitando los datos al usuario.
 	 */
 	private void crearConductor() {
-		try {
-			System.out.println("\n=== CREAR CONDUCTOR ===");
+	    try {
+	        System.out.println("\n=== CREAR CONDUCTOR ===");
 
-			String nombre;
-			do {
-				System.out.print("Ingrese el nombre: ");
-				nombre = sc.nextLine().trim();
+	        String nombre;
+	        do {
+	            System.out.print("Ingrese el nombre: ");
+	            nombre = sc.nextLine().trim();
 
-				if (nombre.isEmpty()) {
-					System.out.println("El nombre no puede estar vacío.");
-				}
-			} while (nombre.isEmpty());
+	            if (nombre.isEmpty()) {
+	                System.out.println("El nombre no puede estar vacío.");
+	            } else if (!nombre.matches("[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+")) {
+	                System.out.println("El nombre solo debe contener letras.");
+	                nombre = "";
+	            }
+	        } while (nombre.isEmpty());
 
-			String email;
-			do {
-				System.out.print("Ingrese el email: ");
-				email = sc.nextLine().trim();
+	        String email;
+	        do {
+	            System.out.print("Ingrese el email: ");
+	            email = sc.nextLine().trim();
 
-				if (email.isEmpty()) {
-					System.out.println("El email no puede estar vacío.");
-				}
-			} while (email.isEmpty());
+	            if (email.isEmpty()) {
+	                System.out.println("El email no puede estar vacío.");
+	            } else if (!email.contains("@")) {
+	                System.out.println("Ingrese un email válido.");
+	                email = "";
+	            }
+	        } while (email.isEmpty());
 
-			String id;
-			do {
-				System.out.print("Ingrese la identificación: ");
-				id = sc.nextLine().trim();
+	        String id;
+	        do {
+	            System.out.print("Ingrese la identificación: ");
+	            id = sc.nextLine().trim();
 
-				if (id.isEmpty()) {
-					System.out.println("La identificación no puede estar vacía.");
-				}
-			} while (id.isEmpty());
+	            if (id.isEmpty()) {
+	                System.out.println("La identificación no puede estar vacía.");
+	            } else if (!id.matches("\\d+")) {
+	                System.out.println("La identificación solo debe contener números.");
+	                id = "";
+	            }
+	        } while (id.isEmpty());
 
-			String licencia;
-			do {
-				System.out.print("Ingrese la licencia: ");
-				licencia = sc.nextLine().trim();
+	        String licencia;
+	        do {
+	            System.out.print("Ingrese la licencia: ");
+	            licencia = sc.nextLine().trim();
 
-				if (licencia.isEmpty()) {
-					System.out.println("La licencia no puede estar vacía.");
-				}
-			} while (licencia.isEmpty());
+	            if (licencia.isEmpty()) {
+	                System.out.println("La licencia no puede estar vacía.");
+	            } else if (!licencia.matches("\\d+")) {
+	                System.out.println("La licencia solo debe contener números.");
+	                licencia = "";
+	            }
+	        } while (licencia.isEmpty());
 
-			ConductorVO c = new ConductorVO(nombre, email, "Conductor", id, licencia);
-			conductorManager.agregarConductor(c);
+	        ConductorVO c = new ConductorVO(nombre, email, "Conductor", id, licencia);
+	        conductorManager.agregarConductor(c);
 
-			System.out.println("Conductor agregado correctamente.");
+	        System.out.println("Conductor agregado correctamente.");
 
-		} catch (IllegalArgumentException e) {
-			System.out.println("Error de validación: " + e.getMessage());
-		} catch (Exception e) {
-			System.out.println("Error inesperado: " + e.getMessage());
-		}
+	    } catch (IllegalArgumentException e) {
+	        System.out.println("Error de validación: " + e.getMessage());
+	    } catch (Exception e) {
+	        System.out.println("Error inesperado: " + e.getMessage());
+	    }
 	}
 
 	/**
@@ -144,7 +156,11 @@ public class MenuConductores {
 		try {
 			System.out.print("Ingrese la identificación del conductor a buscar: ");
 			String id = sc.nextLine();
-
+			
+			if (!id.matches("\\d+")) {
+			    System.out.println("La identificación debe contener solo números.");
+			    return;
+			}
 			ConductorVO conductor = conductorManager.buscarConductorPorId(id);
 
 			if (conductor != null) {
@@ -179,19 +195,31 @@ public class MenuConductores {
 				System.out.print("Nuevo nombre (" + c.getNombre() + "): ");
 				String nuevoNombre = sc.nextLine().trim();
 				if (!nuevoNombre.isEmpty()) {
-					c.setNombre(nuevoNombre);
+				    if (nuevoNombre.matches("[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+")) {
+				        c.setNombre(nuevoNombre);
+				    } else {
+				        System.out.println("Nombre inválido. Solo letras. Se conserva el anterior.");
+				    }
 				}
 
 				System.out.print("Nuevo email (" + c.getEmail() + "): ");
 				String nuevoEmail = sc.nextLine().trim();
 				if (!nuevoEmail.isEmpty()) {
-					c.setEmail(nuevoEmail);
+				    if (nuevoEmail.contains("@")) {
+				        c.setEmail(nuevoEmail);
+				    } else {
+				        System.out.println("Email inválido. Se conserva el anterior.");
+				    }
 				}
 
 				System.out.print("Nueva licencia (" + c.getLicencia() + "): ");
 				String nuevaLicencia = sc.nextLine().trim();
 				if (!nuevaLicencia.isEmpty()) {
-					c.setLicencia(nuevaLicencia);
+				    if (nuevaLicencia.matches("\\d+")) {
+				        c.setLicencia(nuevaLicencia);
+				    } else {
+				        System.out.println("Licencia inválida. Solo números. Se conserva la anterior.");
+				    }
 				}
 
 				conductorManager.actualizarConductor(id, c);
@@ -217,6 +245,11 @@ public class MenuConductores {
 		try {
 			System.out.print("Ingrese la identificación del conductor a eliminar: ");
 			String id = sc.nextLine();
+			
+			if (!id.matches("\\d+")) {
+			    System.out.println("La identificación debe contener solo números.");
+			    return;
+			}
 
 			boolean eliminado = conductorManager.eliminarConductor(id);
 
