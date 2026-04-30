@@ -102,9 +102,28 @@ public class MenuRutas {
         System.out.println("\n=== CREAR RUTA ===");
 
         try {
-	        System.out.print("Ingrese el código de la ruta: ");
-	        int codigo = sc.nextInt();
-	        sc.nextLine();
+	        int codigo = 0;
+	        do {
+	            System.out.print("Ingrese el código de la ruta: ");
+	            String input = sc.nextLine().trim();
+
+	            if (input.isEmpty()) {
+	                System.out.println("El código no puede estar vacío.");
+	                continue;
+	            }
+
+	            try {
+	                codigo = Integer.parseInt(input);
+
+	                if (codigo <= 0) {
+	                    System.out.println("El código debe ser mayor a 0.");
+	                }
+
+	            } catch (NumberFormatException e) {
+	                System.out.println("Debe ingresar un número válido.");
+	                codigo = 0;
+	            }
+	        } while (codigo <= 0);
 	
 	        ParadaVO origen;
 	        do {
@@ -220,11 +239,22 @@ public class MenuRutas {
     private void actualizarRuta() {
     	try {
 	        System.out.print("Ingrese el código de la ruta a actualizar: ");
-	        int codigo = sc.nextInt();
-	        sc.nextLine();
+	        
+	        int codigo;
+	        try {
+	            codigo = Integer.parseInt(sc.nextLine().trim());
+
+	            if (codigo <= 0) {
+	                System.out.println("El código debe ser mayor a 0.");
+	                return;
+	            }
+
+	        } catch (NumberFormatException e) {
+	            System.out.println("Debe ingresar un número válido.");
+	            return;
+	        }
 	
 	        RutaVO ruta = rutaManager.buscarRutaPorCodigo(codigo);
-	
 	        if (ruta == null) {
 	            System.out.println("Ruta no encontrada.");
 	            return;
@@ -254,6 +284,7 @@ public class MenuRutas {
 	
 	        if (!id.isEmpty()) {
 	            ConductorVO conductor = conductorManager.buscarConductorPorId(id);
+	            
 	            if (conductor != null) {
 	                ruta.setConductor(conductor);
 	            } else {
@@ -261,7 +292,7 @@ public class MenuRutas {
 	            }
 	        }
 	
-	        rutaManager.actualizarRuta(codigo, ruta);
+	        rutaManager.actualizarRutaPorCodigo(codigo, ruta);
 	        System.out.println("Ruta actualizada correctamente.");
         
         } catch (InputMismatchException e) {

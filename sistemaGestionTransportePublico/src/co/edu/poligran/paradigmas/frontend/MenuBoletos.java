@@ -93,9 +93,28 @@ public class MenuBoletos {
         System.out.println("\n=== CREAR BOLETO ===");
 
         try {
-	        System.out.print("Código del boleto: ");
-	        int codigo = sc.nextInt();
-	        sc.nextLine();
+	        int codigo = 0;
+	        do {
+	            System.out.print("Código del boleto: ");
+	            String input = sc.nextLine().trim();
+
+	            if (input.isEmpty()) {
+	                System.out.println("El código no puede estar vacío.");
+	                continue;
+	            }
+
+	            try {
+	                codigo = Integer.parseInt(input);
+
+	                if (codigo <= 0) {
+	                    System.out.println("El código debe ser mayor a 0.");
+	                }
+
+	            } catch (NumberFormatException e) {
+	                System.out.println("Debe ingresar un número válido.");
+	                codigo = 0;
+	            }
+	        } while (codigo <= 0);
 	
 	        String asiento;
 	        do {
@@ -220,11 +239,22 @@ public class MenuBoletos {
     private void actualizarBoleto() {
     	try {
 	        System.out.print("Ingrese el código del boleto a actualizar: ");
-	        int codigo = sc.nextInt();
-	        sc.nextLine();
 	        
+	        int codigo;
+	        try {
+	            codigo = Integer.parseInt(sc.nextLine().trim());
+
+	            if (codigo <= 0) {
+	                System.out.println("El código debe ser mayor a 0.");
+	                return;
+	            }
+
+	        } catch (NumberFormatException e) {
+	            System.out.println("Debe ingresar un número válido.");
+	            return;
+	        }
+
 	        BoletoVO boleto = boletoManager.buscarBoletoPorCodigo(codigo);
-	
 	        if (boleto == null) {
 	            System.out.println("Boleto no encontrado.");
 	            return;
