@@ -38,11 +38,10 @@ public class MenuMantenimientos {
 			System.out.println("\n=== GESTIÓN DE MANTENIMIENTOS ===");
 			System.out.println("1. Crear mantenimiento");
 			System.out.println("2. Listar mantenimientos");
-			System.out.println("3. Buscar mantenimiento por ID");
-			System.out.println("4. Obtener mantenimiento por ID");
-			System.out.println("5. Actualizar mantenimiento");
-			System.out.println("6. Eliminar mantenimiento");
-			System.out.println("7. Volver al menú principal");
+			System.out.println("3. Obtener mantenimiento por ID");
+			System.out.println("4. Actualizar mantenimiento");
+			System.out.println("5. Eliminar mantenimiento");
+			System.out.println("6. Volver al menú principal");
 			System.out.print("\nSeleccione una opción: ");
 
 			opcion = sc.nextInt();
@@ -56,25 +55,22 @@ public class MenuMantenimientos {
 				listarMantenimientos();
 				break;
 			case 3:
-				buscarMantenimiento();
-				break;
-			case 4:
 			    obtenerMantenimiento();
 			    break;
-			case 5:
+			case 4:
 			    actualizarMantenimiento();
 			    break;
-			case 6:
+			case 5:
 			    eliminarMantenimiento();
 			    break;
-			case 7:
+			case 6:
 			    System.out.println("Volviendo al menú principal...");
 			    break;
 			default:
 				System.out.println("Opción inválida.");
 			}
 
-		} while (opcion != 7);
+		} while (opcion != 6);
 	}
 	
 	/**
@@ -193,29 +189,6 @@ public class MenuMantenimientos {
 
 		for (MantenimientoVO m : mantenimientoManager.obtenerMantenimientos()) {
 			System.out.println(m);
-		}
-	}
-
-	private void buscarMantenimiento() {
-		try {
-			System.out.print("Ingrese el ID del mantenimiento: ");
-			String id = sc.nextLine();
-
-			MantenimientoVO m = mantenimientoManager.buscarMantenimientoPorId(id);
-
-			if (m != null) {
-				System.out.println("\n=== MANTENIMIENTO ENCONTRADO ===");
-				System.out.println(m);
-			} else {
-				System.out.println("Mantenimiento no encontrado.");
-			}
-
-		} catch (IllegalArgumentException e) {
-			System.out.println("Error de validación: " + e.getMessage());
-		} catch (IllegalStateException e) {
-			System.out.println("Error: " + e.getMessage());
-		} catch (Exception e) {
-			System.out.println("Error inesperado: " + e.getMessage());
 		}
 	}
 	

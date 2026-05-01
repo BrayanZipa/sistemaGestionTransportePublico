@@ -30,11 +30,10 @@ public class MenuTarifas {
             System.out.println("\n=== GESTIÓN DE TARIFAS ===");
             System.out.println("1. Crear tarifa");
             System.out.println("2. Listar tarifas");
-            System.out.println("3. Buscar tarifa por código");
-            System.out.println("4. Obtener tarifa por código");
-            System.out.println("5. Actualizar tarifa");
-            System.out.println("6. Eliminar tarifa");
-            System.out.println("7. Volver al menú principal");
+            System.out.println("3. Obtener tarifa por código");
+            System.out.println("4. Actualizar tarifa");
+            System.out.println("5. Eliminar tarifa");
+            System.out.println("6. Volver al menú principal");
             System.out.print("\nSeleccione una opción: ");
        
             try {
@@ -47,20 +46,17 @@ public class MenuTarifas {
                     break;
                 case 2:
                     listarTarifas();
-                    break;
+                    break;           
                 case 3:
-                    buscarTarifa();
-                    break;
-                case 4:
                 	obtenerTarifa(); 
                     break;
-                case 5:
+                case 4:
                     actualizarTarifa();
                     break;
-                case 6:
+                case 5:
                     eliminarTarifa();
                     break;
-                case 7:
+                case 6:
                     System.out.println("Volviendo al menú principal...");
                     break;
                 default:
@@ -72,7 +68,7 @@ public class MenuTarifas {
                 sc.nextLine();
             }
 
-        } while (opcion != 7);
+        } while (opcion != 6);
     }
 
     /**
@@ -164,33 +160,6 @@ public class MenuTarifas {
 
         for (TarifasVO t : tarifasManager.obtenerTarifas()) {
             System.out.println(t);
-        }
-    }
-
-    private void buscarTarifa() {
-
-        int codigo = 0;
-
-        do {
-            System.out.print("Ingrese el código de la tarifa: ");
-            String input = sc.nextLine().trim();
-
-            try {
-                codigo = Integer.parseInt(input);
-            } catch (NumberFormatException e) {
-                System.out.println("Debe ingresar un número válido.");
-                codigo = 0;
-            }
-
-        } while (codigo <= 0);
-
-        TarifasVO tarifa = tarifasManager.buscarTarifaPorCodigo(codigo);
-
-        if (tarifa != null) {
-            System.out.println("\n=== TARIFA ENCONTRADA ===");
-            System.out.println(tarifa);
-        } else {
-            System.out.println("Tarifa no encontrada.");
         }
     }
     

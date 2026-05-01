@@ -33,11 +33,10 @@ public class MenuPagos {
 			System.out.println("\n=== GESTIÓN DE PAGOS ===");
 			System.out.println("1. Crear pago");
 			System.out.println("2. Listar pagos");
-			System.out.println("3. Buscar pago por Id");
-			System.out.println("4. Obtener pago por código");
-			System.out.println("5. Actualizar pago");
-			System.out.println("6. Eliminar pago");
-			System.out.println("7. Volver al menú principal");
+			System.out.println("3. Obtener pago por código");
+			System.out.println("4. Actualizar pago");
+			System.out.println("5. Eliminar pago");
+			System.out.println("6. Volver al menú principal");
 			System.out.print("\nSeleccione una opción: ");
 
 			opcion = sc.nextInt();
@@ -51,25 +50,22 @@ public class MenuPagos {
 				listarPagos();
 				break;
 			case 3:
-				buscarPago();
-				break;
-			case 4:
 				obtenerPago();
 				break;
-			case 5:
+			case 4:
 				actualizarPago();
 				break;
-			case 6:
+			case 5:
 				eliminarPago();
 				break;
-			case 7:
+			case 6:
 				System.out.println("Volviendo al menú principal...");
 				break;
 			default:
 				System.out.println("Opción inválida.");
 			}
 
-		} while (opcion != 7);
+		} while (opcion != 6);
 	}
 	
 	/**
@@ -151,28 +147,6 @@ public class MenuPagos {
 
 		for (PagoVO p : pagosManager.obtenerPagos()) {
 			System.out.println(p);
-		}
-	}
-
-	private void buscarPago() {
-		try {
-			System.out.print("Ingrese el Id del pago: ");
-			String id = sc.nextLine();
-
-			PagoVO pago = pagosManager.buscarPagoPorId(id);
-
-			if (pago != null) {
-				System.out.println("\n=== PAGO ENCONTRADO ===");
-				System.out.println(pago);
-			} else {
-				System.out.println("Pago no encontrado.");
-			}
-		} catch (IllegalArgumentException e) {
-			System.out.println("Error de validación: " + e.getMessage());
-		} catch (IllegalStateException e) {
-			System.out.println("Error: " + e.getMessage());
-		} catch (Exception e) {
-			System.out.println("Error inesperado: " + e.getMessage());
 		}
 	}
 	
