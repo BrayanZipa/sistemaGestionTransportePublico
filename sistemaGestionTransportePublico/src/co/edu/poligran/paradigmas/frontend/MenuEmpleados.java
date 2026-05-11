@@ -12,16 +12,14 @@ public class MenuEmpleados {
 	/**
 	 * Constructor de la clase MenuEmpleados.
 	 * 
-	 * @param empleadoManager gestor encargado de las operaciones relacionadas con
-	 *                        empleados
+	 * @param empleadoManager gestor encargado de las operaciones relacionadas con empleados
 	 */
 	public MenuEmpleados(GestionEmpleadosManager empleadoManager) {
 		this.empleadoManager = empleadoManager;
 	}
 
 	/**
-	 * Muestra el menú principal del módulo de empleados y maneja las opciones del
-	 * usuario.
+	 * Muestra el menú principal del módulo de empleados y maneja las opciones del usuario.
 	 */
 	public void mostrarMenu() {
 

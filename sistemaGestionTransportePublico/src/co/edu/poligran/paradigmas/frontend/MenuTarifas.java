@@ -13,6 +13,7 @@ public class MenuTarifas {
     
     /**
      * Constructor de la clase MenuTarifas.
+     * 
      * @param tarifasManager gestor encargado de las operaciones relacionadas con tarifas
      */
     public MenuTarifas(GestionTarifasManager tarifasManager) {

@@ -36,7 +36,6 @@ public class MenuBoletos {
 		this.rutaManager = rutaManager;
 		this.pagosManager = pagosManager;
 		this.tarifasManager = tarifasManager;
-		
 	}
 
     /**

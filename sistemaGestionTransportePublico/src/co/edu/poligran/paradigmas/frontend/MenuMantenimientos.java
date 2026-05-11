@@ -18,10 +18,9 @@ public class MenuMantenimientos {
 	 * Constructor de la clase MenuMantenimientos.
 	 * 
 	 * @param mantenimientoManager gestor encargado de mantenimientos
-	 * @param vehiculoManager      gestor encargado de vehículos
+	 * @param vehiculoManager gestor encargado de vehículos
 	 */
-	public MenuMantenimientos(GestionMantenimientoManager mantenimientoManager,
-			GestionVehiculosManager vehiculoManager) {
+	public MenuMantenimientos(GestionMantenimientoManager mantenimientoManager, GestionVehiculosManager vehiculoManager) {
 		this.mantenimientoManager = mantenimientoManager;
 		this.vehiculoManager = vehiculoManager;
 	}

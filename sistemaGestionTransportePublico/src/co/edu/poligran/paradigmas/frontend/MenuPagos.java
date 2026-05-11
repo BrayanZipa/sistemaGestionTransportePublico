@@ -14,8 +14,7 @@ public class MenuPagos {
 	/**
 	 * Constructor de la clase MenuPagos.
 	 * 
-	 * @param pagosManager gestor encargado de las operaciones relacionadas con
-	 *                     pagos
+	 * @param pagosManager gestor encargado de las operaciones relacionadas con pagos
 	 */
 	public MenuPagos(GestionPagosManager pagosManager) {
 		this.pagosManager = pagosManager;

@@ -12,16 +12,14 @@ public class MenuConductores {
 	/**
 	 * Constructor de la clase MenuConductores.
 	 * 
-	 * @param conductorManager gestor encargado de las operaciones relacionadas con
-	 *                         conductores
+	 * @param conductorManager gestor encargado de las operaciones relacionadas con conductores
 	 */
 	public MenuConductores(GestionConductoresManager conductorManager) {
 		this.conductorManager = conductorManager;
 	}
 
 	/**
-	 * Muestra el menú principal del módulo de conductores y maneja las opciones
-	 * seleccionadas por el usuario.
+	 * Muestra el menú principal del módulo de conductores y maneja las opciones seleccionadas por el usuario.
 	 */
 	public void mostrarMenu() {
 
