@@ -110,6 +110,10 @@ public class GestionVehiculosManager {
         if (v.getPlaca() == null || v.getPlaca().trim().isEmpty()) {
             throw new IllegalArgumentException("La placa no puede ser nula o vacía.");
         }
+        
+        if (v.getCapacidadPasajeros() <= 5) {
+            throw new IllegalArgumentException("La capacidad debe ser mayor a cinco.");
+        }
 
         if (indice < 0 || indice >= listaVehiculos.size()) {
             throw new IndexOutOfBoundsException(
@@ -133,6 +137,10 @@ public class GestionVehiculosManager {
 
         if (v == null) {
             throw new IllegalArgumentException("El vehículo no puede ser nulo.");
+        }
+        
+        if (v.getCapacidadPasajeros() <= 5) {
+            throw new IllegalArgumentException("La capacidad debe ser mayor a cinco.");
         }
 
         int indice = obtenerIndicePorPlaca(placa);

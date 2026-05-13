@@ -6,16 +6,10 @@ import co.edu.poligran.paradigmas.backend.vo.VehiculoVO;
 import static co.edu.poligran.paradigmas.frontend.gui.GuiUtils.*;
 
 import java.awt.BorderLayout;
-import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.Insets;
 
-import javax.swing.BorderFactory;
-import javax.swing.JButton;
 import javax.swing.JCheckBox;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
@@ -23,7 +17,6 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.border.EmptyBorder;
-import javax.swing.border.TitledBorder;
 
 public class PanelVehiculos extends JPanel {
 	
@@ -55,6 +48,9 @@ public class PanelVehiculos extends JPanel {
 		configurarPanel();
 	}
     
+    /**
+     * Configura la interfaz gráfica del panel, incluyendo formulario, tabla, botones.
+     */
     private void configurarPanel() {
         setLayout(new BorderLayout(10, 10));
         setBackground(C_SECUNDARIO);
@@ -67,85 +63,19 @@ public class PanelVehiculos extends JPanel {
         
         // ── FORMULARIO ─────────────────────────────────────
         
-        GridBagConstraints g = new GridBagConstraints();
-
-        g.insets = new Insets(5, 5, 5, 5);
-
-        g.fill = GridBagConstraints.HORIZONTAL;
+        GridBagConstraints g = createGbc();
         
-        txtPlaca = new JTextField(15);
-        txtModelo = new JTextField(15);
-        txtCapacidad = new JTextField(15);
-        chkDisponible = new JCheckBox("Disponible");
-        chkDisponible.setBackground(C_SUPERFICIE);
+        txtPlaca = createTextField(15);
+        txtModelo = createTextField(15);
+        txtCapacidad = createTextField(15);
+        chkDisponible = createCheckBox("Disponible");
 
-        // ── FILA 1 ─────────────────────────────────────────
-
-        g.gridx = 0;
-        g.gridy = 0;
-
-        panelFormulario.add(
-            new JLabel("Placa:"),
-            g
-        );
-
-        g.gridx = 1;
-
-        panelFormulario.add(
-            txtPlaca,
-            g
-        );
-
-        // ── FILA 2 ─────────────────────────────────────────
-
-        g.gridx = 0;
-        g.gridy = 1;
-
-        panelFormulario.add(
-            new JLabel("Modelo:"),
-            g
-        );
-
-        g.gridx = 1;
-
-        panelFormulario.add(
-            txtModelo,
-            g
-        );
-
-        // ── FILA 3 ─────────────────────────────────────────
-
-        g.gridx = 0;
-        g.gridy = 2;
-
-        panelFormulario.add(
-            new JLabel("Capacidad:"),
-            g
-        );
-
-        g.gridx = 1;
-
-        panelFormulario.add(
-            txtCapacidad,
-            g
-        );
-
-        // ── FILA 4 ─────────────────────────────────────────
-
-        g.gridx = 0;
-        g.gridy = 3;
-
-        panelFormulario.add(
-            new JLabel("Estado:"),
-            g
-        );
-
-        g.gridx = 1;
-
-        panelFormulario.add(
-            chkDisponible,
-            g
-        );
+        // ── FILAS DEL FORMULARIO ─────────────────────────────────────────
+        
+        createFormRow(panelFormulario, g, 0, "Placa:", txtPlaca);
+        createFormRow(panelFormulario, g, 1, "Modelo:", txtModelo);
+        createFormRow(panelFormulario, g, 2, "Capacidad:", txtCapacidad);
+        createFormRow(panelFormulario, g, 3, "Estado:", chkDisponible);
 
         // ── BOTONES ────────────────────────────────────────
         
@@ -160,10 +90,7 @@ public class PanelVehiculos extends JPanel {
         g.gridy = 4;
         g.gridwidth = 2;
 
-        panelFormulario.add(
-            panelBotones,
-            g
-        );
+        panelFormulario.add(panelBotones, g);
 
         // ── TABLA ──────────────────────────────────────────
 
@@ -187,37 +114,24 @@ public class PanelVehiculos extends JPanel {
 
         // ── PANEL PRINCIPAL ────────────────────────────────
 
-        JSplitPane split = new JSplitPane(
-            JSplitPane.HORIZONTAL_SPLIT,
-            panelFormulario,
-            panelTabla
-        );
-
+        JSplitPane split = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, panelFormulario, panelTabla);
         split.setDividerLocation(350);
-
         add(split, BorderLayout.CENTER);
 
         // ── MÉTODO REFRESCAR TABLA ─────────────────────────
 
         refrescarTabla = () -> {
-
             modeloTabla.setRowCount(0);
 
-            for (int i = 0;
-                 i < vehiculoManager.obtenerVehiculos().size();
-                 i++) {
-
-                VehiculoVO v =
-                    vehiculoManager.obtenerVehiculos().get(i);
+            for (int i = 0; i < vehiculoManager.obtenerVehiculos().size(); i++) {
+                VehiculoVO v = vehiculoManager.obtenerVehiculos().get(i);
 
                 modeloTabla.addRow(new Object[] {
                     i,
                     v.getPlaca(),
                     v.getModelo(),
                     v.getCapacidadPasajeros(),
-                    v.isEstadoDisponibilidad()
-                        ? "Sí"
-                        : "No",
+                    v.isEstadoDisponibilidad() ? "Sí" : "No",
                     v.getRutas().size()
                 });
             }
@@ -227,18 +141,19 @@ public class PanelVehiculos extends JPanel {
 
         // ── CARGAR SELECCIÓN ───────────────────────────────
 
-        tablaVehiculos.getSelectionModel()
-            .addListSelectionListener(e -> {
-
+        initEventosSeleccion();
+    }
+    
+    /**
+     * Inicializa el listener de selección de la tabla para cargar los datos del vehículo seleccionado en el formulario.
+     */
+    private void initEventosSeleccion() {
+        tablaVehiculos.getSelectionModel().addListSelectionListener(e -> {
             int fila = tablaVehiculos.getSelectedRow();
 
-            if (fila == -1) {
-                return;
-            }
+            if (fila == -1) return;
 
-            VehiculoVO v =
-                vehiculoManager.obtenerVehiculos()
-                    .get(fila);
+            VehiculoVO v = vehiculoManager.obtenerVehiculos().get(fila);
 
             txtPlaca.setText(v.getPlaca());
 
@@ -255,101 +170,86 @@ public class PanelVehiculos extends JPanel {
             );
         });
     }
+
+    /**
+     * Obtiene los datos del formulario y construye un objeto VehiculoVO.
+     * 
+     * @return VehiculoVO con los datos ingresados
+     */
+    private VehiculoVO obtenerVehiculoFormulario() {
+        return new VehiculoVO(
+            txtPlaca.getText().trim(),
+            txtModelo.getText().trim(),
+            Integer.parseInt(
+                txtCapacidad.getText().trim()
+            ),
+            chkDisponible.isSelected()
+        );
+    }
     
+    /**
+     * Agrega un nuevo vehículo al sistema con los datos del formulario.
+     * Muestra un mensaje de éxito o error según el resultado.
+     */
     private void agregarVehiculo() {
         try {
-            VehiculoVO v = new VehiculoVO(
-                txtPlaca.getText().trim(),
-                txtModelo.getText().trim(),
-                Integer.parseInt(
-                    txtCapacidad.getText().trim()
-                ),
-                chkDisponible.isSelected()
-            );
-
+        	VehiculoVO v = obtenerVehiculoFormulario();
             vehiculoManager.agregarVehiculo(v);
-
             refrescarTabla.run();
-
-            JOptionPane.showMessageDialog(
-                this,
-                "Vehículo agregado correctamente."
-            );
+            
+            showInfoMessage(this, "Vehículo agregado correctamente.");
 
         } catch (Exception ex) {
-
-            JOptionPane.showMessageDialog(
-                this,
-                ex.getMessage(),
-                "Error",
-                JOptionPane.ERROR_MESSAGE
-            );
+        	showErrorMessage(this, ex.getMessage());
         }
     }
     
+    /**
+     * Actualiza el vehículo seleccionado en la tabla con los datos del formulario.
+     * Valida que haya una fila seleccionada antes de actualizar.
+     */
     private void actualizarVehiculo() {
         int fila = tablaVehiculos.getSelectedRow();
 
         if (fila == -1) {
-
-            JOptionPane.showMessageDialog(
-                this,
-                "Seleccione un vehículo."
-            );
-
+            showInfoMessage(this, "Seleccione un vehículo.");
             return;
         }
 
         try {
-
-            VehiculoVO v = new VehiculoVO(
-                txtPlaca.getText().trim(),
-                txtModelo.getText().trim(),
-                Integer.parseInt(
-                    txtCapacidad.getText().trim()
-                ),
-                chkDisponible.isSelected()
-            );
-
-            vehiculoManager.actualizarVehiculo(
-                fila,
-                v
-            );
-
+        	VehiculoVO v = obtenerVehiculoFormulario();
+            vehiculoManager.actualizarVehiculo(fila, v);
             refrescarTabla.run();
-
-            JOptionPane.showMessageDialog(
-                this,
-                "Vehículo actualizado correctamente."
-            );
+            
+            showInfoMessage(this, "Vehículo actualizado correctamente.");
 
         } catch (Exception ex) {
-
-            JOptionPane.showMessageDialog(
-                this,
-                ex.getMessage(),
-                "Error",
-                JOptionPane.ERROR_MESSAGE
-            );
+        	showErrorMessage(this, ex.getMessage());
         }
     }
     
+    /**
+     * Elimina el vehículo seleccionado en la tabla, previa confirmación del usuario.
+     */
     private void eliminarVehiculo() {
         int fila = tablaVehiculos.getSelectedRow();
 
         if (fila == -1) {
-            JOptionPane.showMessageDialog(
-                this,
-                "Seleccione un vehículo."
-            );
-
+        	showInfoMessage(this, "Seleccione un vehículo.");
             return;
         }
-
+        
+        if (!confirmMessage(this, "¿Está seguro de eliminar el vehículo seleccionado?")) return;
+     
         vehiculoManager.eliminarVehiculo(fila);
         refrescarTabla.run();
+        
+        showInfoMessage(this, "Vehículo eliminado correctamente.");
     }
     
+    /**
+     * Limpia todos los campos del formulario y deselecciona la fila activa de la tabla.
+     */
     private void limpiarFormulario() {
         txtPlaca.setText("");
         txtModelo.setText("");
