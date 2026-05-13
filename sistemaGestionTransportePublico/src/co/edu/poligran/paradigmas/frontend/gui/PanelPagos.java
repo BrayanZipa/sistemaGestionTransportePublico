@@ -1,249 +1,502 @@
-package co.edu.poligran.paradigmas.frontend;
+package co.edu.poligran.paradigmas.frontend.gui;
 
-import java.time.LocalDateTime;
-import java.util.InputMismatchException;
-import java.util.Scanner;
 import co.edu.poligran.paradigmas.backend.negocio.GestionPagosManager;
 import co.edu.poligran.paradigmas.backend.vo.PagoVO;
+import static co.edu.poligran.paradigmas.frontend.gui.GuiUtils.*;
 
-public class MenuPagos {
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.FlowLayout;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
-	static Scanner sc = new Scanner(System.in);
-	private GestionPagosManager pagosManager;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
+import javax.swing.JTable;
+import javax.swing.JTextField;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.border.EmptyBorder;
 
-	/**
-	 * Constructor de la clase MenuPagos.
-	 * 
-	 * @param pagosManager gestor encargado de las operaciones relacionadas con pagos
-	 */
-	public MenuPagos(GestionPagosManager pagosManager) {
-		this.pagosManager = pagosManager;
-	}
 
-	/**
-	 * Muestra el menú principal del módulo de pagos y gestiona las opciones
-	 * seleccionadas por el usuario.
-	 */
-	public void mostrarMenu() {
-
-		int opcion = 0;
-
-		do {
-			System.out.println("\n=== GESTIÓN DE PAGOS ===");
-			System.out.println("1. Crear pago");
-			System.out.println("2. Listar pagos");
-			System.out.println("3. Obtener pago por código");
-			System.out.println("4. Actualizar pago");
-			System.out.println("5. Eliminar pago");
-			System.out.println("6. Volver al menú principal");
-			System.out.print("\nSeleccione una opción: ");
-
-			opcion = sc.nextInt();
-			sc.nextLine();
-
-			switch (opcion) {
-			case 1:
-				crearPago();
-				break;
-			case 2:
-				listarPagos();
-				break;
-			case 3:
-				obtenerPago();
-				break;
-			case 4:
-				actualizarPago();
-				break;
-			case 5:
-				eliminarPago();
-				break;
-			case 6:
-				System.out.println("Volviendo al menú principal...");
-				break;
-			default:
-				System.out.println("Opción inválida.");
-			}
-
-		} while (opcion != 6);
-	}
+public class PanelPagos extends JPanel {
 	
-	/**
-     * Crea un nuevo pago solicitando los datos al usuario.
+    private GestionPagosManager pagosManager;
+
+    /**
+     * Constructor de la clase PanelPagos.
+     * 
+     * @param pagosManager gestor encargado de las operaciones relacionadas con pagos
      */
-
-	private void crearPago() {
-
-		System.out.println("\n=== CREAR PAGO ===");
-		try {
-			String idPago;
-			do {
-				System.out.print("ID del pago: ");
-				idPago = sc.nextLine().trim();
-
-				if (idPago.isEmpty()) {
-					System.out.println("El Id no puede estar vacío.");
-				}
-			} while (idPago.isEmpty());
-
-			double monto = 0;
-
-			do {
-			    System.out.print("Monto (mínimo 1.000): ");
-			    String input = sc.nextLine().trim();
-
-			    if (input.isEmpty()) {
-			        System.out.println("El monto no puede estar vacío.");
-			        continue;
-			    }
-
-			    try {
-			        String limpio = input.replace(".", "");
-			        monto = Double.parseDouble(limpio);
-
-			        if (monto < 1000) {
-			            System.out.println("El monto debe ser mínimo 1.000.");
-			            monto = 0;
-			        }
-
-			    } catch (NumberFormatException e) {
-			        System.out.println("Debe ingresar un número válido (ej: 3000 o 3.000).");
-			        monto = 0;
-			    }
-
-			} while (monto < 1000);
-
-			String metodo;
-			do {
-				System.out.print("Método de pago: ");
-				metodo = sc.nextLine().trim();
-
-				if (metodo.isEmpty()) {
-					System.out.println("El método no puede estar vacío.");
-				}
-			} while (metodo.isEmpty());
-
-			PagoVO pago = new PagoVO(idPago, LocalDateTime.now(), monto, metodo);
-
-			pagosManager.agregarPago(pago);
-
-			System.out.println("Pago creado correctamente.");
-
-		} catch (InputMismatchException e) {
-			System.out.println("Debe ingresar un número válido.");
-			sc.nextLine();
-		} catch (IllegalArgumentException e) {
-			System.out.println("Error de validación: " + e.getMessage());
-		} catch (IllegalStateException e) {
-			System.out.println("Error: " + e.getMessage());
-		} catch (Exception e) {
-			System.out.println("Error inesperado: " + e.getMessage());
-		}
+    public PanelPagos(GestionPagosManager pagosManager) {
+		this.pagosManager = pagosManager;
+		
+		configurarPanel();
 	}
+    
+    
+    private void configurarPanel() {
+    	
+        setLayout(new BorderLayout(10, 10));
+        
+        setBackground(C_SECUNDARIO);
+        
+        setBorder(new EmptyBorder(10, 10, 10, 10));
 
-	private void listarPagos() {
+        // ── PANEL FORMULARIO ─────────────────────────────────────
 
-		System.out.println("\n=== LISTADO DE PAGOS ===");
+        JPanel panelFormulario = createPanel("Gestión de Pagos");
+        
+        panelFormulario.setLayout(new GridBagLayout());
 
-		for (PagoVO p : pagosManager.obtenerPagos()) {
-			System.out.println(p);
-		}
-	}
-	
-	private void obtenerPago() {
+        // ── FORMULARIO ─────────────────────────────────────
 
-	    String id;
+        GridBagConstraints g = new GridBagConstraints();
 
-	    do {
-	        System.out.print("Ingrese el ID del pago: ");
-	        id = sc.nextLine().trim();
+        g.insets = new Insets(5, 5, 5, 5);
 
-	        if (id.isEmpty()) {
-	            System.out.println("El ID no puede estar vacío.");
-	        }
+        g.fill = GridBagConstraints.HORIZONTAL;
 
-	    } while (id.isEmpty());
+        JTextField txtIdPago = new JTextField(15);
 
-	    PagoVO pago = pagosManager.buscarPagoPorId(id);
+        JTextField txtMonto = new JTextField(15);
 
-	    if (pago != null) {
-	        System.out.println("\n=== PAGO ENCONTRADO ===");
-	        System.out.println(pago);
-	    } else {
-	        System.out.println("Pago no encontrado.");
-	    }
-	}
-	
+        JComboBox<String> cmbMetodoPago = new JComboBox<>();
 
-	private void actualizarPago() {
+        cmbMetodoPago.addItem("");
 
-		try {
-			System.out.print("Ingrese el ID del pago a actualizar: ");
-			String id = sc.nextLine();
+        cmbMetodoPago.addItem("Efectivo");
 
-			PagoVO pago = pagosManager.buscarPagoPorId(id);
+        cmbMetodoPago.addItem("Tarjeta");
 
-			if (pago == null) {
-				System.out.println("Pago no encontrado.");
-				return;
-			}
+        cmbMetodoPago.addItem("Nequi");
 
-			System.out.print("Nuevo monto (" + pago.getMonto() + "): ");
-			String nuevoMonto = sc.nextLine().trim();
+        cmbMetodoPago.addItem("Daviplata");
 
-			if (!nuevoMonto.isEmpty()) {
-			    try {
-			        String limpio = nuevoMonto.replace(".", "");
-			        double monto = Double.parseDouble(limpio);
+        cmbMetodoPago.addItem("Transferencia");
 
-			        if (monto < 1000) {
-			            System.out.println("El monto debe ser mínimo 1.000. Se conserva el valor anterior.");
-			        } else {
-			            pago.setMonto(monto);
-			        }
+        cmbMetodoPago.setBackground(C_SUPERFICIE);
 
-			    } catch (NumberFormatException e) {
-			        System.out.println("Monto inválido. Se conserva el valor anterior.");
-			    }
-			}
+        // ── FILA 1 ─────────────────────────────────────────
 
-			System.out.print("Nuevo método (" + pago.getMetodoPago() + "): ");
-			String nuevoMetodo = sc.nextLine().trim();
+        g.gridx = 0;
+        g.gridy = 0;
 
-			if (!nuevoMetodo.isEmpty()) {
-				pago.setMetodoPago(nuevoMetodo);
-			}
+        panelFormulario.add(
+            new JLabel("ID Pago:"),
+            g
+        );
 
-			pagosManager.actualizarPagoPorId(id, pago);
+        g.gridx = 1;
 
-			System.out.println("Pago actualizado correctamente.");
+        panelFormulario.add(
+            txtIdPago,
+            g
+        );
 
-		} catch (NumberFormatException e) {
-			System.out.println("El monto debe ser un número válido.");
-		} catch (IllegalArgumentException e) {
-			System.out.println("Error de validación: " + e.getMessage());
-		} catch (IllegalStateException e) {
-			System.out.println("Error: " + e.getMessage());
-		} catch (Exception e) {
-			System.out.println("Error inesperado: " + e.getMessage());
-		}
-	}
+        // ── FILA 2 ─────────────────────────────────────────
 
-	private void eliminarPago() {
-		try {
-			System.out.print("Ingrese el ID del pago a eliminar: ");
-			String id = sc.nextLine();
+        g.gridx = 0;
+        g.gridy = 1;
 
-			boolean eliminado = pagosManager.eliminarPagoPorId(id);
+        panelFormulario.add(
+            new JLabel("Monto:"),
+            g
+        );
 
-			if (eliminado) {
-				System.out.println("Pago eliminado correctamente.");
-			} else {
-				System.out.println("Pago no encontrado.");
-			}
-		} catch (IllegalArgumentException e) {
-			System.out.println("Error de validación: " + e.getMessage());
-		} catch (Exception e) {
-			System.out.println("Error inesperado: " + e.getMessage());
-		}
-	}
+        g.gridx = 1;
+
+        panelFormulario.add(
+            txtMonto,
+            g
+        );
+
+        // ── FILA 3 ─────────────────────────────────────────
+
+        g.gridx = 0;
+        g.gridy = 2;
+
+        panelFormulario.add(
+            new JLabel("Método Pago:"),
+            g
+        );
+
+        g.gridx = 1;
+
+        panelFormulario.add(
+            cmbMetodoPago,
+            g
+        );
+
+        // ── FILA 4 ─────────────────────────────────────────
+
+        g.gridx = 0;
+        g.gridy = 3;
+
+        g.gridwidth = 2;
+
+        panelFormulario.add(
+            new JLabel(
+                "* La fecha se registra automáticamente."
+            ),
+            g
+        );
+
+        // ── BOTONES ────────────────────────────────────────
+
+        JPanel panelBotones = new JPanel(
+        	    new FlowLayout(FlowLayout.CENTER, 12, 8)
+        );
+
+        panelBotones.setBackground(C_SUPERFICIE);
+
+        JButton btnAgregar =
+        	    btn("Agregar", C_EXITO, null);
+
+        	JButton btnActualizar =
+        	    btn(" Actualizar", C_ADVERTENCIA, null);
+
+        	JButton btnEliminar =
+        	    btn(" Eliminar", C_PELIGRO, null);
+
+        	JButton btnLimpiar =
+        	    btn(" Limpiar", Color.GRAY, null);
+
+        panelBotones.add(btnAgregar);
+
+        panelBotones.add(btnActualizar);
+
+        panelBotones.add(btnEliminar);
+
+        panelBotones.add(btnLimpiar);
+
+        g.gridx = 0;
+        g.gridy = 4;
+
+        g.gridwidth = 2;
+
+        panelFormulario.add(
+            panelBotones,
+            g
+        );
+
+        // ── TABLA ──────────────────────────────────────────
+
+        String[] columnas = {
+            "Índice",
+            "ID Pago",
+            "Fecha",
+            "Monto",
+            "Método"
+        };
+
+        DefaultTableModel modeloTabla =
+            new DefaultTableModel(columnas, 0);
+
+        JTable tablaPagos = new JTable(modeloTabla);
+
+        // ── PANEL TABLA ────────────────────────────────
+
+        JPanel panelTabla = createPanel("Pagos");
+
+        panelTabla.setLayout(new BorderLayout(0, 6));
+
+        panelTabla.add(
+            new JScrollPane(tablaPagos),
+            BorderLayout.CENTER
+        );
+
+        // ── PANEL PRINCIPAL ────────────────────────────────
+
+        JSplitPane split = new JSplitPane(
+            JSplitPane.HORIZONTAL_SPLIT,
+            panelFormulario,
+            panelTabla
+        );
+
+        split.setDividerLocation(430); 
+
+        add(split, BorderLayout.CENTER);
+
+        // ── FORMATO FECHA ────────────────────────────────
+
+        DateTimeFormatter formato =
+            DateTimeFormatter.ofPattern(
+                "dd/MM/yyyy HH:mm"
+            );
+
+        // ── MÉTODO REFRESCAR TABLA ─────────────────────────
+
+        Runnable refrescarTabla = () -> {
+
+            modeloTabla.setRowCount(0);
+
+            for (int i = 0;
+                 i < pagosManager.obtenerPagos().size();
+                 i++) {
+
+                PagoVO p =
+                    pagosManager.obtenerPagos().get(i);
+
+                modeloTabla.addRow(new Object[] {
+                    i,
+                    p.getIdPago(),
+                    p.getFecha().format(formato),
+                    p.getMonto(),
+                    p.getMetodoPago()
+                });
+            }
+        };
+
+        refrescarTabla.run();
+
+        // ── AGREGAR ────────────────────────────────────────
+
+        btnAgregar.addActionListener(e -> {
+
+            try {
+
+                String id =
+                    txtIdPago.getText().trim();
+
+                if (id.isEmpty()) {
+
+                    JOptionPane.showMessageDialog(
+                        this,
+                        "El ID no puede estar vacío."
+                    );
+
+                    return;
+                }
+
+                double monto =
+                    Double.parseDouble(
+                        txtMonto.getText()
+                            .trim()
+                            .replace(".", "")
+                    );
+
+                if (monto < 1000) {
+
+                    JOptionPane.showMessageDialog(
+                        this,
+                        "El monto debe ser mínimo 1.000."
+                    );
+
+                    return;
+                }
+
+                PagoVO p = new PagoVO(
+                    id,
+                    LocalDateTime.now(),
+                    monto,
+                    cmbMetodoPago
+                        .getSelectedItem()
+                        .toString()
+                );
+
+                pagosManager.agregarPago(p);
+
+                refrescarTabla.run();
+
+                JOptionPane.showMessageDialog(
+                    this,
+                    "Pago agregado correctamente."
+                );
+
+            } catch (NumberFormatException ex) {
+
+                JOptionPane.showMessageDialog(
+                    this,
+                    "Ingrese un monto válido.",
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE
+                );
+
+            } catch (Exception ex) {
+
+                JOptionPane.showMessageDialog(
+                    this,
+                    ex.getMessage(),
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE
+                );
+            }
+        });
+
+        // ── ELIMINAR ───────────────────────────────────────
+
+        btnEliminar.addActionListener(e -> {
+
+            int fila = tablaPagos.getSelectedRow();
+
+            if (fila == -1) {
+
+                JOptionPane.showMessageDialog(
+                    this,
+                    "Seleccione un pago."
+                );
+
+                return;
+            }
+
+            pagosManager.eliminarPago(fila);
+
+            refrescarTabla.run();
+        });
+
+        // ── CARGAR SELECCIÓN ───────────────────────────────
+
+        tablaPagos.getSelectionModel()
+            .addListSelectionListener(e -> {
+
+            int fila = tablaPagos.getSelectedRow();
+
+            if (fila == -1) {
+                return;
+            }
+
+            PagoVO p =
+                pagosManager.obtenerPagos()
+                    .get(fila);
+
+            txtIdPago.setText(
+                p.getIdPago()
+            );
+
+            txtMonto.setText(
+                String.valueOf(
+                    p.getMonto()
+                )
+            );
+
+            cmbMetodoPago.setSelectedItem(
+                p.getMetodoPago()
+            );
+        });
+
+        // ── ACTUALIZAR ─────────────────────────────────────
+
+        btnActualizar.addActionListener(e -> {
+
+            int fila =
+                tablaPagos.getSelectedRow();
+
+            if (fila == -1) {
+
+                JOptionPane.showMessageDialog(
+                    this,
+                    "Seleccione un pago."
+                );
+
+                return;
+            }
+
+            try {
+
+                String id =
+                    txtIdPago.getText().trim();
+
+                double monto =
+                    Double.parseDouble(
+                        txtMonto.getText()
+                            .trim()
+                            .replace(".", "")
+                    );
+
+                if (monto < 1000) {
+
+                    JOptionPane.showMessageDialog(
+                        this,
+                        "El monto debe ser mínimo 1.000."
+                    );
+
+                    return;
+                }
+
+                PagoVO p = new PagoVO(
+                    id,
+                    pagosManager.obtenerPagos()
+                        .get(fila)
+                        .getFecha(),
+                    monto,
+                    cmbMetodoPago
+                        .getSelectedItem()
+                        .toString()
+                );
+
+                pagosManager.actualizarPago(
+                    fila,
+                    p
+                );
+
+                refrescarTabla.run();
+
+            } catch (NumberFormatException ex) {
+
+                JOptionPane.showMessageDialog(
+                    this,
+                    "Ingrese un monto válido.",
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE
+                );
+
+            } catch (Exception ex) {
+
+                JOptionPane.showMessageDialog(
+                    this,
+                    ex.getMessage(),
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE
+                );
+            }
+        });
+
+        // ── LIMPIAR ────────────────────────────────────────
+
+        btnLimpiar.addActionListener(e -> {
+
+            txtIdPago.setText("");
+
+            txtMonto.setText("");
+
+            cmbMetodoPago.setSelectedIndex(0);
+
+            tablaPagos.clearSelection();
+        });
+        
+    }
+
+    private JButton btn(
+        String texto,
+        Color color,
+        java.awt.event.ActionListener accion
+    ) {
+
+        JButton boton = new JButton(texto);
+
+        boton.setBackground(color); 
+
+        boton.setForeground(Color.WHITE);
+
+        boton.setFocusPainted(false);
+
+        boton.setBorderPainted(false);
+
+        boton.setOpaque(true);
+
+        if (accion != null) {
+
+            boton.addActionListener(accion);
+        }
+
+        return boton;
+    }
 }

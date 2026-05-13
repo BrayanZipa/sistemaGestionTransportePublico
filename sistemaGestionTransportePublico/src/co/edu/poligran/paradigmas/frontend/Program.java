@@ -1,11 +1,5 @@
 package co.edu.poligran.paradigmas.frontend;
 
-import java.util.InputMismatchException;
-import java.util.Scanner;
-import javax.swing.*;
-import javax.swing.border.EmptyBorder;
-import java.awt.*;
-
 import co.edu.poligran.paradigmas.backend.negocio.GestionBoletosManager;
 import co.edu.poligran.paradigmas.backend.negocio.GestionConductoresManager;
 import co.edu.poligran.paradigmas.backend.negocio.GestionEmpleadosManager;
@@ -26,6 +20,13 @@ import co.edu.poligran.paradigmas.frontend.gui.PanelPasajeros;
 import co.edu.poligran.paradigmas.frontend.gui.PanelRutas;
 import co.edu.poligran.paradigmas.frontend.gui.PanelTarifas;
 import co.edu.poligran.paradigmas.frontend.gui.PanelVehiculos;
+import static co.edu.poligran.paradigmas.frontend.gui.GuiUtils.*;
+
+import java.util.InputMismatchException;
+import java.util.Scanner;
+import javax.swing.*;
+import javax.swing.border.EmptyBorder;
+import java.awt.*;
 
 public class Program {
 	
@@ -246,13 +247,9 @@ public class Program {
 	private static JTabbedPane crearTabs() {
 	    JTabbedPane tabs = new JTabbedPane(JTabbedPane.TOP);
 
-	    tabs.setFont(
-	        new Font("Segoe UI", Font.BOLD, 13)
-	    );
-
-	    tabs.setBorder(
-	        new EmptyBorder(6, 8, 6, 8)
-	    );
+	    tabs.setFont(F_TAB);
+	    tabs.setBackground(C_SECUNDARIO);
+	    tabs.setBorder(new EmptyBorder(6, 8, 6, 8));
 
 	    tabs.addTab(
 	        "Empleados",

@@ -2,7 +2,7 @@ package co.edu.poligran.paradigmas.frontend.gui;
 
 import co.edu.poligran.paradigmas.backend.negocio.GestionMantenimientoManager;
 import co.edu.poligran.paradigmas.backend.negocio.GestionVehiculosManager;
-import static co.edu.poligran.paradigmas.frontend.gui.GuiConfig.*;
+import static co.edu.poligran.paradigmas.frontend.gui.GuiUtils.*;
 
 import javax.swing.JPanel;
 
