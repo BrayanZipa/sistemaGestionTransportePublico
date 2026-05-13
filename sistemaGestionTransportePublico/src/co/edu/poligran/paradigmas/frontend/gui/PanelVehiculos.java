@@ -29,6 +29,18 @@ public class PanelVehiculos extends JPanel {
 	
     private GestionVehiculosManager vehiculoManager;
     private GestionRutasManager rutaManager;
+    
+    private JTextField txtPlaca;
+    private JTextField txtModelo;
+    private JTextField txtCapacidad;
+
+    private JCheckBox chkDisponible;
+
+    private JTable tablaVehiculos;
+
+    private DefaultTableModel modeloTabla;
+
+    private Runnable refrescarTabla;
 	
     /**
      * Constructor de la clase PanelVehiculos.
@@ -62,16 +74,33 @@ public class PanelVehiculos extends JPanel {
         g.insets = new Insets(5, 5, 5, 5);
 
         g.fill = GridBagConstraints.HORIZONTAL;
+        
+        
 
-        JTextField txtPlaca = new JTextField(15);
+//        JTextField txtPlaca = new JTextField(15);
+//
+//        JTextField txtModelo = new JTextField(15);
+//
+//        JTextField txtCapacidad = new JTextField(15);
+//
+//        JCheckBox chkDisponible = new JCheckBox("Disponible");
+//
+//        chkDisponible.setBackground(C_SUPERFICIE);
+        
+        
+        txtPlaca = new JTextField(15);
+        
+        txtModelo = new JTextField(15);
 
-        JTextField txtModelo = new JTextField(15);
+        txtCapacidad = new JTextField(15);
 
-        JTextField txtCapacidad = new JTextField(15);
-
-        JCheckBox chkDisponible = new JCheckBox("Disponible");
-
+        chkDisponible = new JCheckBox("Disponible");
+        
         chkDisponible.setBackground(C_SUPERFICIE);
+
+
+        
+        
 
         // ── FILA 1 ─────────────────────────────────────────
 
@@ -143,56 +172,56 @@ public class PanelVehiculos extends JPanel {
 
         // ── BOTONES ────────────────────────────────────────
 
-        JPanel panelBotones = new JPanel(
-            new FlowLayout(FlowLayout.CENTER, 5, 4)
-        );    
-        
-        panelBotones.setBackground(C_SUPERFICIE);
-
-        JButton btnAgregar = new JButton("Agregar");
-
-        JButton btnActualizar = new JButton("Actualizar");
-
-        JButton btnEliminar = new JButton("Eliminar");
-
-        JButton btnLimpiar = new JButton("Limpiar");
-
-        panelBotones.add(btnAgregar);
-
-        panelBotones.add(btnActualizar);
-
-        panelBotones.add(btnEliminar);
-
-        panelBotones.add(btnLimpiar);
-        
-        
-        
-//        JPanel panelBotones = createButtonRow(
+//        JPanel panelBotones = new JPanel(
+//            new FlowLayout(FlowLayout.CENTER, 5, 4)
+//        );    
+//        
+//        panelBotones.setBackground(C_SUPERFICIE);
 //
-//        		createBtn(
-//        	        "Agregar",
-//        	        C_EXITO,
-//        	        e -> agregarVehiculo()
-//        	    ),
+//        JButton btnAgregar = new JButton("Agregar");
 //
-//        		createBtn(
-//        	        "Actualizar",
-//        	        C_PRIMARIO,
-//        	        e -> actualizarVehiculo()
-//        	    ),
+//        JButton btnActualizar = new JButton("Actualizar");
 //
-//        		createBtn(
-//        	        "Eliminar",
-//        	        C_PELIGRO,
-//        	        e -> eliminarVehiculo()
-//        	    ),
+//        JButton btnEliminar = new JButton("Eliminar");
 //
-//        		createBtn(
-//        	        "Limpiar",
-//        	        C_GRIS,
-//        	        e -> limpiarFormulario()
-//        	    )
-//        	);
+//        JButton btnLimpiar = new JButton("Limpiar");
+//
+//        panelBotones.add(btnAgregar);
+//
+//        panelBotones.add(btnActualizar);
+//
+//        panelBotones.add(btnEliminar);
+//
+//        panelBotones.add(btnLimpiar);
+        
+        
+        
+        JPanel panelBotones = createButtonRow(
+
+        		createBtn(
+        	        "Agregar",
+        	        C_EXITO,
+        	        e -> agregarVehiculo()
+        	    ),
+
+        		createBtn(
+        	        "Actualizar",
+        	        C_PRIMARIO,
+        	        e -> actualizarVehiculo()
+        	    ),
+
+        		createBtn(
+        	        "Eliminar",
+        	        C_PELIGRO,
+        	        e -> eliminarVehiculo()
+        	    ),
+
+        		createBtn(
+        	        "Limpiar",
+        	        C_GRIS,
+        	        e -> limpiarFormulario()
+        	    )
+        	);
         
         
         
@@ -216,9 +245,13 @@ public class PanelVehiculos extends JPanel {
             "Disponible",
             "Rutas"
         };
+        
+        
+        modeloTabla = new DefaultTableModel(columnas, 0);
+        tablaVehiculos = new JTable(modeloTabla);
 
-        DefaultTableModel modeloTabla = new DefaultTableModel(columnas, 0);
-        JTable tablaVehiculos = new JTable(modeloTabla);
+//        DefaultTableModel modeloTabla = new DefaultTableModel(columnas, 0);
+//        JTable tablaVehiculos = new JTable(modeloTabla);
         
         // ── PANEL TABLA ────────────────────────────────
         
@@ -240,7 +273,8 @@ public class PanelVehiculos extends JPanel {
 
         // ── MÉTODO REFRESCAR TABLA ─────────────────────────
 
-        Runnable refrescarTabla = () -> {
+//        Runnable refrescarTabla = () -> {
+        refrescarTabla = () -> {
 
             modeloTabla.setRowCount(0);
 
@@ -268,59 +302,59 @@ public class PanelVehiculos extends JPanel {
 
         // ── AGREGAR ────────────────────────────────────────
 
-        btnAgregar.addActionListener(e -> {
-
-            try {
-
-                VehiculoVO v = new VehiculoVO(
-                    txtPlaca.getText().trim(),
-                    txtModelo.getText().trim(),
-                    Integer.parseInt(
-                        txtCapacidad.getText().trim()
-                    ),
-                    chkDisponible.isSelected()
-                );
-
-                vehiculoManager.agregarVehiculo(v);
-
-                refrescarTabla.run();
-
-                JOptionPane.showMessageDialog(
-                    this,
-                    "Vehículo agregado correctamente."
-                );
-
-            } catch (Exception ex) {
-
-                JOptionPane.showMessageDialog(
-                    this,
-                    ex.getMessage(),
-                    "Error",
-                    JOptionPane.ERROR_MESSAGE
-                );
-            }
-        });
+//        btnAgregar.addActionListener(e -> {
+//
+//            try {
+//
+//                VehiculoVO v = new VehiculoVO(
+//                    txtPlaca.getText().trim(),
+//                    txtModelo.getText().trim(),
+//                    Integer.parseInt(
+//                        txtCapacidad.getText().trim()
+//                    ),
+//                    chkDisponible.isSelected()
+//                );
+//
+//                vehiculoManager.agregarVehiculo(v);
+//
+//                refrescarTabla.run();
+//
+//                JOptionPane.showMessageDialog(
+//                    this,
+//                    "Vehículo agregado correctamente."
+//                );
+//
+//            } catch (Exception ex) {
+//
+//                JOptionPane.showMessageDialog(
+//                    this,
+//                    ex.getMessage(),
+//                    "Error",
+//                    JOptionPane.ERROR_MESSAGE
+//                );
+//            }
+//        });
 
         // ── ELIMINAR ───────────────────────────────────────
 
-        btnEliminar.addActionListener(e -> {
-
-            int fila = tablaVehiculos.getSelectedRow();
-
-            if (fila == -1) {
-
-                JOptionPane.showMessageDialog(
-                    this,
-                    "Seleccione un vehículo."
-                );
-
-                return;
-            }
-
-            vehiculoManager.eliminarVehiculo(fila);
-
-            refrescarTabla.run();
-        });
+//        btnEliminar.addActionListener(e -> {
+//
+//            int fila = tablaVehiculos.getSelectedRow();
+//
+//            if (fila == -1) {
+//
+//                JOptionPane.showMessageDialog(
+//                    this,
+//                    "Seleccione un vehículo."
+//                );
+//
+//                return;
+//            }
+//
+//            vehiculoManager.eliminarVehiculo(fila);
+//
+//            refrescarTabla.run();
+//        });
 
         // ── CARGAR SELECCIÓN ───────────────────────────────
 
@@ -354,165 +388,165 @@ public class PanelVehiculos extends JPanel {
 
         // ── ACTUALIZAR ─────────────────────────────────────
 
-        btnActualizar.addActionListener(e -> {
-
-            int fila =
-                tablaVehiculos.getSelectedRow();
-
-            if (fila == -1) {
-
-                JOptionPane.showMessageDialog(
-                    this,
-                    "Seleccione un vehículo."
-                );
-
-                return;
-            }
-
-            try {
-
-                VehiculoVO v = new VehiculoVO(
-                    txtPlaca.getText().trim(),
-                    txtModelo.getText().trim(),
-                    Integer.parseInt(
-                        txtCapacidad.getText().trim()
-                    ),
-                    chkDisponible.isSelected()
-                );
-
-                vehiculoManager.actualizarVehiculo(
-                    fila,
-                    v
-                );
-
-                refrescarTabla.run();
-
-            } catch (Exception ex) {
-
-                JOptionPane.showMessageDialog(
-                    this,
-                    ex.getMessage(),
-                    "Error",
-                    JOptionPane.ERROR_MESSAGE
-                );
-            }
-        });
+//        btnActualizar.addActionListener(e -> {
+//
+//            int fila =
+//                tablaVehiculos.getSelectedRow();
+//
+//            if (fila == -1) {
+//
+//                JOptionPane.showMessageDialog(
+//                    this,
+//                    "Seleccione un vehículo."
+//                );
+//
+//                return;
+//            }
+//
+//            try {
+//
+//                VehiculoVO v = new VehiculoVO(
+//                    txtPlaca.getText().trim(),
+//                    txtModelo.getText().trim(),
+//                    Integer.parseInt(
+//                        txtCapacidad.getText().trim()
+//                    ),
+//                    chkDisponible.isSelected()
+//                );
+//
+//                vehiculoManager.actualizarVehiculo(
+//                    fila,
+//                    v
+//                );
+//
+//                refrescarTabla.run();
+//
+//            } catch (Exception ex) {
+//
+//                JOptionPane.showMessageDialog(
+//                    this,
+//                    ex.getMessage(),
+//                    "Error",
+//                    JOptionPane.ERROR_MESSAGE
+//                );
+//            }
+//        });
 
         // ── LIMPIAR ────────────────────────────────────────
 
-        btnLimpiar.addActionListener(e -> {
-
-            txtPlaca.setText("");
-
-            txtModelo.setText("");
-
-            txtCapacidad.setText("");
-
-            chkDisponible.setSelected(false);
-
-            tablaVehiculos.clearSelection();
-        });
+//        btnLimpiar.addActionListener(e -> {
+//
+//            txtPlaca.setText("");
+//
+//            txtModelo.setText("");
+//
+//            txtCapacidad.setText("");
+//
+//            chkDisponible.setSelected(false);
+//
+//            tablaVehiculos.clearSelection();
+//        });
     }
     
-//    private void agregarVehiculo() {
-//        try {
-//            VehiculoVO v = new VehiculoVO(
-//                txtPlaca.getText().trim(),
-//                txtModelo.getText().trim(),
-//                Integer.parseInt(
-//                    txtCapacidad.getText().trim()
-//                ),
-//                chkDisponible.isSelected()
-//            );
-//
-//            vehiculoManager.agregarVehiculo(v);
-//
-//            refrescarTabla.run();
-//
-//            JOptionPane.showMessageDialog(
-//                this,
-//                "Vehículo agregado correctamente."
-//            );
-//
-//        } catch (Exception ex) {
-//
-//            JOptionPane.showMessageDialog(
-//                this,
-//                ex.getMessage(),
-//                "Error",
-//                JOptionPane.ERROR_MESSAGE
-//            );
-//        }
-//    }
-//    
-//    private void actualizarVehiculo() {
-//        int fila = tablaVehiculos.getSelectedRow();
-//
-//        if (fila == -1) {
-//
-//            JOptionPane.showMessageDialog(
-//                this,
-//                "Seleccione un vehículo."
-//            );
-//
-//            return;
-//        }
-//
-//        try {
-//
-//            VehiculoVO v = new VehiculoVO(
-//                txtPlaca.getText().trim(),
-//                txtModelo.getText().trim(),
-//                Integer.parseInt(
-//                    txtCapacidad.getText().trim()
-//                ),
-//                chkDisponible.isSelected()
-//            );
-//
-//            vehiculoManager.actualizarVehiculo(
-//                fila,
-//                v
-//            );
-//
-//            refrescarTabla.run();
-//
-//            JOptionPane.showMessageDialog(
-//                this,
-//                "Vehículo actualizado correctamente."
-//            );
-//
-//        } catch (Exception ex) {
-//
-//            JOptionPane.showMessageDialog(
-//                this,
-//                ex.getMessage(),
-//                "Error",
-//                JOptionPane.ERROR_MESSAGE
-//            );
-//        }
-//    }
-//    
-//    private void eliminarVehiculo() {
-//        int fila = tablaVehiculos.getSelectedRow();
-//
-//        if (fila == -1) {
-//            JOptionPane.showMessageDialog(
-//                this,
-//                "Seleccione un vehículo."
-//            );
-//
-//            return;
-//        }
-//
-//        vehiculoManager.eliminarVehiculo(fila);
-//        refrescarTabla.run();
-//    }
-//    
-//    private void limpiarFormulario() {
-//        txtPlaca.setText("");
-//        txtModelo.setText("");
-//        txtCapacidad.setText("");
-//        chkDisponible.setSelected(false);
-//        tablaVehiculos.clearSelection();
-//    }
+    private void agregarVehiculo() {
+        try {
+            VehiculoVO v = new VehiculoVO(
+                txtPlaca.getText().trim(),
+                txtModelo.getText().trim(),
+                Integer.parseInt(
+                    txtCapacidad.getText().trim()
+                ),
+                chkDisponible.isSelected()
+            );
+
+            vehiculoManager.agregarVehiculo(v);
+
+            refrescarTabla.run();
+
+            JOptionPane.showMessageDialog(
+                this,
+                "Vehículo agregado correctamente."
+            );
+
+        } catch (Exception ex) {
+
+            JOptionPane.showMessageDialog(
+                this,
+                ex.getMessage(),
+                "Error",
+                JOptionPane.ERROR_MESSAGE
+            );
+        }
+    }
+    
+    private void actualizarVehiculo() {
+        int fila = tablaVehiculos.getSelectedRow();
+
+        if (fila == -1) {
+
+            JOptionPane.showMessageDialog(
+                this,
+                "Seleccione un vehículo."
+            );
+
+            return;
+        }
+
+        try {
+
+            VehiculoVO v = new VehiculoVO(
+                txtPlaca.getText().trim(),
+                txtModelo.getText().trim(),
+                Integer.parseInt(
+                    txtCapacidad.getText().trim()
+                ),
+                chkDisponible.isSelected()
+            );
+
+            vehiculoManager.actualizarVehiculo(
+                fila,
+                v
+            );
+
+            refrescarTabla.run();
+
+            JOptionPane.showMessageDialog(
+                this,
+                "Vehículo actualizado correctamente."
+            );
+
+        } catch (Exception ex) {
+
+            JOptionPane.showMessageDialog(
+                this,
+                ex.getMessage(),
+                "Error",
+                JOptionPane.ERROR_MESSAGE
+            );
+        }
+    }
+    
+    private void eliminarVehiculo() {
+        int fila = tablaVehiculos.getSelectedRow();
+
+        if (fila == -1) {
+            JOptionPane.showMessageDialog(
+                this,
+                "Seleccione un vehículo."
+            );
+
+            return;
+        }
+
+        vehiculoManager.eliminarVehiculo(fila);
+        refrescarTabla.run();
+    }
+    
+    private void limpiarFormulario() {
+        txtPlaca.setText("");
+        txtModelo.setText("");
+        txtCapacidad.setText("");
+        chkDisponible.setSelected(false);
+        tablaVehiculos.clearSelection();
+    }
 }
