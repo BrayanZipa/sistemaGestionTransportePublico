@@ -113,12 +113,12 @@ public class MenuConductores {
 	        String licencia;
 	        do {
 	            System.out.print("Ingrese la licencia: ");
-	            licencia = sc.nextLine().trim();
+	            licencia = sc.nextLine().trim().toUpperCase();
 
 	            if (licencia.isEmpty()) {
 	                System.out.println("La licencia no puede estar vacía.");
-	            } else if (!licencia.matches("\\d+")) {
-	                System.out.println("La licencia solo debe contener números.");
+	            } else if (!licencia.matches("[A-Z]\\d")) {
+	                System.out.println("Licencia inválida. Ejemplo válido: A1, B2, C1.");
 	                licencia = "";
 	            }
 	        } while (licencia.isEmpty());
@@ -213,10 +213,13 @@ public class MenuConductores {
 				System.out.print("Nueva licencia (" + c.getLicencia() + "): ");
 				String nuevaLicencia = sc.nextLine().trim();
 				if (!nuevaLicencia.isEmpty()) {
-				    if (nuevaLicencia.matches("\\d+")) {
+
+				    nuevaLicencia = nuevaLicencia.toUpperCase();
+
+				    if (nuevaLicencia.matches("[A-Z]\\d")) {
 				        c.setLicencia(nuevaLicencia);
 				    } else {
-				        System.out.println("Licencia inválida. Solo números. Se conserva la anterior.");
+				        System.out.println("Licencia inválida. Ejemplo válido: A1, B2, C1. Se conserva la anterior.");
 				    }
 				}
 
