@@ -17,10 +17,12 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
+import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.SpinnerDateModel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
+import javax.swing.table.TableModel;
 
 public class GuiUtils {
 	
@@ -267,5 +269,28 @@ public class GuiUtils {
 	    );
 
 	    return opcion == JOptionPane.YES_OPTION;
+	}
+    
+    // ── Método para resaltar una fila ──────────────────────────────────────
+    
+    /**
+     * Busca y selecciona la fila de una tabla cuyo valor en la columna indicada coincida exactamente 
+     * con el texto dado, además resalta la vista hasta la fila.
+     * 
+     * @param tabla   tabla donde se realizará la selección
+     * @param modelo  modelo de datos de la tabla
+     * @param valor   texto a buscar
+     * @param columna índice de la columna donde buscar
+     */
+    public static void highlightRow(JTable tabla, TableModel modelo, String valor, int columna) {
+	    for (int i = 0; i < modelo.getRowCount(); i++) {
+	    	String actual = String.valueOf(modelo.getValueAt(i, columna)).trim();
+	    	
+	    	if (valor.trim().equalsIgnoreCase(actual)) {
+	            tabla.setRowSelectionInterval(i, i);
+	            tabla.scrollRectToVisible(tabla.getCellRect(i, 0, true));
+	            return;
+	        }
+	    }
 	}
 }

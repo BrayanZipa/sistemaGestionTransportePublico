@@ -9,6 +9,8 @@ import java.awt.BorderLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 
+import javax.swing.Box;
+import javax.swing.BoxLayout;
 import javax.swing.JCheckBox;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -26,6 +28,7 @@ public class PanelVehiculos extends JPanel {
     private JTextField txtPlaca;
     private JTextField txtModelo;
     private JTextField txtCapacidad;
+    private JTextField txtBuscar;
 
     private JCheckBox chkDisponible;
 
@@ -55,6 +58,12 @@ public class PanelVehiculos extends JPanel {
         setLayout(new BorderLayout(10, 10));
         setBackground(C_SECUNDARIO);
         setBorder(new EmptyBorder(10, 10, 10, 10));
+        
+        // ── PANEL ZONA IZQUIERDA ─────────────────────────────────────
+       
+        JPanel leftPanel = createPanel("panel");
+        leftPanel.setLayout(new BoxLayout(leftPanel, BoxLayout.Y_AXIS));
+        leftPanel.setBorder(new EmptyBorder(4, 2, 4, 6));
 
         // ── PANEL FORMULARIO ─────────────────────────────────────
 
@@ -68,6 +77,7 @@ public class PanelVehiculos extends JPanel {
         txtPlaca = createTextField(15);
         txtModelo = createTextField(15);
         txtCapacidad = createTextField(15);
+        txtBuscar = createTextField(15);
         chkDisponible = createCheckBox("Disponible");
 
         // ── FILAS DEL FORMULARIO ─────────────────────────────────────────
@@ -91,6 +101,25 @@ public class PanelVehiculos extends JPanel {
         g.gridwidth = 2;
 
         panelFormulario.add(panelBotones, g);
+        
+        // ── PANEL BUSCADOR ────────────────────────────────────────
+        
+        JPanel panelBuscador = createPanel("Buscar vehículo");
+        panelBuscador.setLayout(new GridBagLayout());
+        GridBagConstraints g4 = createGbc();
+        
+        createFormRow(panelBuscador, g4, 0, "Buscar placa:", txtBuscar);
+        JPanel rowBuscar = createButtonRow(createBtn("Buscar", C_PRIMARIO, e -> buscarVehiculo()));
+        
+        g4.gridx = 0;
+        g4.gridy = 1;
+        g4.gridwidth = 2;
+        
+        panelBuscador.add(rowBuscar, g4);
+      
+        leftPanel.add(panelFormulario);
+        leftPanel.add(Box.createVerticalStrut(10));
+        leftPanel.add(panelBuscador);
 
         // ── TABLA ──────────────────────────────────────────
 
@@ -114,7 +143,7 @@ public class PanelVehiculos extends JPanel {
 
         // ── PANEL PRINCIPAL ────────────────────────────────
 
-        JSplitPane split = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, panelFormulario, panelTabla);
+        JSplitPane split = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, leftPanel, panelTabla);
         split.setDividerLocation(350);
         add(split, BorderLayout.CENTER);
 
@@ -150,13 +179,10 @@ public class PanelVehiculos extends JPanel {
     private void initEventosSeleccion() {
         tablaVehiculos.getSelectionModel().addListSelectionListener(e -> {
             int fila = tablaVehiculos.getSelectedRow();
-
             if (fila == -1) return;
 
             VehiculoVO v = vehiculoManager.obtenerVehiculos().get(fila);
-
             txtPlaca.setText(v.getPlaca());
-
             txtModelo.setText(v.getModelo());
 
             txtCapacidad.setText(
@@ -256,5 +282,23 @@ public class PanelVehiculos extends JPanel {
         txtCapacidad.setText("");
         chkDisponible.setSelected(false);
         tablaVehiculos.clearSelection();
+    }
+    
+    /**
+     * Busca un vehículo por placa y lo resalta en la tabla, en caso contrario muestra un mensaje informativo.
+     */
+    private void buscarVehiculo() {
+        try {
+        	VehiculoVO v = vehiculoManager.buscarVehiculoPorPlaca(txtBuscar.getText().trim());
+            if (v != null) {
+            	highlightRow(tablaVehiculos, modeloTabla, txtBuscar.getText().trim(), 1);
+            	
+            } else {
+            	showInfoMessage(this, "No se encontró el vehículo \"" + txtBuscar.getText() + "\".");
+            }
+            
+        } catch (Exception ex) { 
+        	showErrorMessage(this, ex.getMessage());
+        }
     }
 }
