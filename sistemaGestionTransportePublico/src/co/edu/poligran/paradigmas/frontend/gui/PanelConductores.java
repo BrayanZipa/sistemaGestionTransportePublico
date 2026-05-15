@@ -5,188 +5,223 @@ import co.edu.poligran.paradigmas.backend.vo.ConductorVO;
 import static co.edu.poligran.paradigmas.frontend.gui.GuiUtils.*;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.Insets;
 
-import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
-import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.border.EmptyBorder;
 
 public class PanelConductores extends JPanel {
-	
-	private GestionConductoresManager conductorManager;
 
-	/**
-	 * Constructor de la clase PanelConductores.
-	 * 
-	 * @param conductorManager gestor encargado de las operaciones relacionadas con conductores
-	 */
-	public PanelConductores(GestionConductoresManager conductorManager) {
-		this.conductorManager = conductorManager;
-		
-		configurarPanel();
-	}
-    
-    
+    private GestionConductoresManager conductorManager;
+
+    private JTextField txtNombre;
+    private JTextField txtEmail;
+    private JTextField txtIdentificacion;
+    private JTextField txtLicencia;
+    private JTextField txtBuscar;
+
+    private JTable tablaConductores;
+
+    private DefaultTableModel modeloTabla;
+
+    private Runnable refrescarTabla;
+
+    /**
+     * Constructor de la clase PanelConductores.
+     * 
+     * @param conductorManager gestor encargado de las operaciones relacionadas con conductores
+     */
+    public PanelConductores(GestionConductoresManager conductorManager) {
+
+        this.conductorManager = conductorManager;
+
+        configurarPanel();
+    }
+
+    /**
+     * Configura la interfaz gráfica del panel, incluyendo formulario,
+     * buscador, tabla y botones.
+     */
     private void configurarPanel() {
-    	
+
         setLayout(new BorderLayout(10, 10));
-        
+
         setBackground(C_SECUNDARIO);
-        
+
         setBorder(new EmptyBorder(10, 10, 10, 10));
+
+        // ── PANEL ZONA IZQUIERDA ─────────────────────────────────────
+
+        JPanel leftPanel = createPanel("panel");
+
+        leftPanel.setLayout(
+            new BoxLayout(leftPanel, BoxLayout.Y_AXIS)
+        );
+
+        leftPanel.setBorder(
+            new EmptyBorder(4, 2, 4, 6)
+        );
 
         // ── PANEL FORMULARIO ─────────────────────────────────────
 
-        JPanel panelFormulario = createPanel("Gestión de Conductores");
-        
-        panelFormulario.setLayout(new GridBagLayout());
+        JPanel panelFormulario =
+            createPanel("Gestión de Conductores");
+
+        panelFormulario.setLayout(
+            new GridBagLayout()
+        );
 
         // ── FORMULARIO ─────────────────────────────────────
 
-        GridBagConstraints g = new GridBagConstraints();
+        GridBagConstraints g = createGbc();
 
-        g.insets = new Insets(5, 5, 5, 5);
+        txtNombre = createTextField(15);
 
-        g.fill = GridBagConstraints.HORIZONTAL;
+        txtEmail = createTextField(15);
 
-        JTextField txtNombre = new JTextField(15);
+        txtIdentificacion = createTextField(15);
 
-        JTextField txtEmail = new JTextField(15);
+        txtLicencia = createTextField(15);
 
-        JTextField txtIdentificacion = new JTextField(15);
+        txtBuscar = createTextField(15);
 
-        JTextField txtLicencia = new JTextField(15);
+        // ── FILAS DEL FORMULARIO ─────────────────────────────────────
 
-        // ── FILA 1 ─────────────────────────────────────────
-
-        g.gridx = 0;
-        g.gridy = 0;
-
-        panelFormulario.add(
-            new JLabel("Nombre:"),
-            g
+        createFormRow(
+            panelFormulario,
+            g,
+            0,
+            "Nombre:",
+            txtNombre
         );
 
-        g.gridx = 1;
-
-        panelFormulario.add(
-            txtNombre,
-            g
+        createFormRow(
+            panelFormulario,
+            g,
+            1,
+            "Email:",
+            txtEmail
         );
 
-        // ── FILA 2 ─────────────────────────────────────────
-
-        g.gridx = 0;
-        g.gridy = 1;
-
-        panelFormulario.add(
-            new JLabel("Email:"),
-            g
+        createFormRow(
+            panelFormulario,
+            g,
+            2,
+            "Identificación:",
+            txtIdentificacion
         );
 
-        g.gridx = 1;
-
-        panelFormulario.add(
-            txtEmail,
-            g
+        createFormRow(
+            panelFormulario,
+            g,
+            3,
+            "Licencia:",
+            txtLicencia
         );
 
-        // ── FILA 3 ─────────────────────────────────────────
-
-        g.gridx = 0;
-        g.gridy = 2;
-
-        panelFormulario.add(
-            new JLabel("Identificación:"),
-            g
-        );
-
-        g.gridx = 1;
-
-        panelFormulario.add(
-            txtIdentificacion,
-            g
-        );
-
-        // ── FILA 4 ─────────────────────────────────────────
-
-        g.gridx = 0;
-        g.gridy = 3;
-
-        panelFormulario.add(
-            new JLabel("Licencia:"),
-            g
-        );
-
-        g.gridx = 1;
-
-        panelFormulario.add(
-            txtLicencia,
-            g
-        );
-
-        // ── FILA 5 ─────────────────────────────────────────
+        // ── MENSAJE VALIDACIÓN ─────────────────────────────────────
 
         g.gridx = 0;
         g.gridy = 4;
-
         g.gridwidth = 2;
 
         panelFormulario.add(
-        	new JLabel(
-        	   "* Licencia válida: A1, B2, C1..."
-        	),
+            createLabel(
+                "* Licencia válida: A1, B2, C1..."
+            ),
             g
         );
 
         // ── BOTONES ────────────────────────────────────────
 
-        JPanel panelBotones = new JPanel(
-            new FlowLayout(FlowLayout.CENTER, 5, 4)
+        JPanel panelBotones = createButtonRow(
+
+            createBtn(
+                "Agregar",
+                C_EXITO,
+                e -> agregarConductor()
+            ),
+
+            createBtn(
+                "Actualizar",
+                C_PRIMARIO,
+                e -> actualizarConductor()
+            ),
+
+            createBtn(
+                "Eliminar",
+                C_PELIGRO,
+                e -> eliminarConductor()
+            ),
+
+            createBtn(
+                "Limpiar",
+                C_GRIS,
+                e -> limpiarFormulario()
+            )
         );
-
-        panelBotones.setBackground(C_SUPERFICIE);
-
-        JButton btnAgregar =
-            btn("Agregar", C_EXITO, null);
-
-        JButton btnActualizar =
-            btn("Actualizar", C_ADVERTENCIA, null);
-
-        JButton btnEliminar =
-            btn("Eliminar", C_PELIGRO, null);
-
-        JButton btnLimpiar =
-            btn("Limpiar", Color.GRAY, null);
-
-        panelBotones.add(btnAgregar);
-
-        panelBotones.add(btnActualizar);
-
-        panelBotones.add(btnEliminar);
-
-        panelBotones.add(btnLimpiar);
 
         g.gridx = 0;
         g.gridy = 5;
-
         g.gridwidth = 2;
 
         panelFormulario.add(
             panelBotones,
             g
         );
+
+        // ── PANEL BUSCADOR ────────────────────────────────────────
+
+        JPanel panelBuscador =
+            createPanel("Buscar conductor");
+
+        panelBuscador.setLayout(
+            new GridBagLayout()
+        );
+
+        GridBagConstraints g4 = createGbc();
+
+        createFormRow(
+            panelBuscador,
+            g4,
+            0,
+            "Buscar ID:",
+            txtBuscar
+        );
+
+        JPanel rowBuscar = createButtonRow(
+
+            createBtn(
+                "Buscar",
+                C_PRIMARIO,
+                e -> buscarConductor()
+            )
+        );
+
+        g4.gridx = 0;
+        g4.gridy = 1;
+        g4.gridwidth = 2;
+
+        panelBuscador.add(
+            rowBuscar,
+            g4
+        );
+
+        leftPanel.add(panelFormulario);
+
+        leftPanel.add(
+            Box.createVerticalStrut(10)
+        );
+
+        leftPanel.add(panelBuscador);
 
         // ── TABLA ──────────────────────────────────────────
 
@@ -198,10 +233,10 @@ public class PanelConductores extends JPanel {
             "Licencia"
         };
 
-        DefaultTableModel modeloTabla =
+        modeloTabla =
             new DefaultTableModel(columnas, 0);
 
-        JTable tablaConductores =
+        tablaConductores =
             new JTable(modeloTabla);
 
         // ── PANEL TABLA ────────────────────────────────
@@ -222,146 +257,55 @@ public class PanelConductores extends JPanel {
 
         JSplitPane split = new JSplitPane(
             JSplitPane.HORIZONTAL_SPLIT,
-            panelFormulario,
+            leftPanel,
             panelTabla
         );
 
-        split.setDividerLocation(400);
+        split.setDividerLocation(350);
 
         add(split, BorderLayout.CENTER);
 
         // ── MÉTODO REFRESCAR TABLA ─────────────────────────
 
-        Runnable refrescarTabla = () -> {
+        refrescarTabla = () -> {
 
             modeloTabla.setRowCount(0);
 
-            for (int i = 0;
-                 i < conductorManager.obtenerConductores().size();
-                 i++) {
+            for (
+                int i = 0;
+                i < conductorManager.obtenerConductores().size();
+                i++
+            ) {
 
                 ConductorVO c =
-                    conductorManager.obtenerConductores().get(i);
+                    conductorManager
+                        .obtenerConductores()
+                        .get(i);
 
-                modeloTabla.addRow(new Object[] {
-                    i,
-                    c.getNombre(),
-                    c.getEmail(),
-                    c.getIdentificacion(),
-                    c.getLicencia()
-                });
+                modeloTabla.addRow(
+                    new Object[] {
+                        i,
+                        c.getNombre(),
+                        c.getEmail(),
+                        c.getIdentificacion(),
+                        c.getLicencia()
+                    }
+                );
             }
         };
 
         refrescarTabla.run();
 
-        // ── AGREGAR ────────────────────────────────────────
-
-        btnAgregar.addActionListener(e -> {
-
-            try {
-
-                String nombre =
-                    txtNombre.getText().trim();
-
-                String email =
-                    txtEmail.getText().trim();
-
-                String identificacion =
-                    txtIdentificacion.getText().trim();
-
-                String licencia =
-                    txtLicencia.getText().trim();
-
-                if (nombre.isEmpty()) {
-
-                    JOptionPane.showMessageDialog(
-                        this,
-                        "El nombre no puede estar vacío."
-                    );
-
-                    return;
-                }
-
-                if (!nombre.matches("[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+")) {
-
-                    JOptionPane.showMessageDialog(
-                        this,
-                        "El nombre solo debe contener letras."
-                    );
-
-                    return;
-                }
-
-                if (!email.contains("@")) {
-
-                    JOptionPane.showMessageDialog(
-                        this,
-                        "Ingrese un email válido."
-                    );
-
-                    return;
-                }
-
-                if (!licencia.matches("[A-Z]\\d")) {
-                    JOptionPane.showMessageDialog(this,
-                        "Licencia inválida. Ejemplo válido: A1, B2, C1.",
-                        "Error de validación", JOptionPane.ERROR_MESSAGE);
-                    return;
-                }
-
- 
-                ConductorVO c = new ConductorVO(
-                    nombre,
-                    email,
-                    "Conductor",
-                    identificacion,
-                    licencia
-                );
-
-                conductorManager.agregarConductor(c);
-
-                refrescarTabla.run();
-
-                JOptionPane.showMessageDialog(
-                    this,
-                    "Conductor agregado correctamente."
-                );
-
-            } catch (Exception ex) {
-
-                JOptionPane.showMessageDialog(
-                    this,
-                    ex.getMessage(),
-                    "Error",
-                    JOptionPane.ERROR_MESSAGE
-                );
-            }
-        });
-
-        // ── ELIMINAR ───────────────────────────────────────
-
-        btnEliminar.addActionListener(e -> {
-
-            int fila =
-                tablaConductores.getSelectedRow();
-
-            if (fila == -1) {
-
-                JOptionPane.showMessageDialog(
-                    this,
-                    "Seleccione un conductor."
-                );
-
-                return;
-            }
-
-            conductorManager.eliminarConductor(fila);
-
-            refrescarTabla.run();
-        });
-
         // ── CARGAR SELECCIÓN ───────────────────────────────
+
+        initEventosSeleccion();
+    }
+
+    /**
+     * Inicializa el listener de selección de la tabla para cargar
+     * los datos del conductor seleccionado en el formulario.
+     */
+    private void initEventosSeleccion() {
 
         tablaConductores.getSelectionModel()
             .addListSelectionListener(e -> {
@@ -369,17 +313,20 @@ public class PanelConductores extends JPanel {
             int fila =
                 tablaConductores.getSelectedRow();
 
-            if (fila == -1) {
-                return;
-            }
+            if (fila == -1) return;
 
             ConductorVO c =
-                conductorManager.obtenerConductores()
+                conductorManager
+                    .obtenerConductores()
                     .get(fila);
 
-            txtNombre.setText(c.getNombre());
+            txtNombre.setText(
+                c.getNombre()
+            );
 
-            txtEmail.setText(c.getEmail());
+            txtEmail.setText(
+                c.getEmail()
+            );
 
             txtIdentificacion.setText(
                 c.getIdentificacion()
@@ -389,152 +336,342 @@ public class PanelConductores extends JPanel {
                 c.getLicencia()
             );
         });
+    }
 
-        // ── ACTUALIZAR ─────────────────────────────────────
+    /**
+     * Obtiene los datos del formulario y construye
+     * un objeto ConductorVO.
+     * 
+     * @return ConductorVO con los datos ingresados
+     */
+    private ConductorVO obtenerConductorFormulario() {
 
-        btnActualizar.addActionListener(e -> {
+        return new ConductorVO(
 
-            int fila =
-                tablaConductores.getSelectedRow();
+            txtNombre.getText().trim(),
 
-            if (fila == -1) {
+            txtEmail.getText().trim(),
 
-                JOptionPane.showMessageDialog(
+            "Conductor",
+
+            txtIdentificacion.getText().trim(),
+
+            txtLicencia.getText()
+                .trim()
+                .toUpperCase()
+        );
+    }
+
+    /**
+     * Agrega un nuevo conductor al sistema con los datos
+     * ingresados en el formulario.
+     */
+    private void agregarConductor() {
+
+        try {
+
+            String nombre =
+                txtNombre.getText().trim();
+
+            String email =
+                txtEmail.getText().trim();
+
+            String identificacion =
+                txtIdentificacion.getText().trim();
+
+            String licencia =
+                txtLicencia.getText()
+                    .trim()
+                    .toUpperCase();
+
+            if (nombre.isEmpty()) {
+
+                showInfoMessage(
                     this,
-                    "Seleccione un conductor."
+                    "El nombre no puede estar vacío."
                 );
 
                 return;
             }
 
-            try {
+            if (!nombre.matches(
+                "[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+"
+            )) {
 
-                ConductorVO c =
-                    conductorManager.obtenerConductores()
-                        .get(fila);
-
-                String nuevoNombre =
-                    txtNombre.getText().trim();
-
-                if (!nuevoNombre.isEmpty()) {
-
-                    if (nuevoNombre.matches(
-                        "[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+"
-                    )) {
-
-                        c.setNombre(nuevoNombre);
-
-                    } else {
-
-                        JOptionPane.showMessageDialog(
-                            this,
-                            "El nombre solo debe contener letras. Se conserva el anterior."
-                        );
-                    }
-                }
-
-                String nuevoEmail =
-                    txtEmail.getText().trim();
-
-                if (!nuevoEmail.isEmpty()) {
-
-                    if (nuevoEmail.contains("@")) {
-
-                        c.setEmail(nuevoEmail);
-
-                    } else {
-
-                        JOptionPane.showMessageDialog(
-                            this,
-                            "Email inválido. Se conserva el anterior."
-                        );
-                    }
-                }
-
-                String nuevaLicencia =
-                    txtLicencia.getText()
-                        .trim()
-                        .toUpperCase();
-
-                if (!nuevaLicencia.isEmpty()) {
-
-                    if (nuevaLicencia.matches(
-                        "[A-Z]\\d"
-                    )) {
-
-                        c.setLicencia(nuevaLicencia);
-
-                    } else {
-
-                        JOptionPane.showMessageDialog(
-                            this,
-                            "Licencia inválida. Ejemplo válido: A1, B2, C1. Se conserva la anterior."
-                        );
-                    }
-                }
-
-                conductorManager.actualizarConductor(
-                    fila,
-                    c
-                );
-
-                refrescarTabla.run();
-
-                JOptionPane.showMessageDialog(
+                showInfoMessage(
                     this,
-                    "Conductor actualizado correctamente."
+                    "El nombre solo debe contener letras."
                 );
 
-            } catch (Exception ex) {
-
-                JOptionPane.showMessageDialog(
-                    this,
-                    ex.getMessage(),
-                    "Error",
-                    JOptionPane.ERROR_MESSAGE
-                );
+                return;
             }
-        });
-        // ── LIMPIAR ────────────────────────────────────────
 
-        btnLimpiar.addActionListener(e -> {
+            if (email.isEmpty()) {
 
-            txtNombre.setText("");
+                showInfoMessage(
+                    this,
+                    "El email no puede estar vacío."
+                );
 
-            txtEmail.setText("");
+                return;
+            }
 
-            txtIdentificacion.setText("");
+            if (!email.contains("@")) {
 
-            txtLicencia.setText("");
+                showInfoMessage(
+                    this,
+                    "Ingrese un email válido."
+                );
 
-            tablaConductores.clearSelection();
-        });
+                return;
+            }
+
+            if (!identificacion.matches("\\d+")) {
+
+                showInfoMessage(
+                    this,
+                    "La identificación solo debe contener números."
+                );
+
+                return;
+            }
+
+            if (!licencia.matches("[A-Z]\\d")) {
+
+                showInfoMessage(
+                    this,
+                    "Licencia inválida. Ejemplo válido: A1, B2, C1."
+                );
+
+                return;
+            }
+
+            ConductorVO c =
+                obtenerConductorFormulario();
+
+            conductorManager.agregarConductor(c);
+
+            refrescarTabla.run();
+
+            showInfoMessage(
+                this,
+                "Conductor agregado correctamente."
+            );
+
+        } catch (Exception ex) {
+
+            showErrorMessage(
+                this,
+                ex.getMessage()
+            );
+        }
     }
 
-    
-    private JButton btn(
-        String texto,
-        Color color,
-        java.awt.event.ActionListener accion
-    ) {
+    /**
+     * Actualiza el conductor seleccionado en la tabla con
+     * los nuevos datos del formulario.
+     */
+    private void actualizarConductor() {
 
-        JButton boton = new JButton(texto);
+        int fila =
+            tablaConductores.getSelectedRow();
 
-        boton.setBackground(color);
+        if (fila == -1) {
 
-        boton.setForeground(Color.WHITE);
+            showInfoMessage(
+                this,
+                "Seleccione un conductor."
+            );
 
-        boton.setFocusPainted(false);
-
-        boton.setBorderPainted(false);
-
-        boton.setOpaque(true);
-
-        if (accion != null) {
-
-            boton.addActionListener(accion);
+            return;
         }
 
-        return boton;
+        try {
+
+            ConductorVO c =
+                conductorManager
+                    .obtenerConductores()
+                    .get(fila);
+
+            String nuevoNombre =
+                txtNombre.getText().trim();
+
+            if (!nuevoNombre.isEmpty()) {
+
+                if (nuevoNombre.matches(
+                    "[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+"
+                )) {
+
+                    c.setNombre(nuevoNombre);
+
+                } else {
+
+                    showInfoMessage(
+                        this,
+                        "Nombre inválido. Solo letras. Se conserva el anterior."
+                    );
+                }
+            }
+
+            String nuevoEmail =
+                txtEmail.getText().trim();
+
+            if (!nuevoEmail.isEmpty()) {
+
+                if (nuevoEmail.contains("@")) {
+
+                    c.setEmail(nuevoEmail);
+
+                } else {
+
+                    showInfoMessage(
+                        this,
+                        "Email inválido. Se conserva el anterior."
+                    );
+                }
+            }
+
+            String nuevaLicencia =
+                txtLicencia.getText()
+                    .trim()
+                    .toUpperCase();
+
+            if (!nuevaLicencia.isEmpty()) {
+
+                if (nuevaLicencia.matches(
+                    "[A-Z]\\d"
+                )) {
+
+                    c.setLicencia(nuevaLicencia);
+
+                } else {
+
+                    showInfoMessage(
+                        this,
+                        "Licencia inválida. Ejemplo válido: A1, B2, C1."
+                    );
+                }
+            }
+
+            conductorManager.actualizarConductor(
+                fila,
+                c
+            );
+
+            refrescarTabla.run();
+
+            showInfoMessage(
+                this,
+                "Conductor actualizado correctamente."
+            );
+
+        } catch (Exception ex) {
+
+            showErrorMessage(
+                this,
+                ex.getMessage()
+            );
+        }
+    }
+
+    /**
+     * Elimina el conductor seleccionado en la tabla,
+     * previa confirmación del usuario.
+     */
+    private void eliminarConductor() {
+
+        int fila =
+            tablaConductores.getSelectedRow();
+
+        if (fila == -1) {
+
+            showInfoMessage(
+                this,
+                "Seleccione un conductor."
+            );
+
+            return;
+        }
+
+        if (!confirmMessage(
+            this,
+            "¿Está seguro de eliminar el conductor seleccionado?"
+        )) return;
+
+        conductorManager.eliminarConductor(fila);
+
+        refrescarTabla.run();
+
+        showInfoMessage(
+            this,
+            "Conductor eliminado correctamente."
+        );
+    }
+
+    /**
+     * Limpia todos los campos del formulario y
+     * deselecciona la fila activa de la tabla.
+     */
+    private void limpiarFormulario() {
+
+        txtNombre.setText("");
+
+        txtEmail.setText("");
+
+        txtIdentificacion.setText("");
+
+        txtLicencia.setText("");
+
+        tablaConductores.clearSelection();
+    }
+
+    /**
+     * Busca un conductor por identificación y lo resalta en la tabla.
+     */
+    private void buscarConductor() {
+
+        try {
+
+            String id =
+                txtBuscar.getText().trim();
+
+            if (!id.matches("\\d+")) {
+
+                showInfoMessage(
+                    this,
+                    "La identificación debe contener solo números."
+                );
+
+                return;
+            }
+
+            ConductorVO c =
+                conductorManager
+                    .buscarConductorPorId(id);
+
+            if (c != null) {
+
+                highlightRow(
+                    tablaConductores,
+                    modeloTabla,
+                    id,
+                    3
+                );
+
+            } else {
+
+                showInfoMessage(
+                    this,
+                    "No se encontró el conductor \"" + id + "\"."
+                );
+            }
+
+        } catch (Exception ex) {
+
+            showErrorMessage(
+                this,
+                ex.getMessage()
+            );
+        }
     }
 }

@@ -2,21 +2,18 @@ package co.edu.poligran.paradigmas.frontend.gui;
 
 import co.edu.poligran.paradigmas.backend.negocio.GestionPagosManager;
 import co.edu.poligran.paradigmas.backend.vo.PagoVO;
+
 import static co.edu.poligran.paradigmas.frontend.gui.GuiUtils.*;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.Insets;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-import javax.swing.JButton;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
 import javax.swing.JComboBox;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
@@ -25,10 +22,21 @@ import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.border.EmptyBorder;
 
-
 public class PanelPagos extends JPanel {
-	
+
     private GestionPagosManager pagosManager;
+
+    private JTextField txtIdPago;
+    private JTextField txtMonto;
+    private JTextField txtBuscar;
+
+    private JComboBox<String> cmbMetodoPago;
+
+    private JTable tablaPagos;
+
+    private DefaultTableModel modeloTabla;
+
+    private Runnable refrescarTabla;
 
     /**
      * Constructor de la clase PanelPagos.
@@ -36,156 +44,171 @@ public class PanelPagos extends JPanel {
      * @param pagosManager gestor encargado de las operaciones relacionadas con pagos
      */
     public PanelPagos(GestionPagosManager pagosManager) {
-		this.pagosManager = pagosManager;
-		
-		configurarPanel();
-	}
-    
-    
+        this.pagosManager = pagosManager;
+
+        configurarPanel();
+    }
+
+    /**
+     * Configura la interfaz gráfica del panel,
+     * incluyendo formulario, buscador, tabla y botones.
+     */
     private void configurarPanel() {
-    	
+
         setLayout(new BorderLayout(10, 10));
-        
         setBackground(C_SECUNDARIO);
-        
         setBorder(new EmptyBorder(10, 10, 10, 10));
+
+        // ── PANEL ZONA IZQUIERDA ─────────────────────────────────────
+
+        JPanel leftPanel = createPanel("panel");
+
+        leftPanel.setLayout(
+            new BoxLayout(leftPanel, BoxLayout.Y_AXIS)
+        );
+
+        leftPanel.setBorder(
+            new EmptyBorder(4, 2, 4, 6)
+        );
 
         // ── PANEL FORMULARIO ─────────────────────────────────────
 
-        JPanel panelFormulario = createPanel("Gestión de Pagos");
-        
-        panelFormulario.setLayout(new GridBagLayout());
+        JPanel panelFormulario =
+            createPanel("Gestión de Pagos");
+
+        panelFormulario.setLayout(
+            new GridBagLayout()
+        );
 
         // ── FORMULARIO ─────────────────────────────────────
 
-        GridBagConstraints g = new GridBagConstraints();
+        GridBagConstraints g = createGbc();
 
-        g.insets = new Insets(5, 5, 5, 5);
+        txtIdPago = createTextField(15);
 
-        g.fill = GridBagConstraints.HORIZONTAL;
+        txtMonto = createTextField(15);
 
-        JTextField txtIdPago = new JTextField(15);
+        txtBuscar = createTextField(15);
 
-        JTextField txtMonto = new JTextField(15);
-
-        JComboBox<String> cmbMetodoPago = new JComboBox<>();
+        cmbMetodoPago = new JComboBox<>();
 
         cmbMetodoPago.addItem("");
-
         cmbMetodoPago.addItem("Efectivo");
-
         cmbMetodoPago.addItem("Tarjeta");
-
         cmbMetodoPago.addItem("Nequi");
-
         cmbMetodoPago.addItem("Daviplata");
-
         cmbMetodoPago.addItem("Transferencia");
 
         cmbMetodoPago.setBackground(C_SUPERFICIE);
 
-        // ── FILA 1 ─────────────────────────────────────────
+        // ── FILAS DEL FORMULARIO ─────────────────────────────────────
 
-        g.gridx = 0;
-        g.gridy = 0;
-
-        panelFormulario.add(
-            new JLabel("ID Pago:"),
-            g
+        createFormRow(
+            panelFormulario,
+            g,
+            0,
+            "ID Pago:",
+            txtIdPago
         );
 
-        g.gridx = 1;
-
-        panelFormulario.add(
-            txtIdPago,
-            g
+        createFormRow(
+            panelFormulario,
+            g,
+            1,
+            "Monto:",
+            txtMonto
         );
 
-        // ── FILA 2 ─────────────────────────────────────────
-
-        g.gridx = 0;
-        g.gridy = 1;
-
-        panelFormulario.add(
-            new JLabel("Monto:"),
-            g
-        );
-
-        g.gridx = 1;
-
-        panelFormulario.add(
-            txtMonto,
-            g
-        );
-
-        // ── FILA 3 ─────────────────────────────────────────
-
-        g.gridx = 0;
-        g.gridy = 2;
-
-        panelFormulario.add(
-            new JLabel("Método Pago:"),
-            g
-        );
-
-        g.gridx = 1;
-
-        panelFormulario.add(
-            cmbMetodoPago,
-            g
-        );
-
-        // ── FILA 4 ─────────────────────────────────────────
-
-        g.gridx = 0;
-        g.gridy = 3;
-
-        g.gridwidth = 2;
-
-        panelFormulario.add(
-            new JLabel(
-                "* La fecha se registra automáticamente."
-            ),
-            g
+        createFormRow(
+            panelFormulario,
+            g,
+            2,
+            "Método Pago:",
+            cmbMetodoPago
         );
 
         // ── BOTONES ────────────────────────────────────────
 
-        JPanel panelBotones = new JPanel(
-        	    new FlowLayout(FlowLayout.CENTER, 12, 8)
+        JPanel panelBotones = createButtonRow(
+
+            createBtn(
+                "Agregar",
+                C_EXITO,
+                e -> agregarPago()
+            ),
+
+            createBtn(
+                "Actualizar",
+                C_PRIMARIO,
+                e -> actualizarPago()
+            ),
+
+            createBtn(
+                "Eliminar",
+                C_PELIGRO,
+                e -> eliminarPago()
+            ),
+
+            createBtn(
+                "Limpiar",
+                C_GRIS,
+                e -> limpiarFormulario()
+            )
         );
 
-        panelBotones.setBackground(C_SUPERFICIE);
-
-        JButton btnAgregar =
-        	    btn("Agregar", C_EXITO, null);
-
-        	JButton btnActualizar =
-        	    btn(" Actualizar", C_ADVERTENCIA, null);
-
-        	JButton btnEliminar =
-        	    btn(" Eliminar", C_PELIGRO, null);
-
-        	JButton btnLimpiar =
-        	    btn(" Limpiar", Color.GRAY, null);
-
-        panelBotones.add(btnAgregar);
-
-        panelBotones.add(btnActualizar);
-
-        panelBotones.add(btnEliminar);
-
-        panelBotones.add(btnLimpiar);
-
         g.gridx = 0;
-        g.gridy = 4;
-
+        g.gridy = 3;
         g.gridwidth = 2;
 
         panelFormulario.add(
             panelBotones,
             g
         );
+
+        // ── PANEL BUSCADOR ────────────────────────────────────────
+
+        JPanel panelBuscador =
+            createPanel("Buscar pago");
+
+        panelBuscador.setLayout(
+            new GridBagLayout()
+        );
+
+        GridBagConstraints g2 = createGbc();
+
+        createFormRow(
+            panelBuscador,
+            g2,
+            0,
+            "Buscar ID:",
+            txtBuscar
+        );
+
+        JPanel rowBuscar = createButtonRow(
+
+            createBtn(
+                "Buscar",
+                C_PRIMARIO,
+                e -> buscarPago()
+            )
+        );
+
+        g2.gridx = 0;
+        g2.gridy = 1;
+        g2.gridwidth = 2;
+
+        panelBuscador.add(
+            rowBuscar,
+            g2
+        );
+
+        leftPanel.add(panelFormulario);
+
+        leftPanel.add(
+            Box.createVerticalStrut(10)
+        );
+
+        leftPanel.add(panelBuscador);
 
         // ── TABLA ──────────────────────────────────────────
 
@@ -197,16 +220,19 @@ public class PanelPagos extends JPanel {
             "Método"
         };
 
-        DefaultTableModel modeloTabla =
+        modeloTabla =
             new DefaultTableModel(columnas, 0);
 
-        JTable tablaPagos = new JTable(modeloTabla);
+        tablaPagos = new JTable(modeloTabla);
 
         // ── PANEL TABLA ────────────────────────────────
 
-        JPanel panelTabla = createPanel("Pagos");
+        JPanel panelTabla =
+            createPanel("Pagos");
 
-        panelTabla.setLayout(new BorderLayout(0, 6));
+        panelTabla.setLayout(
+            new BorderLayout(0, 6)
+        );
 
         panelTabla.add(
             new JScrollPane(tablaPagos),
@@ -217,155 +243,70 @@ public class PanelPagos extends JPanel {
 
         JSplitPane split = new JSplitPane(
             JSplitPane.HORIZONTAL_SPLIT,
-            panelFormulario,
+            leftPanel,
             panelTabla
         );
 
-        split.setDividerLocation(430); 
+        split.setDividerLocation(380);
 
         add(split, BorderLayout.CENTER);
 
-        // ── FORMATO FECHA ────────────────────────────────
+        // ── MÉTODO REFRESCAR TABLA ─────────────────────────
 
         DateTimeFormatter formato =
             DateTimeFormatter.ofPattern(
                 "dd/MM/yyyy HH:mm"
             );
 
-        // ── MÉTODO REFRESCAR TABLA ─────────────────────────
-
-        Runnable refrescarTabla = () -> {
+        refrescarTabla = () -> {
 
             modeloTabla.setRowCount(0);
 
-            for (int i = 0;
-                 i < pagosManager.obtenerPagos().size();
-                 i++) {
+            for (
+                int i = 0;
+                i < pagosManager.obtenerPagos().size();
+                i++
+            ) {
 
                 PagoVO p =
                     pagosManager.obtenerPagos().get(i);
 
-                modeloTabla.addRow(new Object[] {
-                    i,
-                    p.getIdPago(),
-                    p.getFecha().format(formato),
-                    p.getMonto(),
-                    p.getMetodoPago()
-                });
+                modeloTabla.addRow(
+                    new Object[] {
+                        i,
+                        p.getIdPago(),
+                        p.getFecha().format(formato),
+                        p.getMonto(),
+                        p.getMetodoPago()
+                    }
+                );
             }
         };
 
         refrescarTabla.run();
 
-        // ── AGREGAR ────────────────────────────────────────
-
-        btnAgregar.addActionListener(e -> {
-
-            try {
-
-                String id =
-                    txtIdPago.getText().trim();
-
-                if (id.isEmpty()) {
-
-                    JOptionPane.showMessageDialog(
-                        this,
-                        "El ID no puede estar vacío."
-                    );
-
-                    return;
-                }
-
-                double monto =
-                    Double.parseDouble(
-                        txtMonto.getText()
-                            .trim()
-                            .replace(".", "")
-                    );
-
-                if (monto < 1000) {
-
-                    JOptionPane.showMessageDialog(
-                        this,
-                        "El monto debe ser mínimo 1.000."
-                    );
-
-                    return;
-                }
-
-                PagoVO p = new PagoVO(
-                    id,
-                    LocalDateTime.now(),
-                    monto,
-                    cmbMetodoPago
-                        .getSelectedItem()
-                        .toString()
-                );
-
-                pagosManager.agregarPago(p);
-
-                refrescarTabla.run();
-
-                JOptionPane.showMessageDialog(
-                    this,
-                    "Pago agregado correctamente."
-                );
-
-            } catch (NumberFormatException ex) {
-
-                JOptionPane.showMessageDialog(
-                    this,
-                    "Ingrese un monto válido.",
-                    "Error",
-                    JOptionPane.ERROR_MESSAGE
-                );
-
-            } catch (Exception ex) {
-
-                JOptionPane.showMessageDialog(
-                    this,
-                    ex.getMessage(),
-                    "Error",
-                    JOptionPane.ERROR_MESSAGE
-                );
-            }
-        });
-
-        // ── ELIMINAR ───────────────────────────────────────
-
-        btnEliminar.addActionListener(e -> {
-
-            int fila = tablaPagos.getSelectedRow();
-
-            if (fila == -1) {
-
-                JOptionPane.showMessageDialog(
-                    this,
-                    "Seleccione un pago."
-                );
-
-                return;
-            }
-
-            pagosManager.eliminarPago(fila);
-
-            refrescarTabla.run();
-        });
-
         // ── CARGAR SELECCIÓN ───────────────────────────────
+
+        initEventosSeleccion();
+    }
+
+    /**
+     * Inicializa el listener de selección de la tabla
+     * para cargar los datos del pago seleccionado
+     * en el formulario.
+     */
+    private void initEventosSeleccion() {
 
         tablaPagos.getSelectionModel()
             .addListSelectionListener(e -> {
 
-            int fila = tablaPagos.getSelectedRow();
+            int fila =
+                tablaPagos.getSelectedRow();
 
-            if (fila == -1) {
-                return;
-            }
+            if (fila == -1) return;
 
             PagoVO p =
-                pagosManager.obtenerPagos()
-                    .get(fila);
+                pagosManager.obtenerPagos().get(fila);
 
             txtIdPago.setText(
                 p.getIdPago()
@@ -381,122 +322,257 @@ public class PanelPagos extends JPanel {
                 p.getMetodoPago()
             );
         });
+    }
 
-        // ── ACTUALIZAR ─────────────────────────────────────
+    /**
+     * Obtiene los datos del formulario
+     * y construye un objeto PagoVO.
+     * 
+     * @return PagoVO con los datos ingresados
+     */
+    private PagoVO obtenerPagoFormulario() {
 
-        btnActualizar.addActionListener(e -> {
+        return new PagoVO(
 
-            int fila =
-                tablaPagos.getSelectedRow();
+            txtIdPago.getText().trim(),
 
-            if (fila == -1) {
+            LocalDateTime.now(),
 
-                JOptionPane.showMessageDialog(
+            Double.parseDouble(
+                txtMonto.getText()
+                    .trim()
+                    .replace(".", "")
+            ),
+
+            cmbMetodoPago
+                .getSelectedItem()
+                .toString()
+        );
+    }
+
+    /**
+     * Agrega un nuevo pago al sistema
+     * con los datos del formulario.
+     */
+    private void agregarPago() {
+
+        try {
+
+            if (
+                txtIdPago.getText()
+                    .trim()
+                    .isEmpty()
+            ) {
+
+                showInfoMessage(
                     this,
-                    "Seleccione un pago."
+                    "El ID no puede estar vacío."
                 );
 
                 return;
             }
 
-            try {
-
-                String id =
-                    txtIdPago.getText().trim();
-
-                double monto =
-                    Double.parseDouble(
-                        txtMonto.getText()
-                            .trim()
-                            .replace(".", "")
-                    );
-
-                if (monto < 1000) {
-
-                    JOptionPane.showMessageDialog(
-                        this,
-                        "El monto debe ser mínimo 1.000."
-                    );
-
-                    return;
-                }
-
-                PagoVO p = new PagoVO(
-                    id,
-                    pagosManager.obtenerPagos()
-                        .get(fila)
-                        .getFecha(),
-                    monto,
-                    cmbMetodoPago
-                        .getSelectedItem()
-                        .toString()
+            double monto =
+                Double.parseDouble(
+                    txtMonto.getText()
+                        .trim()
+                        .replace(".", "")
                 );
 
-                pagosManager.actualizarPago(
-                    fila,
-                    p
-                );
+            if (monto < 1000) {
 
-                refrescarTabla.run();
-
-            } catch (NumberFormatException ex) {
-
-                JOptionPane.showMessageDialog(
+                showInfoMessage(
                     this,
-                    "Ingrese un monto válido.",
-                    "Error",
-                    JOptionPane.ERROR_MESSAGE
+                    "El monto debe ser mínimo 1.000."
                 );
 
-            } catch (Exception ex) {
-
-                JOptionPane.showMessageDialog(
-                    this,
-                    ex.getMessage(),
-                    "Error",
-                    JOptionPane.ERROR_MESSAGE
-                );
+                return;
             }
-        });
 
-        // ── LIMPIAR ────────────────────────────────────────
+            PagoVO p =
+                obtenerPagoFormulario();
 
-        btnLimpiar.addActionListener(e -> {
+            pagosManager.agregarPago(p);
 
-            txtIdPago.setText("");
+            refrescarTabla.run();
 
-            txtMonto.setText("");
+            showInfoMessage(
+                this,
+                "Pago agregado correctamente."
+            );
 
-            cmbMetodoPago.setSelectedIndex(0);
+        } catch (Exception ex) {
 
-            tablaPagos.clearSelection();
-        });
-        
+            showErrorMessage(
+                this,
+                ex.getMessage()
+            );
+        }
     }
 
-    private JButton btn(
-        String texto,
-        Color color,
-        java.awt.event.ActionListener accion
-    ) {
+    /**
+     * Actualiza el pago seleccionado
+     * con los datos del formulario.
+     */
+    private void actualizarPago() {
 
-        JButton boton = new JButton(texto);
+        int fila =
+            tablaPagos.getSelectedRow();
 
-        boton.setBackground(color); 
+        if (fila == -1) {
 
-        boton.setForeground(Color.WHITE);
+            showInfoMessage(
+                this,
+                "Seleccione un pago."
+            );
 
-        boton.setFocusPainted(false);
-
-        boton.setBorderPainted(false);
-
-        boton.setOpaque(true);
-
-        if (accion != null) {
-
-            boton.addActionListener(accion);
+            return;
         }
 
-        return boton;
+        try {
+
+            double monto =
+                Double.parseDouble(
+                    txtMonto.getText()
+                        .trim()
+                        .replace(".", "")
+                );
+
+            if (monto < 1000) {
+
+                showInfoMessage(
+                    this,
+                    "El monto debe ser mínimo 1.000."
+                );
+
+                return;
+            }
+
+            PagoVO pagoAnterior =
+                pagosManager.obtenerPagos().get(fila);
+
+            PagoVO p = new PagoVO(
+
+                txtIdPago.getText().trim(),
+
+                pagoAnterior.getFecha(),
+
+                monto,
+
+                cmbMetodoPago
+                    .getSelectedItem()
+                    .toString()
+            );
+
+            pagosManager.actualizarPago(
+                fila,
+                p
+            );
+
+            refrescarTabla.run();
+
+            showInfoMessage(
+                this,
+                "Pago actualizado correctamente."
+            );
+
+        } catch (Exception ex) {
+
+            showErrorMessage(
+                this,
+                ex.getMessage()
+            );
+        }
+    }
+
+    /**
+     * Elimina el pago seleccionado en la tabla,
+     * previa confirmación del usuario.
+     */
+    private void eliminarPago() {
+
+        int fila =
+            tablaPagos.getSelectedRow();
+
+        if (fila == -1) {
+
+            showInfoMessage(
+                this,
+                "Seleccione un pago."
+            );
+
+            return;
+        }
+
+        if (
+            !confirmMessage(
+                this,
+                "¿Está seguro de eliminar el pago seleccionado?"
+            )
+        ) return;
+
+        pagosManager.eliminarPago(fila);
+
+        refrescarTabla.run();
+
+        showInfoMessage(
+            this,
+            "Pago eliminado correctamente."
+        );
+    }
+
+    /**
+     * Limpia todos los campos del formulario
+     * y deselecciona la fila activa de la tabla.
+     */
+    private void limpiarFormulario() {
+
+        txtIdPago.setText("");
+
+        txtMonto.setText("");
+
+        cmbMetodoPago.setSelectedIndex(0);
+
+        tablaPagos.clearSelection();
+    }
+
+    /**
+     * Busca un pago por ID y lo resalta en la tabla.
+     */
+    private void buscarPago() {
+
+        try {
+
+            PagoVO p =
+                pagosManager.buscarPagoPorId(
+                    txtBuscar.getText().trim()
+                );
+
+            if (p != null) {
+
+                highlightRow(
+                    tablaPagos,
+                    modeloTabla,
+                    txtBuscar.getText().trim(),
+                    1
+                );
+
+            } else {
+
+                showInfoMessage(
+                    this,
+                    "No se encontró el pago \""
+                    + txtBuscar.getText()
+                    + "\"."
+                );
+            }
+
+        } catch (Exception ex) {
+
+            showErrorMessage(
+                this,
+                ex.getMessage()
+            );
+        }
     }
 }

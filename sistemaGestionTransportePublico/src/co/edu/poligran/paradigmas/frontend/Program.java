@@ -62,9 +62,11 @@ public class Program {
 			mantenimientoManager
 		);
 
-//        iniciarConsola();
-
 		iniciarGui();
+		
+       iniciarConsola();
+
+		
 	}
 	
 	/**
