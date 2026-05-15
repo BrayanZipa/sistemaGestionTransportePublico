@@ -63,10 +63,7 @@ public class Program {
 		);
 
 		iniciarGui();
-		
-       iniciarConsola();
-
-		
+//		iniciarConsola();
 	}
 	
 	/**
