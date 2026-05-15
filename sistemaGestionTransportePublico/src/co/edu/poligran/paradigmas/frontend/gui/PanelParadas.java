@@ -195,10 +195,40 @@ public class PanelParadas extends JPanel {
     }
     
     /**
+     * Valida los campos del formulario antes de enviarlos al gestor.
+     * 
+     * @return true si todos los campos son válidos, false en caso contrario
+     */
+    private boolean validarFormulario() {
+        String codigo = txtCodigo.getText().trim();
+        String nombre = txtNombre.getText().trim();
+        String ubicacion = txtUbicacion.getText().trim();
+
+        if (codigo.isEmpty()) {
+            showErrorMessage(this, "El código no puede estar vacío.");
+            return false;
+        }
+
+        if (nombre.isEmpty()) {
+            showErrorMessage(this, "El nombre no puede estar vacío.");
+            return false;
+        }
+
+        if (ubicacion.isEmpty()) {
+            showErrorMessage(this, "La ubicación no puede estar vacía.");
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
      * Agrega una nueva parada al sistema con los datos del formulario.
      * Muestra un mensaje de éxito o error según el resultado.
      */
     private void agregarParada() {
+        if (!validarFormulario()) return;
+
         try {
         	ParadaVO p = obtenerParadaFormulario();
             paradaManager.agregarParada(p);
@@ -222,6 +252,8 @@ public class PanelParadas extends JPanel {
             showInfoMessage(this, "Seleccione una parada.");
             return;
         }
+
+        if (!validarFormulario()) return;
 
         try {
         	ParadaVO p = obtenerParadaFormulario();

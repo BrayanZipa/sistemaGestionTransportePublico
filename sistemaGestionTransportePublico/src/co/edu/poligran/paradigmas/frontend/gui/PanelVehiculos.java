@@ -214,10 +214,53 @@ public class PanelVehiculos extends JPanel {
     }
     
     /**
+     * Valida los campos del formulario antes de enviarlos al gestor.
+     * 
+     * @return true si todos los campos son válidos, false en caso contrario
+     */
+    private boolean validarFormulario() {
+        String placa = txtPlaca.getText().trim();
+        String modelo = txtModelo.getText().trim();
+        String capacidadStr = txtCapacidad.getText().trim();
+
+        if (placa.isEmpty()) {
+            showErrorMessage(this, "La placa no puede estar vacía.");
+            return false;
+        }
+
+        if (modelo.isEmpty()) {
+            showErrorMessage(this, "El modelo no puede estar vacío.");
+            return false;
+        }
+
+        if (capacidadStr.isEmpty()) {
+            showErrorMessage(this, "La capacidad no puede estar vacía.");
+            return false;
+        }
+
+        int capacidad;
+        try {
+            capacidad = Integer.parseInt(capacidadStr);
+        } catch (NumberFormatException e) {
+            showErrorMessage(this, "Debe ingresar un número válido en capacidad.");
+            return false;
+        }
+
+        if (capacidad <= 5) {
+            showErrorMessage(this, "La capacidad debe ser mayor a cinco.");
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
      * Agrega un nuevo vehículo al sistema con los datos del formulario.
      * Muestra un mensaje de éxito o error según el resultado.
      */
     private void agregarVehiculo() {
+        if (!validarFormulario()) return;
+
         try {
         	VehiculoVO v = obtenerVehiculoFormulario();
             vehiculoManager.agregarVehiculo(v);
@@ -241,6 +284,8 @@ public class PanelVehiculos extends JPanel {
             showInfoMessage(this, "Seleccione un vehículo.");
             return;
         }
+
+        if (!validarFormulario()) return;
 
         try {
         	VehiculoVO v = obtenerVehiculoFormulario();
