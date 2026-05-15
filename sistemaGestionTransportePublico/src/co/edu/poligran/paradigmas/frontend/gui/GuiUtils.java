@@ -12,6 +12,7 @@ import java.util.Calendar;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -132,6 +133,19 @@ public class GuiUtils {
         return chk;
     }
     
+    /**
+     * Crea un JComboBox estilizado con las opciones especificadas.
+     * 
+     * @param opciones arreglo de opciones para el combo box
+     * @return JComboBox configurado
+     */
+    public static JComboBox<String> createComboBox(String[] opciones) {
+        JComboBox<String> cb = new JComboBox<>(opciones);
+        cb.setFont(F_CAMPO);
+        cb.setBackground(C_SUPERFICIE);
+        return cb;
+    }
+
     /**
      * Crea un JSpinner para selección de fecha, inicializado con un desplazamiento
      * desde la fecha actual.
