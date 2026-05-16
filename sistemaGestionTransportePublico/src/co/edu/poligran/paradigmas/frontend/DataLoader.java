@@ -52,7 +52,7 @@ public class DataLoader {
         precargarPagos(pagosManager);
         precargarTarifas(tarifasManager);
         precargarMantenimientos(mantenimientoManager, vehiculoManager);
-        precargarBoletos(boletoManager, pasajeroManager, rutaManager, pagosManager);
+        precargarBoletos(boletoManager, pasajeroManager, rutaManager, pagosManager, tarifasManager);
     }
   
     /**
@@ -299,9 +299,16 @@ public class DataLoader {
      */
     private static void precargarTarifas(GestionTarifasManager tarifasManager) {
 
-        tarifasManager.agregarTarifa(new TarifasVO(1, LocalDateTime.now(), 2500, "Urbano"));
-        tarifasManager.agregarTarifa(new TarifasVO(2, LocalDateTime.now(), 3500, "Intermunicipal"));
+        tarifasManager.agregarTarifa(new TarifasVO(1, LocalDateTime.now(), 2500, "General"));
+        tarifasManager.agregarTarifa(new TarifasVO(2, LocalDateTime.now(), 3500, "VIP"));
         tarifasManager.agregarTarifa(new TarifasVO(3, LocalDateTime.now(), 2000, "Especial"));
+        tarifasManager.agregarTarifa(new TarifasVO(4, LocalDateTime.now(), 1500, "Estudiante"));
+        tarifasManager.agregarTarifa(new TarifasVO(5, LocalDateTime.now(), 1800, "Adulto Mayor"));
+        tarifasManager.agregarTarifa(new TarifasVO(6, LocalDateTime.now(), 5000, "VIP"));
+        tarifasManager.agregarTarifa(new TarifasVO(7, LocalDateTime.now(), 4000, "Ejecutivo"));
+        tarifasManager.agregarTarifa(new TarifasVO(8, LocalDateTime.now(), 2200, "Nocturno"));
+        tarifasManager.agregarTarifa(new TarifasVO(9, LocalDateTime.now(), 2800, "Nocturno"));
+        tarifasManager.agregarTarifa(new TarifasVO(10, LocalDateTime.now(), 4500, "Turístico"));
     }
 
     /**
@@ -328,11 +335,91 @@ public class DataLoader {
     	        vehiculoManager.buscarVehiculoPorPlaca("DEF456")
     	    );
 
+    	    MantenimientoVO m3 = new MantenimientoVO(
+    	        "M003",
+    	        LocalDate.of(2026, 3, 5),
+    	        "Cambio de llantas",
+    	        320000,
+    	        vehiculoManager.buscarVehiculoPorPlaca("GHI789")
+    	    );
+
+    	    MantenimientoVO m4 = new MantenimientoVO(
+    	        "M004",
+    	        LocalDate.of(2026, 3, 20),
+    	        "Alineación y balanceo",
+    	        85000,
+    	        vehiculoManager.buscarVehiculoPorPlaca("JKL012")
+    	    );
+
+    	    MantenimientoVO m5 = new MantenimientoVO(
+    	        "M005",
+    	        LocalDate.of(2026, 4, 8),
+    	        "Revisión del motor",
+    	        450000,
+    	        vehiculoManager.buscarVehiculoPorPlaca("MNO345")
+    	    );
+
+    	    MantenimientoVO m6 = new MantenimientoVO(
+    	        "M006",
+    	        LocalDate.of(2026, 4, 25),
+    	        "Cambio de filtros y bujías",
+    	        120000,
+    	        vehiculoManager.buscarVehiculoPorPlaca("PQR678")
+    	    );
+
+    	    MantenimientoVO m7 = new MantenimientoVO(
+    	        "M007",
+    	        LocalDate.of(2026, 5, 12),
+    	        "Revisión del sistema eléctrico",
+    	        180000,
+    	        vehiculoManager.buscarVehiculoPorPlaca("STU901")
+    	    );
+
+    	    MantenimientoVO m8 = new MantenimientoVO(
+    	        "M008",
+    	        LocalDate.of(2026, 5, 28),
+    	        "Cambio de embrague",
+    	        380000,
+    	        vehiculoManager.buscarVehiculoPorPlaca("VWX234")
+    	    );
+
+    	    MantenimientoVO m9 = new MantenimientoVO(
+    	        "M009",
+    	        LocalDate.of(2026, 6, 10),
+    	        "Revisión de suspensión",
+    	        220000,
+    	        vehiculoManager.buscarVehiculoPorPlaca("YZA567")
+    	    );
+
+    	    MantenimientoVO m10 = new MantenimientoVO(
+    	        "M010",
+    	        LocalDate.of(2026, 6, 25),
+    	        "Mantenimiento preventivo general",
+    	        350000,
+    	        vehiculoManager.buscarVehiculoPorPlaca("BCD890")
+    	    );
+
     	    mantenimientoManager.agregarMantenimiento(m1);
     	    mantenimientoManager.agregarMantenimiento(m2);
+    	    mantenimientoManager.agregarMantenimiento(m3);
+    	    mantenimientoManager.agregarMantenimiento(m4);
+    	    mantenimientoManager.agregarMantenimiento(m5);
+    	    mantenimientoManager.agregarMantenimiento(m6);
+    	    mantenimientoManager.agregarMantenimiento(m7);
+    	    mantenimientoManager.agregarMantenimiento(m8);
+    	    mantenimientoManager.agregarMantenimiento(m9);
+    	    mantenimientoManager.agregarMantenimiento(m10);
 
     	    m1.getVehiculo().agregarMantenimiento(m1);
     	    m2.getVehiculo().agregarMantenimiento(m2);
+    	    m3.getVehiculo().agregarMantenimiento(m3);
+    	    m4.getVehiculo().agregarMantenimiento(m4);
+    	    m5.getVehiculo().agregarMantenimiento(m5);
+    	    m6.getVehiculo().agregarMantenimiento(m6);
+    	    m7.getVehiculo().agregarMantenimiento(m7);
+    	    m8.getVehiculo().agregarMantenimiento(m8);
+    	    m9.getVehiculo().agregarMantenimiento(m9);
+    	    m10.getVehiculo().agregarMantenimiento(m10);
     	}
   
     /**
@@ -342,7 +429,8 @@ public class DataLoader {
     	GestionBoletosManager boletoManager,
 	    GestionPasajerosManager pasajeroManager,
 	    GestionRutasManager rutaManager,
-	    GestionPagosManager pagosManager
+	    GestionPagosManager pagosManager,
+	    GestionTarifasManager tarifasManager
     ) {
     	
     	BoletoVO b1 = new BoletoVO(
@@ -351,43 +439,53 @@ public class DataLoader {
     		    "A1",
     		    pasajeroManager.buscarPasajeroPorIdentificacion("1001"),
     		    rutaManager.buscarRutaPorCodigo(1),
-    		    pagosManager.buscarPagoPorId("P001"), null
+    		    pagosManager.buscarPagoPorId("P001"),
+    		    tarifasManager.buscarTarifaPorCodigo(1)
     		);
     	BoletoVO b2 = new BoletoVO(2, LocalDateTime.now(), "A2",
                 pasajeroManager.buscarPasajeroPorIdentificacion("1002"),
-                rutaManager.buscarRutaPorCodigo(2),pagosManager.buscarPagoPorId("P002"), null);
+                rutaManager.buscarRutaPorCodigo(2),pagosManager.buscarPagoPorId("P002"),
+                tarifasManager.buscarTarifaPorCodigo(1));
 
         BoletoVO b3 = new BoletoVO(3, LocalDateTime.now(), "A3",
                 pasajeroManager.buscarPasajeroPorIdentificacion("1003"),
-                rutaManager.buscarRutaPorCodigo(3),pagosManager.buscarPagoPorId("P003"), null);
+                rutaManager.buscarRutaPorCodigo(3),pagosManager.buscarPagoPorId("P003"),
+                tarifasManager.buscarTarifaPorCodigo(2));
 
         BoletoVO b4 = new BoletoVO(4, LocalDateTime.now(), "B1",
                 pasajeroManager.buscarPasajeroPorIdentificacion("1004"),
-                rutaManager.buscarRutaPorCodigo(4),pagosManager.buscarPagoPorId("P004"), null);
+                rutaManager.buscarRutaPorCodigo(4),pagosManager.buscarPagoPorId("P004"),
+                tarifasManager.buscarTarifaPorCodigo(2));
 
         BoletoVO b5 = new BoletoVO(5, LocalDateTime.now(), "B2",
                 pasajeroManager.buscarPasajeroPorIdentificacion("1005"),
-                rutaManager.buscarRutaPorCodigo(5), pagosManager.buscarPagoPorId("P005"), null);
+                rutaManager.buscarRutaPorCodigo(5), pagosManager.buscarPagoPorId("P005"),
+                tarifasManager.buscarTarifaPorCodigo(3));
 
         BoletoVO b6 = new BoletoVO(6, LocalDateTime.now(), "B3",
                 pasajeroManager.buscarPasajeroPorIdentificacion("1006"),
-                rutaManager.buscarRutaPorCodigo(6),pagosManager.buscarPagoPorId("P006"), null);
+                rutaManager.buscarRutaPorCodigo(6),pagosManager.buscarPagoPorId("P006"),
+                tarifasManager.buscarTarifaPorCodigo(4));
 
         BoletoVO b7 = new BoletoVO(7, LocalDateTime.now(), "C1",
                 pasajeroManager.buscarPasajeroPorIdentificacion("1007"),
-                rutaManager.buscarRutaPorCodigo(7),pagosManager.buscarPagoPorId("P007"), null);
+                rutaManager.buscarRutaPorCodigo(7),pagosManager.buscarPagoPorId("P007"),
+                tarifasManager.buscarTarifaPorCodigo(5));
 
         BoletoVO b8 = new BoletoVO(8, LocalDateTime.now(), "C2",
                 pasajeroManager.buscarPasajeroPorIdentificacion("1008"),
-                rutaManager.buscarRutaPorCodigo(8), pagosManager.buscarPagoPorId("P009"), null);
+                rutaManager.buscarRutaPorCodigo(8), pagosManager.buscarPagoPorId("P009"),
+                tarifasManager.buscarTarifaPorCodigo(6));
 
         BoletoVO b9 = new BoletoVO(9, LocalDateTime.now(), "C3",
                 pasajeroManager.buscarPasajeroPorIdentificacion("1009"),
-                rutaManager.buscarRutaPorCodigo(9),pagosManager.buscarPagoPorId("P010"), null);
+                rutaManager.buscarRutaPorCodigo(9),pagosManager.buscarPagoPorId("P010"),
+                tarifasManager.buscarTarifaPorCodigo(7));
 
         BoletoVO b10 = new BoletoVO(10, LocalDateTime.now(), "D1",
                 pasajeroManager.buscarPasajeroPorIdentificacion("1010"),
-                rutaManager.buscarRutaPorCodigo(10),pagosManager.buscarPagoPorId("P011"), null);
+                rutaManager.buscarRutaPorCodigo(10),pagosManager.buscarPagoPorId("P011"),
+                tarifasManager.buscarTarifaPorCodigo(8));
 
         boletoManager.agregarBoleto(b1);
         boletoManager.agregarBoleto(b2);

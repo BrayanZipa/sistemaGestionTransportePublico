@@ -71,7 +71,7 @@ public class PanelTarifas extends JPanel {
         
         txtCodigo = createTextField(15);
         txtValor = createTextField(15);
-        cbxTipoTarifa = createComboBox(new String[]{"Urbano", "Intermunicipal", "Especial"});
+        cbxTipoTarifa = createComboBox(new String[]{"General", "Especial", "Estudiante", "Adulto Mayor","Ejecutivo", "Nocturno","Turistico"});
         txtBuscar = createTextField(15);
 
         // ── FILAS DEL FORMULARIO ─────────────────────────────────────────

@@ -7,7 +7,7 @@ public class TarifasVO {
     private int codigo;
     private LocalDateTime fecha;
     private double valor;
-    private String tipoTarifa; // Ej: Urbano, Intermunicipal, Especial
+    private String tipoTarifa; 
 
     public TarifasVO(int codigo, LocalDateTime fecha, double valor, String tipoTarifa) {
         this.codigo = codigo;
