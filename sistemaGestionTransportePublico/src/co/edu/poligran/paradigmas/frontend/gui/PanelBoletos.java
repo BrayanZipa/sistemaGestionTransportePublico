@@ -267,6 +267,21 @@ public class PanelBoletos extends JPanel {
         }
         cbTarifa = createComboBox(itemsTarifa);
     }
+    
+    /**
+     * Busca y selecciona un item en un JComboBox cuyo texto comience con el prefijo dado.
+     *
+     * @param combo   combobox donde buscar
+     * @param prefijo texto inicial del item a seleccionar
+     */
+    private void seleccionarEnCombo(JComboBox<String> combo, String prefijo) {
+        for (int i = 0; i < combo.getItemCount(); i++) {
+            if (combo.getItemAt(i).startsWith(prefijo)) {
+                combo.setSelectedIndex(i);
+                return;
+            }
+        }
+    }
 
     /**
      * Inicializa el listener de selección de la tabla para cargar los datos del boleto
@@ -297,21 +312,6 @@ public class PanelBoletos extends JPanel {
                 seleccionarEnCombo(cbTarifa, b.getTarifa().getTipoTarifa());
             }
         });
-    }
-
-    /**
-     * Busca y selecciona un item en un JComboBox cuyo texto comience con el prefijo dado.
-     *
-     * @param combo   combobox donde buscar
-     * @param prefijo texto inicial del item a seleccionar
-     */
-    private void seleccionarEnCombo(JComboBox<String> combo, String prefijo) {
-        for (int i = 0; i < combo.getItemCount(); i++) {
-            if (combo.getItemAt(i).startsWith(prefijo)) {
-                combo.setSelectedIndex(i);
-                return;
-            }
-        }
     }
 
     /**
