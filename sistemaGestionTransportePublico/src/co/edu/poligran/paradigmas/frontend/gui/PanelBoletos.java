@@ -23,10 +23,12 @@ import java.util.List;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
+import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.JSpinner;
@@ -85,6 +87,29 @@ public class PanelBoletos extends JPanel {
     }
 
     /**
+     * Recarga los comboboxes cada vez que se selecciona la pestaña de boletos,
+     * reflejando cambios hechos desde otros paneles.
+     */
+    @Override
+    public void addNotify() {
+        super.addNotify();
+        java.awt.Container parent = getParent();
+        while (parent != null) {
+            if (parent instanceof JTabbedPane) {
+                ((JTabbedPane) parent).addChangeListener(e -> {
+                    JTabbedPane tp = (JTabbedPane) e.getSource();
+                    if (tp.getSelectedComponent() == PanelBoletos.this) {
+                        cargarCombos();
+                        refrescarTabla.run();
+                    }
+                });
+                break;
+            }
+            parent = parent.getParent();
+        }
+    }
+
+    /**
      * Configura la interfaz gráfica del panel, incluyendo formulario, tabla y botones.
      */
     private void configurarPanel() {
@@ -113,6 +138,11 @@ public class PanelBoletos extends JPanel {
         txtBuscar = createTextField(15);
 
         // ── CARGAR COMBOBOXES ─────────────────────────────────
+
+        cbPasajero = createComboBox(new String[0]);
+        cbRuta = createComboBox(new String[0]);
+        cbPago = createComboBox(new String[0]);
+        cbTarifa = createComboBox(new String[0]);
 
         cargarCombos();
 
@@ -232,7 +262,7 @@ public class PanelBoletos extends JPanel {
         for (int i = 0; i < pasajeros.length; i++) {
             itemsPasajero[i] = pasajeros[i].getIdentificacion() + " - " + pasajeros[i].getNombre();
         }
-        cbPasajero = createComboBox(itemsPasajero);
+        cbPasajero.setModel(new DefaultComboBoxModel<>(itemsPasajero));
 
         // ── RUTAS ─────────────────────────────────────────
 
@@ -245,7 +275,7 @@ public class PanelBoletos extends JPanel {
                          + " → "
                          + (rutas[i].getDestino() != null ? rutas[i].getDestino().getNombre() : "?");
         }
-        cbRuta = createComboBox(itemsRuta);
+        cbRuta.setModel(new DefaultComboBoxModel<>(itemsRuta));
 
         // ── PAGOS ─────────────────────────────────────────
 
@@ -255,7 +285,7 @@ public class PanelBoletos extends JPanel {
         for (int i = 0; i < pagos.length; i++) {
             itemsPago[i] = pagos[i].getIdPago() + " - $" + pagos[i].getMonto();
         }
-        cbPago = createComboBox(itemsPago);
+        cbPago.setModel(new DefaultComboBoxModel<>(itemsPago));
 
         // ── TARIFAS ───────────────────────────────────────
 
@@ -265,7 +295,7 @@ public class PanelBoletos extends JPanel {
         for (int i = 0; i < tarifas.length; i++) {
             itemsTarifa[i] = tarifas[i].getTipoTarifa() + " ($" + tarifas[i].getValor() + ")";
         }
-        cbTarifa = createComboBox(itemsTarifa);
+        cbTarifa.setModel(new DefaultComboBoxModel<>(itemsTarifa));
     }
     
     /**

@@ -22,10 +22,12 @@ import java.util.List;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
+import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.JSpinner;
@@ -83,6 +85,29 @@ public class PanelRutas extends JPanel {
     }
 
     /**
+     * Recarga los comboboxes cada vez que se selecciona la pestaña de rutas,
+     * reflejando cambios hechos desde otros paneles (nuevos vehículos, paradas, etc.).
+     */
+    @Override
+    public void addNotify() {
+        super.addNotify();
+        java.awt.Container parent = getParent();
+        while (parent != null) {
+            if (parent instanceof JTabbedPane) {
+                ((JTabbedPane) parent).addChangeListener(e -> {
+                    JTabbedPane tp = (JTabbedPane) e.getSource();
+                    if (tp.getSelectedComponent() == PanelRutas.this) {
+                        cargarCombos();
+                        refrescarTabla.run();
+                    }
+                });
+                break;
+            }
+            parent = parent.getParent();
+        }
+    }
+
+    /**
      * Configura la interfaz gráfica del panel, incluyendo formulario,
      * buscador, tabla y botones.
      */
@@ -110,6 +135,11 @@ public class PanelRutas extends JPanel {
         txtDistancia = createTextField(15);
         spFecha = createDateField(0);
         txtBuscar = createTextField(15);
+
+        cbOrigen = createComboBox(new String[0]);
+        cbDestino = createComboBox(new String[0]);
+        cbVehiculo = createComboBox(new String[0]);
+        cbConductor = createComboBox(new String[0]);
 
         cargarCombos();
 
@@ -226,7 +256,7 @@ public class PanelRutas extends JPanel {
      * desde los gestores correspondientes.
      */
     private void cargarCombos() {
-        // ── PARADAS (ORIGEN) ─────────────────────────────────
+        // ── PARADAS (ORIGEN Y DESTINO) ──────────────────────
 
         List<ParadaVO> listaParadas = paradaManager.obtenerParadas();
         paradas = listaParadas.toArray(new ParadaVO[0]);
@@ -234,11 +264,8 @@ public class PanelRutas extends JPanel {
         for (int i = 0; i < paradas.length; i++) {
             itemsParada[i] = paradas[i].getCodigo() + " - " + paradas[i].getNombre();
         }
-        cbOrigen = createComboBox(itemsParada);
-
-        // ── PARADAS (DESTINO) ───────────────────────────────
-
-        cbDestino = createComboBox(itemsParada);
+        cbOrigen.setModel(new DefaultComboBoxModel<>(itemsParada));
+        cbDestino.setModel(new DefaultComboBoxModel<>(itemsParada));
 
         // ── VEHÍCULOS (solo disponibles) ────────────────────
 
@@ -250,7 +277,7 @@ public class PanelRutas extends JPanel {
         for (int i = 0; i < vehiculos.length; i++) {
             itemsVehiculo[i] = vehiculos[i].getPlaca() + " - " + vehiculos[i].getModelo();
         }
-        cbVehiculo = createComboBox(itemsVehiculo);
+        cbVehiculo.setModel(new DefaultComboBoxModel<>(itemsVehiculo));
 
         // ── CONDUCTORES ─────────────────────────────────────
 
@@ -260,7 +287,7 @@ public class PanelRutas extends JPanel {
         for (int i = 0; i < conductores.length; i++) {
             itemsConductor[i] = conductores[i].getIdentificacion() + " - " + conductores[i].getNombre();
         }
-        cbConductor = createComboBox(itemsConductor);
+        cbConductor.setModel(new DefaultComboBoxModel<>(itemsConductor));
     }
     
     /**
